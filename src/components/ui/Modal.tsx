@@ -1,0 +1,52 @@
+'use client';
+
+import type { ReactNode } from 'react';
+import { X } from 'lucide-react';
+import { cn } from '@/lib/utils/cn';
+
+export interface ModalProps {
+  abierto: boolean;
+  onCerrar: () => void;
+  titulo: string;
+  children: ReactNode;
+  className?: string;
+}
+
+export function Modal({
+  abierto,
+  onCerrar,
+  titulo,
+  children,
+  className,
+}: ModalProps) {
+  if (!abierto) return null;
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 sm:items-center"
+      onClick={onCerrar}
+      role="dialog"
+      aria-modal="true"
+    >
+      <div
+        className={cn(
+          'max-h-[90vh] w-full overflow-y-auto rounded-t-2xl bg-white p-5 sm:max-w-md sm:rounded-2xl',
+          className,
+        )}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="text-lg font-semibold text-slate-900">{titulo}</h2>
+          <button
+            onClick={onCerrar}
+            className="rounded-lg p-1 text-slate-500 hover:bg-slate-100"
+            aria-label="Cerrar"
+          >
+            <X className="h-5 w-5" />
+          </button>
+        </div>
+        {children}
+      </div>
+    </div>
+  );
+}

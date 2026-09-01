@@ -7,3 +7,39 @@ This version has breaking changes — APIs, conventions, and file structure may 
 This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
 
 <!-- END:nextjs-agent-rules -->
+
+# Herrería App — Guía para agentes
+
+PWA offline-first para un taller de herrería: catálogo de materiales, optimización de cortes 1D y cotizaciones.
+
+## Stack
+- **Next.js 16** (App Router, Turbopack por defecto), **React 19**, **TypeScript** estricto.
+- **Tailwind CSS v4** (config CSS-first vía `@import "tailwindcss"` en `src/app/globals.css`, tema con `@theme inline`).
+- **Lucide Icons**, **Dexie** (IndexedDB), **Zustand**, **clsx** + **tailwind-merge**.
+- **PWA**: `src/app/manifest.ts` + Service Worker propio en `public/sw.js`.
+  - **NO usar `@ducanh2912/next-pwa`**: es webpack-only e incompatible con Turbopack.
+
+## Comandos
+- `npm run dev` — servidor de desarrollo.
+- `npm run build` — build de producción.
+- `npm run lint` — ESLint.
+- `npx tsc --noEmit` — verificación de tipos.
+
+## Convenciones
+- Alias de import: `@/*` → `src/*`.
+- Todo componente/hook que toque IndexedDB/Dexie, hooks o estado de UI debe llevar `'use client'`.
+- Sin comentarios innecesarios; solo donde aclaren lógica no obvia.
+- Naming: componentes `PascalCase`, hooks `useX`, archivos `kebab-case`.
+- **Dominio**: moneda CRC (₡, sin decimales); dimensiones en **cm** internamente; precios por **barra de 6 m**; IVA 13% opcional por cotización (default apagado).
+- **Persistencia SOLO** vía repositorios en `src/lib/db/repositories/` (patrón Repositorio, listo para sync futuro: UUID, timestamps `creadoEn`/`actualizadoEn`, `syncId` opcional).
+
+## Estructura (`src/`)
+- `app/` — rutas App Router; `manifest.ts` (PWA); `page.tsx` (dashboard).
+- `components/ui/` — primitivos; `components/layout/` — AppShell, Header, BottomNav.
+- `lib/db/` — Dexie (`db.ts`), `base-repository.ts`, repositorios por entidad.
+- `lib/utils/` — `cn`, `id` (uuid), `format` (CRC/medidas).
+- `types/` — interfaces de dominio. `constants/` — defaults. `data/seed.ts` — catálogo inicial.
+- `hooks/` — `useMateriales`, `useProyectos`, `useCotizaciones`, `useConfig`. `stores/` — Zustand.
+
+## Verificación (criterio de cierre Fase 1)
+- `npm run build`, `npx tsc --noEmit` y `npm run lint` sin errores.

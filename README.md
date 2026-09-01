@@ -1,36 +1,67 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Herrería App
 
-## Getting Started
+PWA (Progressive Web App) offline-first para la gestión de un taller de herrería, optimizada para tablets y celulares. Funciona 100% offline tras la primera carga.
 
-First, run the development server:
+## Funcionalidades
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+1. **Catálogo de materiales** — perfiles PTR, tubos, ángulos, platinas, soleras y varillas, con sus costos.
+2. **Optimización de cortes 1D** (Cutting Stock Problem) en barras de 6 m, minimizando desperdicio.
+3. **Cotizaciones automáticas** — costo de material optimizado + insumos/pintura + mano de obra + % de ganancia + IVA.
+4. **Exportación PDF** profesional (vista cliente y taller) y compartición por WhatsApp.
+
+## Stack tecnológico
+
+- **Next.js 16** (App Router, Turbopack) + **TypeScript**
+- **Tailwind CSS v4** + **Lucide Icons**
+- **Dexie** (IndexedDB) para almacenamiento local offline
+- **Zustand** para estado de UI
+- **PWA**: `manifest.ts` + Service Worker propio (`public/sw.js`)
+
+## Moneda y unidades
+
+- Moneda: **CRC** (colones costarricenses, ₡).
+- IVA: **13%** por defecto, activable/desactivable por cotización (por defecto apagado).
+- Dimensiones en **cm** (conversión interna); precios por **barra de 6 m**.
+- Mano de obra: monto fijo por defecto, con cálculo opcional por horas o porcentaje.
+
+## Estructura de carpetas
+
+```
+src/
+├── app/             # Rutas App Router + manifest.ts (PWA)
+├── components/
+│   ├── ui/          # Primitivos (Button, Input, Modal, Card, Table, Badge…)
+│   └── layout/      # AppShell, Header, BottomNav
+├── lib/
+│   ├── db/          # Dexie + repositorios (patrón Repositorio)
+│   ├── cutting/     # Algoritmo de corte (Fase 3)
+│   ├── pricing/     # Motor de cotización (Fase 4)
+│   ├── pdf/         # Generación PDF (Fase 5)
+│   ├── whatsapp/    # Compartir (Fase 5)
+│   └── utils/       # cn, id, format
+├── types/           # Interfaces de dominio
+├── constants/       # Defaults y presets
+├── hooks/           # useMateriales, useProyectos, useCotizaciones, useConfig
+├── stores/          # Zustand (estado de UI)
+└── data/            # Seed del catálogo inicial
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Setup local
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm install
+npm run dev        # desarrollo
+npm run build      # build de producción
+npm run lint       # lint
+npx tsc --noEmit   # verificación de tipos
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Roadmap por fases
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Fase | Entregable | Estado |
+|------|-----------|--------|
+| 1 | Scaffold, PWA offline, UI base, capa de datos | ✅ |
+| 2 | CRUD de materiales | ⏳ |
+| 3 | Calculadora Cutting Stock 1D + proyectos | ⏳ |
+| 4 | Motor de cotización + configuración | ⏳ |
+| 5 | PDF cliente/taller + WhatsApp | ⏳ |
