@@ -1,4 +1,4 @@
-const CACHE = 'herreria-cache-v1';
+const CACHE = 'herreria-cache-v2';
 
 self.addEventListener('install', () => {
   self.skipWaiting();

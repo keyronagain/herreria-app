@@ -7,10 +7,33 @@ import { seedInitialData } from '@/data/seed';
 
 export function AppShell({ children }: { children: ReactNode }) {
   useEffect(() => {
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js').catch(() => {});
-    }
     void seedInitialData();
+
+    if (!('serviceWorker' in navigator)) return;
+
+    let registration: ServiceWorkerRegistration | null = null;
+    let montado = true;
+
+    const revalidar = () => registration?.update();
+    const onVisibilidad = () => {
+      if (document.visibilityState === 'visible') revalidar();
+    };
+
+    navigator.serviceWorker
+      .register('/sw.js', { updateViaCache: 'none' })
+      .then((reg) => {
+        if (!montado) return;
+        registration = reg;
+        window.addEventListener('focus', revalidar);
+        document.addEventListener('visibilitychange', onVisibilidad);
+      })
+      .catch(() => {});
+
+    return () => {
+      montado = false;
+      window.removeEventListener('focus', revalidar);
+      document.removeEventListener('visibilitychange', onVisibilidad);
+    };
   }, []);
 
   return (

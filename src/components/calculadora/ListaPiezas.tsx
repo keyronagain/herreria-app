@@ -1,0 +1,49 @@
+'use client';
+
+import { Trash2, Ruler } from 'lucide-react';
+import { EmptyState } from '@/components/ui/EmptyState';
+import { formatMedida } from '@/lib/utils/format';
+import type { PiezaRequerida } from '@/types';
+
+interface Props {
+  piezas: PiezaRequerida[];
+  onEliminar: (id: string) => void;
+}
+
+export function ListaPiezas({ piezas, onEliminar }: Props) {
+  if (piezas.length === 0) {
+    return (
+      <EmptyState
+        icono={<Ruler className="h-10 w-10" />}
+        titulo="Sin piezas"
+        descripcion="Agrega piezas para optimizar el corte."
+      />
+    );
+  }
+
+  return (
+    <ul className="space-y-2">
+      {piezas.map((p) => (
+        <li
+          key={p.id}
+          className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white p-3"
+        >
+          <div className="min-w-0 flex-1">
+            <p className="truncate font-medium text-slate-900">{p.descripcion}</p>
+            <p className="text-sm text-slate-500">
+              {formatMedida(p.largo)} × {p.cantidad}
+              {p.kerf > 0 && ` · kerf ${p.kerf} cm`}
+            </p>
+          </div>
+          <button
+            onClick={() => onEliminar(p.id)}
+            className="rounded-lg p-2 text-slate-500 hover:bg-red-50 hover:text-red-600"
+            aria-label="Eliminar pieza"
+          >
+            <Trash2 className="h-4 w-4" />
+          </button>
+        </li>
+      ))}
+    </ul>
+  );
+}
