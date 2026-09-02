@@ -26,6 +26,12 @@ export function formatMedida(cm: number): string {
   return `${formatNumber(cm, 2)} cm`;
 }
 
+export function parseNumero(value: string): number {
+  const n = Number.parseFloat(value);
+  if (!Number.isFinite(n) || n < 0) return 0;
+  return n;
+}
+
 export function cmToM(cm: number): number {
   return cm / 100;
 }

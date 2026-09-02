@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
 import { TIPOS_PERFIL } from '@/constants';
+import { parseNumero } from '@/lib/utils/format';
 import type { MaterialInput } from '@/hooks/use-materiales';
 import type {
   Material,
@@ -98,21 +99,21 @@ export function MaterialForm({ material, onCerrar, onGuardar }: Props) {
     if (!nombre) return;
 
     const dims: DimensionesMaterial = {};
-    if (TIPOS_CON_ANCHO.includes(values.tipo) && values.ancho) {
-      dims.ancho = parseFloat(values.ancho);
+    if (TIPOS_CON_ANCHO.includes(values.tipo) && parseNumero(values.ancho) > 0) {
+      dims.ancho = parseNumero(values.ancho);
     }
-    if (TIPOS_CON_ALTO.includes(values.tipo) && values.alto) {
-      dims.alto = parseFloat(values.alto);
+    if (TIPOS_CON_ALTO.includes(values.tipo) && parseNumero(values.alto) > 0) {
+      dims.alto = parseNumero(values.alto);
     }
-    if (TIPOS_CON_DIAMETRO.includes(values.tipo) && values.diametro) {
-      dims.diametro = parseFloat(values.diametro);
+    if (TIPOS_CON_DIAMETRO.includes(values.tipo) && parseNumero(values.diametro) > 0) {
+      dims.diametro = parseNumero(values.diametro);
     }
-    if (TIPOS_CON_ESPESOR.includes(values.tipo) && values.espesor) {
-      dims.espesor = parseFloat(values.espesor);
+    if (TIPOS_CON_ESPESOR.includes(values.tipo) && parseNumero(values.espesor) > 0) {
+      dims.espesor = parseNumero(values.espesor);
     }
 
-    const largoBarra = parseFloat(values.largoBarra) || 600;
-    const precioBarra = parseFloat(values.precioBarra) || 0;
+    const largoBarra = parseNumero(values.largoBarra) || 600;
+    const precioBarra = parseNumero(values.precioBarra);
     const precioUnitario =
       Math.round((precioBarra / (largoBarra / 100)) * 100) / 100;
 

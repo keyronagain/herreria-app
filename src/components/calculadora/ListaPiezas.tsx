@@ -1,6 +1,6 @@
 'use client';
 
-import { Trash2, Ruler } from 'lucide-react';
+import { Trash2, Ruler, Pencil } from 'lucide-react';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { formatMedida } from '@/lib/utils/format';
 import type { PiezaRequerida } from '@/types';
@@ -8,9 +8,10 @@ import type { PiezaRequerida } from '@/types';
 interface Props {
   piezas: PiezaRequerida[];
   onEliminar: (id: string) => void;
+  onEditar: (id: string) => void;
 }
 
-export function ListaPiezas({ piezas, onEliminar }: Props) {
+export function ListaPiezas({ piezas, onEliminar, onEditar }: Props) {
   if (piezas.length === 0) {
     return (
       <EmptyState
@@ -35,6 +36,13 @@ export function ListaPiezas({ piezas, onEliminar }: Props) {
               {p.kerf > 0 && ` · kerf ${p.kerf} cm`}
             </p>
           </div>
+          <button
+            onClick={() => onEditar(p.id)}
+            className="rounded-lg p-2 text-slate-500 hover:bg-slate-100"
+            aria-label="Editar pieza"
+          >
+            <Pencil className="h-4 w-4" />
+          </button>
           <button
             onClick={() => onEliminar(p.id)}
             className="rounded-lg p-2 text-slate-500 hover:bg-red-50 hover:text-red-600"

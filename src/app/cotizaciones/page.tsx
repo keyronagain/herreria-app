@@ -1,17 +1,61 @@
 'use client';
 
-import { FileText } from 'lucide-react';
-import { EmptyState } from '@/components/ui/EmptyState';
+import { useState } from 'react';
+import { CotizacionList } from '@/components/cotizaciones/CotizacionList';
+import {
+  CotizacionForm,
+  type DatosCotizacion,
+} from '@/components/cotizaciones/CotizacionForm';
+import { useCotizaciones } from '@/hooks/use-cotizaciones';
+import { useProyectos } from '@/hooks/use-proyectos';
+import { useMateriales } from '@/hooks/use-materiales';
+import { useConfig } from '@/hooks/use-config';
+import { cotizacionRepository } from '@/lib/db/repositories';
+import type { Cotizacion } from '@/types';
 
 export default function CotizacionesPage() {
+  const { cotizaciones, cargando, crear, eliminar } = useCotizaciones();
+  const { proyectos } = useProyectos();
+  const { materiales } = useMateriales();
+  const { config } = useConfig();
+  const [creando, setCreando] = useState(false);
+
+  async function eliminarCotizacion(c: Cotizacion) {
+    if (window.confirm(`¿Eliminar la cotización ${c.numero}?`)) {
+      await eliminar(c.id);
+    }
+  }
+
+  async function guardarCotizacion(datos: DatosCotizacion) {
+    const numero = await cotizacionRepository.siguienteNumero();
+    await crear({ ...datos, numero });
+  }
+
   return (
     <div className="mx-auto max-w-5xl px-4 py-6">
       <h1 className="text-2xl font-bold text-slate-900">Cotizaciones</h1>
-      <EmptyState
-        icono={<FileText className="h-10 w-10" />}
-        titulo="Cotizaciones automáticas"
-        descripcion="El motor de cotización (material + insumos + mano de obra + ganancia) llega en la Fase 4."
-      />
+      <p className="mt-1 text-sm text-slate-500">
+        Cotizaciones automáticas con material, insumos, mano de obra y ganancia.
+      </p>
+
+      <div className="mt-6">
+        <CotizacionList
+          cotizaciones={cotizaciones}
+          cargando={cargando}
+          onCrear={() => setCreando(true)}
+          onEliminar={eliminarCotizacion}
+        />
+      </div>
+
+      {creando && config && (
+        <CotizacionForm
+          proyectos={proyectos}
+          materiales={materiales}
+          config={config}
+          onCerrar={() => setCreando(false)}
+          onGuardar={guardarCotizacion}
+        />
+      )}
     </div>
   );
 }

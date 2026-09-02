@@ -5,33 +5,49 @@ import { Plus } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { uid } from '@/lib/utils/id';
+import { parseNumero } from '@/lib/utils/format';
 import type { PiezaRequerida } from '@/types';
 
 interface Props {
   materialId: string;
   largoBarra: number;
   kerfDefault: number;
-  onAgregar: (pieza: PiezaRequerida) => void;
+  piezaInicial?: PiezaRequerida | null;
+  onGuardar: (pieza: PiezaRequerida) => void;
+  onCancelarEdicion?: () => void;
 }
 
 export function PiezaForm({
   materialId,
   largoBarra,
   kerfDefault,
-  onAgregar,
+  piezaInicial,
+  onGuardar,
+  onCancelarEdicion,
 }: Props) {
-  const [descripcion, setDescripcion] = useState('');
-  const [largo, setLargo] = useState('');
-  const [cantidad, setCantidad] = useState('1');
-  const [kerf, setKerf] = useState(String(kerfDefault));
+  const [descripcion, setDescripcion] = useState(
+    piezaInicial?.descripcion ?? '',
+  );
+  const [largo, setLargo] = useState(
+    piezaInicial ? String(piezaInicial.largo) : '',
+  );
+  const [cantidad, setCantidad] = useState(
+    piezaInicial ? String(piezaInicial.cantidad) : '1',
+  );
+  const [kerf, setKerf] = useState(
+    piezaInicial ? String(piezaInicial.kerf) : String(kerfDefault),
+  );
   const [error, setError] = useState('');
+
+  const editando = Boolean(piezaInicial);
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
-    const l = parseFloat(largo);
-    const k = parseFloat(kerf) || 0;
+    const l = parseNumero(largo);
+    const k = parseNumero(kerf);
+    const cant = Math.max(1, Math.round(parseNumero(cantidad)) || 1);
 
-    if (!l || l <= 0) {
+    if (!l) {
       setError('Ingresa un largo válido.');
       return;
     }
@@ -40,11 +56,11 @@ export function PiezaForm({
       return;
     }
 
-    onAgregar({
-      id: uid(),
+    onGuardar({
+      id: piezaInicial?.id ?? uid(),
       materialId,
       descripcion: descripcion.trim() || `Pieza ${largo} cm`,
-      cantidad: Math.max(1, parseInt(cantidad, 10) || 1),
+      cantidad: cant,
       largo: l,
       kerf: k,
     });
@@ -113,10 +129,17 @@ export function PiezaForm({
 
       <div className="mt-3 flex items-center justify-between gap-3">
         <p className="text-sm text-red-600">{error}</p>
-        <Button type="submit">
-          <Plus className="h-4 w-4" />
-          Agregar
-        </Button>
+        <div className="flex gap-2">
+          {editando && onCancelarEdicion && (
+            <Button type="button" variant="ghost" onClick={onCancelarEdicion}>
+              Cancelar
+            </Button>
+          )}
+          <Button type="submit">
+            {!editando && <Plus className="h-4 w-4" />}
+            {editando ? 'Guardar cambios' : 'Agregar'}
+          </Button>
+        </div>
       </div>
     </form>
   );

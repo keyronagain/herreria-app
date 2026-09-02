@@ -18,6 +18,7 @@ PWA offline-first para un taller de herrería: catálogo de materiales, optimiza
 - **Lucide Icons**, **Dexie** (IndexedDB), **Zustand**, **clsx** + **tailwind-merge**.
 - **PWA**: `src/app/manifest.ts` + Service Worker propio en `public/sw.js`.
   - **NO usar `@ducanh2912/next-pwa`**: es webpack-only e incompatible con Turbopack.
+  - **Actualización**: el SW usa `skipWaiting` + `clients.claim`; `AppShell` registra con `updateViaCache: 'none'` y revalida en `focus`/`visibilitychange`. Al desplegar cambios en assets cacheados, **incrementar la constante `CACHE`** en `public/sw.js` para purgar caches viejos.
 
 ## Comandos
 - `npm run dev` — servidor de desarrollo.
@@ -36,10 +37,16 @@ PWA offline-first para un taller de herrería: catálogo de materiales, optimiza
 ## Estructura (`src/`)
 - `app/` — rutas App Router; `manifest.ts` (PWA); `page.tsx` (dashboard).
 - `components/ui/` — primitivos; `components/layout/` — AppShell, Header, BottomNav.
+- `components/materiales/`, `components/calculadora/`, `components/configuracion/`, `components/cotizaciones/` — por dominio.
 - `lib/db/` — Dexie (`db.ts`), `base-repository.ts`, repositorios por entidad.
-- `lib/utils/` — `cn`, `id` (uuid), `format` (CRC/medidas).
+- `lib/cutting/` — optimización de cortes (FFD). `lib/pricing/` — motor de cotización.
+- `lib/utils/` — `cn`, `id` (uuid), `format` (CRC/medidas, `parseNumero`).
 - `types/` — interfaces de dominio. `constants/` — defaults. `data/seed.ts` — catálogo inicial.
-- `hooks/` — `useMateriales`, `useProyectos`, `useCotizaciones`, `useConfig`. `stores/` — Zustand.
+- `hooks/` — `useMateriales`, `useProyectos`, `useCotizaciones`, `useConfig` (usan `dexie-react-hooks`). `stores/` — Zustand.
 
-## Verificación (criterio de cierre Fase 1)
+## Reglas de calidad
+- **React 19**: no usar `setState` sincrónico dentro de `useEffect` (`react-hooks/set-state-in-effect`). Preferir suscripciones (`useLiveQuery`) o `useState` initializer con remontaje vía `key`.
+- **Documentación**: mantener `README.md` (roadmap de fases) y `AGENTS.md` sincronizados tras cada fase/feature.
+
+## Verificación (criterio de cierre)
 - `npm run build`, `npx tsc --noEmit` y `npm run lint` sin errores.

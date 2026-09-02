@@ -16,6 +16,7 @@ PWA (Progressive Web App) offline-first para la gestión de un taller de herrer�
 - **Dexie** (IndexedDB) para almacenamiento local offline
 - **Zustand** para estado de UI
 - **PWA**: `manifest.ts` + Service Worker propio (`public/sw.js`)
+  - Actualización transparente: `skipWaiting` + `clients.claim` + revalidación al enfocar la app (`updateViaCache: 'none'`).
 
 ## Moneda y unidades
 
@@ -30,12 +31,16 @@ PWA (Progressive Web App) offline-first para la gestión de un taller de herrer�
 src/
 ├── app/             # Rutas App Router + manifest.ts (PWA)
 ├── components/
-│   ├── ui/          # Primitivos (Button, Input, Modal, Card, Table, Badge…)
-│   └── layout/      # AppShell, Header, BottomNav
+│   ├── ui/           # Primitivos (Button, Input, Modal, Card, Table, Badge…)
+│   ├── layout/       # AppShell, Header, BottomNav
+│   ├── materiales/   # CRUD de materiales
+│   ├── calculadora/  # Piezas y visualización de cortes
+│   ├── configuracion/# Insumos y taller
+│   └── cotizaciones/ # Lista y formulario de cotización
 ├── lib/
 │   ├── db/          # Dexie + repositorios (patrón Repositorio)
-│   ├── cutting/     # Algoritmo de corte (Fase 3)
-│   ├── pricing/     # Motor de cotización (Fase 4)
+│   ├── cutting/     # Algoritmo de corte (First-Fit Decreasing)
+│   ├── pricing/     # Motor de cotización
 │   ├── pdf/         # Generación PDF (Fase 5)
 │   ├── whatsapp/    # Compartir (Fase 5)
 │   └── utils/       # cn, id, format
@@ -61,7 +66,7 @@ npx tsc --noEmit   # verificación de tipos
 | Fase | Entregable | Estado |
 |------|-----------|--------|
 | 1 | Scaffold, PWA offline, UI base, capa de datos | ✅ |
-| 2 | CRUD de materiales | ⏳ |
-| 3 | Calculadora Cutting Stock 1D + proyectos | ⏳ |
-| 4 | Motor de cotización + configuración | ⏳ |
+| 2 | CRUD de materiales | ✅ |
+| 3 | Calculadora Cutting Stock 1D + proyectos | ✅ |
+| 4 | Motor de cotización + configuración | ✅ |
 | 5 | PDF cliente/taller + WhatsApp | ⏳ |

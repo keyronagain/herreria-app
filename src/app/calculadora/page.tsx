@@ -24,6 +24,7 @@ export default function CalculadoraPage() {
 
   const [materialId, setMaterialId] = useState('');
   const [piezas, setPiezas] = useState<PiezaRequerida[]>([]);
+  const [piezaEditando, setPiezaEditando] = useState<PiezaRequerida | null>(null);
   const [resultado, setResultado] = useState<ResultadoOptimizacion | null>(null);
   const [guardarAbierto, setGuardarAbierto] = useState(false);
 
@@ -37,16 +38,27 @@ export default function CalculadoraPage() {
   function seleccionarMaterial(id: string) {
     setMaterialId(id);
     setPiezas([]);
+    setPiezaEditando(null);
     setResultado(null);
   }
 
-  function agregarPieza(pieza: PiezaRequerida) {
-    setPiezas((p) => [...p, pieza]);
+  function guardarPieza(pieza: PiezaRequerida) {
+    setPiezas((p) =>
+      p.some((x) => x.id === pieza.id)
+        ? p.map((x) => (x.id === pieza.id ? pieza : x))
+        : [...p, pieza],
+    );
+    setPiezaEditando(null);
     setResultado(null);
+  }
+
+  function editarPieza(id: string) {
+    setPiezaEditando(piezas.find((p) => p.id === id) ?? null);
   }
 
   function eliminarPieza(id: string) {
     setPiezas((p) => p.filter((x) => x.id !== id));
+    setPiezaEditando((e) => (e?.id === id ? null : e));
     setResultado(null);
   }
 
@@ -110,13 +122,20 @@ export default function CalculadoraPage() {
       {material ? (
         <>
           <PiezaForm
+            key={piezaEditando?.id ?? 'nueva'}
             materialId={material.id}
             largoBarra={material.largoBarra}
             kerfDefault={config?.kerfDefault ?? 0.3}
-            onAgregar={agregarPieza}
+            piezaInicial={piezaEditando}
+            onGuardar={guardarPieza}
+            onCancelarEdicion={() => setPiezaEditando(null)}
           />
 
-          <ListaPiezas piezas={piezas} onEliminar={eliminarPieza} />
+          <ListaPiezas
+            piezas={piezas}
+            onEliminar={eliminarPieza}
+            onEditar={editarPieza}
+          />
 
           <div className="flex flex-wrap gap-2">
             <Button onClick={optimizar} disabled={piezas.length === 0}>
