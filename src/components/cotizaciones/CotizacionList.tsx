@@ -1,6 +1,6 @@
 'use client';
 
-import { Plus, Trash2, FileText } from 'lucide-react';
+import { Plus, Trash2, Eye, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { EmptyState } from '@/components/ui/EmptyState';
@@ -21,6 +21,7 @@ interface Props {
   cotizaciones: Cotizacion[];
   cargando: boolean;
   onCrear: () => void;
+  onVer: (c: Cotizacion) => void;
   onEliminar: (c: Cotizacion) => void;
 }
 
@@ -28,6 +29,7 @@ export function CotizacionList({
   cotizaciones,
   cargando,
   onCrear,
+  onVer,
   onEliminar,
 }: Props) {
   return (
@@ -73,6 +75,13 @@ export function CotizacionList({
               <span className="shrink-0 font-semibold text-slate-900">
                 {formatCRC(c.totalConIva)}
               </span>
+              <button
+                onClick={() => onVer(c)}
+                className="rounded-lg p-2 text-slate-500 hover:bg-slate-100"
+                aria-label="Ver cotización"
+              >
+                <Eye className="h-4 w-4" />
+              </button>
               <button
                 onClick={() => onEliminar(c)}
                 className="rounded-lg p-2 text-slate-500 hover:bg-red-50 hover:text-red-600"

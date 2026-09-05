@@ -6,6 +6,7 @@ import {
   CotizacionForm,
   type DatosCotizacion,
 } from '@/components/cotizaciones/CotizacionForm';
+import { CotizacionDetalle } from '@/components/cotizaciones/CotizacionDetalle';
 import { useCotizaciones } from '@/hooks/use-cotizaciones';
 import { useProyectos } from '@/hooks/use-proyectos';
 import { useMateriales } from '@/hooks/use-materiales';
@@ -26,6 +27,7 @@ export default function CotizacionesPage() {
   const [creando, setCreando] = useState(() =>
     Boolean(proyectoPreseleccionado),
   );
+  const [cotizacionVer, setCotizacionVer] = useState<Cotizacion | null>(null);
 
   async function eliminarCotizacion(c: Cotizacion) {
     if (window.confirm(`¿Eliminar la cotización ${c.numero}?`)) {
@@ -55,6 +57,7 @@ export default function CotizacionesPage() {
           cotizaciones={cotizaciones}
           cargando={cargando}
           onCrear={() => setCreando(true)}
+          onVer={setCotizacionVer}
           onEliminar={eliminarCotizacion}
         />
       </div>
@@ -67,6 +70,15 @@ export default function CotizacionesPage() {
           proyectoInicialId={proyectoPreseleccionado ?? undefined}
           onCerrar={cerrarFormulario}
           onGuardar={guardarCotizacion}
+        />
+      )}
+
+      {cotizacionVer && config && (
+        <CotizacionDetalle
+          cotizacion={cotizacionVer}
+          config={config}
+          materiales={materiales}
+          onCerrar={() => setCotizacionVer(null)}
         />
       )}
     </div>

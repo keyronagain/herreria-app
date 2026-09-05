@@ -11,6 +11,7 @@ import { ConceptosTable } from './ConceptosTable';
 import { parseNumero, formatCRC } from '@/lib/utils/format';
 import {
   generarConceptos,
+  generarPatrones,
   calcularManoObra,
   resumenPorTipo,
   recalcularTotales,
@@ -22,6 +23,7 @@ import type {
   ConceptoCosto,
   Cotizacion,
   ModoManoObra,
+  ResultadoOptimizacion,
 } from '@/types';
 
 export type DatosCotizacion = Omit<
@@ -56,6 +58,11 @@ export function CotizacionForm({
     return proyecto
       ? generarConceptos(proyecto.piezas, materiales, config, 0)
       : [];
+  });
+  const [patrones, setPatrones] = useState<ResultadoOptimizacion[]>(() => {
+    if (!proyectoInicialId) return [];
+    const proyecto = proyectos.find((p) => p.id === proyectoInicialId);
+    return proyecto ? generarPatrones(proyecto.piezas, materiales, config) : [];
   });
   const [modoManoObra, setModoManoObra] = useState<ModoManoObra>(
     config.modoManoObraDefault,
@@ -92,6 +99,7 @@ export function CotizacionForm({
     setConceptos(
       generarConceptos(proyecto.piezas, materiales, config, horasManoObra),
     );
+    setPatrones(generarPatrones(proyecto.piezas, materiales, config));
   }
 
   async function handleSubmit(e: FormEvent) {
@@ -110,6 +118,7 @@ export function CotizacionForm({
         fecha: Date.now(),
         vigenciaDias: Math.max(0, Math.round(vigenciaDias)),
         conceptos,
+        patrones: patrones.length > 0 ? patrones : undefined,
         costoMaterial,
         costoInsumos,
         costoManoObra,

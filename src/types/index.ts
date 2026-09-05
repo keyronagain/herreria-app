@@ -119,6 +119,7 @@ export interface Cotizacion {
   fecha: number;
   vigenciaDias: number;
   conceptos: ConceptoCosto[];
+  patrones?: ResultadoOptimizacion[];
   costoMaterial: number;
   costoInsumos: number;
   costoManoObra: number;

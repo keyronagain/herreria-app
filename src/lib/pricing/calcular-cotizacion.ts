@@ -7,6 +7,7 @@ import type {
   ConceptoCosto,
   ModoManoObra,
   ModoConsumo,
+  ResultadoOptimizacion,
 } from '@/types';
 
 export function generarConceptos(
@@ -68,6 +69,32 @@ export function generarConceptos(
   }
 
   return conceptos;
+}
+
+export function generarPatrones(
+  piezas: PiezaRequerida[],
+  materiales: Material[],
+  config: ConfiguracionTaller,
+): ResultadoOptimizacion[] {
+  const porMaterial = new Map<string, PiezaRequerida[]>();
+  for (const p of piezas) {
+    const lista = porMaterial.get(p.materialId) ?? [];
+    lista.push(p);
+    porMaterial.set(p.materialId, lista);
+  }
+
+  const resultados: ResultadoOptimizacion[] = [];
+  for (const [materialId, piezasMaterial] of porMaterial) {
+    const material = materiales.find((m) => m.id === materialId);
+    resultados.push(
+      optimizarCortes(
+        piezasMaterial,
+        material?.largoBarra ?? config.largoBarraDefault,
+        materialId,
+      ),
+    );
+  }
+  return resultados;
 }
 
 function cantidadInsumo(

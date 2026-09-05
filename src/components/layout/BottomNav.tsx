@@ -6,6 +6,7 @@ import {
   LayoutDashboard,
   Layers,
   Scissors,
+  FolderKanban,
   FileText,
   Settings,
   type LucideIcon,
@@ -16,6 +17,7 @@ const items: { href: string; label: string; icon: LucideIcon }[] = [
   { href: '/', label: 'Inicio', icon: LayoutDashboard },
   { href: '/materiales', label: 'Materiales', icon: Layers },
   { href: '/calculadora', label: 'Cortes', icon: Scissors },
+  { href: '/proyectos', label: 'Proyectos', icon: FolderKanban },
   { href: '/cotizaciones', label: 'Cotizar', icon: FileText },
   { href: '/configuracion', label: 'Ajustes', icon: Settings },
 ];

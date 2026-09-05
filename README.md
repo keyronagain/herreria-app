@@ -15,6 +15,7 @@ PWA (Progressive Web App) offline-first para la gestión de un taller de herrer�
 - **Tailwind CSS v4** + **Lucide Icons**
 - **Dexie** (IndexedDB) para almacenamiento local offline
 - **Zustand** para estado de UI
+- **jsPDF** + **jspdf-autotable** para exportar cotizaciones a PDF
 - **PWA**: `manifest.ts` + Service Worker propio (`public/sw.js`)
   - Actualización transparente: `skipWaiting` + `clients.claim` + revalidación al enfocar la app (`updateViaCache: 'none'`).
 
@@ -42,8 +43,8 @@ src/
 │   ├── db/          # Dexie + repositorios (patrón Repositorio)
 │   ├── cutting/     # Algoritmo de corte (First-Fit Decreasing)
 │   ├── pricing/     # Motor de cotización
-│   ├── pdf/         # Generación PDF (Fase 5)
-│   ├── whatsapp/    # Compartir (Fase 5)
+│   ├── pdf/         # Generación PDF (jsPDF + autotable)
+│   ├── whatsapp/    # Compartir por WhatsApp (Web Share + wa.me)
 │   └── utils/       # cn, id, format
 ├── types/           # Interfaces de dominio
 ├── constants/       # Defaults y presets
@@ -70,4 +71,4 @@ npx tsc --noEmit   # verificación de tipos
 | 2 | CRUD de materiales | ✅ |
 | 3 | Calculadora Cutting Stock 1D + proyectos | ✅ |
 | 4 | Motor de cotización + configuración | ✅ |
-| 5 | PDF cliente/taller + WhatsApp | ⏳ |
+| 5 | PDF cliente/taller + WhatsApp | ✅ |
