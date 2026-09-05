@@ -136,7 +136,7 @@ export function ConfiguracionForm({ config, onGuardar }: Props) {
             <Input
               type="number"
               min="0"
-              step="0.01"
+              step="any"
               value={local.kerfDefault}
               onChange={(e) =>
                 setCampo('kerfDefault', parseNumero(e.target.value))

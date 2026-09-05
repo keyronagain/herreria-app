@@ -232,7 +232,7 @@ export function MaterialForm({ material, onCerrar, onGuardar }: Props) {
                 <Input
                   type="number"
                   min="0"
-                  step="0.01"
+                  step="any"
                   value={values.ancho}
                   onChange={(e) => setCampo('ancho', e.target.value)}
                   placeholder="0"
@@ -247,7 +247,7 @@ export function MaterialForm({ material, onCerrar, onGuardar }: Props) {
                 <Input
                   type="number"
                   min="0"
-                  step="0.01"
+                  step="any"
                   value={values.alto}
                   onChange={(e) => setCampo('alto', e.target.value)}
                   placeholder="0"
@@ -262,7 +262,7 @@ export function MaterialForm({ material, onCerrar, onGuardar }: Props) {
                 <Input
                   type="number"
                   min="0"
-                  step="0.01"
+                  step="any"
                   value={values.diametro}
                   onChange={(e) => setCampo('diametro', e.target.value)}
                   placeholder="0"
@@ -277,7 +277,7 @@ export function MaterialForm({ material, onCerrar, onGuardar }: Props) {
                 <Input
                   type="number"
                   min="0"
-                  step="0.01"
+                  step="any"
                   value={values.espesor}
                   onChange={(e) => setCampo('espesor', e.target.value)}
                   placeholder="0"

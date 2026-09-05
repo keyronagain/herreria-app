@@ -3,8 +3,11 @@ import type {
   Cotizacion,
   ConfiguracionTaller,
   Material,
+  Proyecto,
+  PiezaRequerida,
   ResultadoOptimizacion,
 } from '@/types';
+import { generarPatrones } from '@/lib/pricing/calcular-cotizacion';
 
 type AutoTable = (doc: jsPDF, options: Record<string, unknown>) => void;
 
@@ -16,14 +19,17 @@ function crc(n: number): string {
   );
 }
 
-function medida(n: number): string {
-  return n >= 100
-    ? `${Math.round((n / 100) * 100) / 100} m`
-    : `${Math.round(n * 100) / 100} cm`;
+function cmTexto(n: number): string {
+  return `${Math.round(n * 10) / 10} cm`;
 }
 
 function nombreMaterial(materialId: string, materiales: Material[]): string {
   return materiales.find((m) => m.id === materialId)?.nombre ?? 'Material';
+}
+
+function finalY(doc: jsPDF): number {
+  return (doc as unknown as { lastAutoTable: { finalY: number } }).lastAutoTable
+    .finalY;
 }
 
 async function construirBase(
@@ -87,8 +93,7 @@ async function construirBase(
     },
   });
 
-  let y = (doc as unknown as { lastAutoTable: { finalY: number } }).lastAutoTable
-    .finalY + 8;
+  let y = finalY(doc) + 8;
 
   const lineas: [string, string][] = [
     ['Subtotal', crc(cotizacion.subtotal)],
@@ -133,30 +138,58 @@ async function construirBase(
   return { doc, autoTable };
 }
 
-function dibujarPatrones(
+function dibujarFichaTaller(
   doc: jsPDF,
   autoTable: AutoTable,
+  piezas: PiezaRequerida[],
   patrones: ResultadoOptimizacion[],
   materiales: Material[],
 ) {
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(14);
-  doc.text('Plan de corte — Taller', MARGEN, 20);
+  doc.text('Ficha de taller', MARGEN, 20);
 
   let y = 28;
+
+  if (piezas.length > 0) {
+    doc.setFontSize(11);
+    doc.text('Lista de piezas', MARGEN, y);
+    y += 3;
+
+    autoTable(doc, {
+      startY: y,
+      head: [['Descripción', 'Largo (cm)', 'Cantidad']],
+      body: piezas.map((p) => [p.descripcion, cmTexto(p.largo), String(p.cantidad)]),
+      margin: { left: MARGEN, right: MARGEN },
+      theme: 'grid',
+      styles: { fontSize: 9, cellPadding: 2 },
+      headStyles: { fillColor: [30, 41, 59], textColor: [255, 255, 255] },
+    });
+
+    y = finalY(doc) + 10;
+  }
+
+  doc.setFontSize(11);
+  doc.text('Plan de corte por barra', MARGEN, y);
+  y += 4;
+
   for (const p of patrones) {
     const nombre = nombreMaterial(p.materialId, materiales);
-    doc.setFontSize(11);
-    doc.text(`${nombre} — ${p.totalBarras} barra(s)`, MARGEN, y);
-    y += 4;
+    doc.setFontSize(10);
+    doc.text(
+      `${nombre} — ${p.totalBarras} barra(s) · sobrante ${cmTexto(p.sobranteTotal)} · uso ${p.utilizacionPct}%`,
+      MARGEN,
+      y,
+    );
+    y += 3;
 
     autoTable(doc, {
       startY: y,
       head: [['Barra', 'Cortes', 'Sobrante', 'Uso']],
       body: p.patrones.map((b, i) => [
         `#${i + 1}`,
-        b.cortes.map((c) => `${c.descripcion} (${medida(c.largo)})`).join('\n'),
-        medida(b.sobrante),
+        b.cortes.map((c) => `${c.descripcion} (${cmTexto(c.largo)})`).join('\n'),
+        cmTexto(b.sobrante),
         `${b.utilizacionPct}%`,
       ]),
       margin: { left: MARGEN, right: MARGEN },
@@ -165,9 +198,7 @@ function dibujarPatrones(
       headStyles: { fillColor: [30, 41, 59], textColor: [255, 255, 255] },
     });
 
-    y =
-      (doc as unknown as { lastAutoTable: { finalY: number } }).lastAutoTable
-        .finalY + 10;
+    y = finalY(doc) + 10;
   }
 }
 
@@ -183,12 +214,29 @@ export async function generarPdfTaller(
   cotizacion: Cotizacion,
   config: ConfiguracionTaller,
   materiales: Material[],
+  proyecto?: Proyecto | null,
 ): Promise<jsPDF> {
   const { doc, autoTable } = await construirBase(cotizacion, config);
-  const patrones = cotizacion.patrones ?? [];
-  if (patrones.length > 0) {
-    doc.addPage();
-    dibujarPatrones(doc, autoTable, patrones, materiales);
+
+  const piezas = proyecto?.piezas ?? [];
+  let patrones = cotizacion.patrones ?? [];
+  if (piezas.length > 0) {
+    patrones = generarPatrones(piezas, materiales, config);
   }
+
+  doc.addPage();
+
+  if (patrones.length > 0 || piezas.length > 0) {
+    dibujarFichaTaller(doc, autoTable, piezas, patrones, materiales);
+  } else {
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(11);
+    doc.text(
+      'Cotización manual sin proyecto de corte vinculado.',
+      MARGEN,
+      28,
+    );
+  }
+
   return doc;
 }

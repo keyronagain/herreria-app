@@ -110,7 +110,7 @@ export function InsumosList({ insumos, onChange }: Props) {
               <Input
                 type="number"
                 min="0"
-                step="0.01"
+                step="any"
                 value={i.factor}
                 placeholder="Factor"
                 onChange={(e) =>

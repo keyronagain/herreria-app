@@ -95,7 +95,7 @@ export function PiezaForm({
           <Input
             type="number"
             min="0"
-            step="0.1"
+            step="any"
             value={largo}
             onChange={(e) => setLargo(e.target.value)}
             placeholder="0"
@@ -120,7 +120,7 @@ export function PiezaForm({
           <Input
             type="number"
             min="0"
-            step="0.01"
+            step="any"
             value={kerf}
             onChange={(e) => setKerf(e.target.value)}
           />

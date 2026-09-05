@@ -78,6 +78,7 @@ export default function CotizacionesPage() {
           cotizacion={cotizacionVer}
           config={config}
           materiales={materiales}
+          proyectos={proyectos}
           onCerrar={() => setCotizacionVer(null)}
         />
       )}

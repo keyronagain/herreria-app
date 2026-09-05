@@ -78,7 +78,7 @@ export function ConceptosTable({ conceptos, onChange }: Props) {
               <Input
                 type="number"
                 min="0"
-                step="0.01"
+                step="any"
                 value={c.cantidad}
                 onChange={(e) =>
                   actualizar(c.id, { cantidad: parseNumero(e.target.value) })

@@ -8,12 +8,18 @@ import { Table, THead, TBody, Th, Td } from '@/components/ui/Table';
 import { generarPdfCliente, generarPdfTaller } from '@/lib/pdf/generar-pdf';
 import { compartirCotizacion } from '@/lib/whatsapp/compartir';
 import { formatCRC } from '@/lib/utils/format';
-import type { Cotizacion, ConfiguracionTaller, Material } from '@/types';
+import type {
+  Cotizacion,
+  ConfiguracionTaller,
+  Material,
+  Proyecto,
+} from '@/types';
 
 interface Props {
   cotizacion: Cotizacion;
   config: ConfiguracionTaller;
   materiales: Material[];
+  proyectos: Proyecto[];
   onCerrar: () => void;
 }
 
@@ -21,6 +27,7 @@ export function CotizacionDetalle({
   cotizacion,
   config,
   materiales,
+  proyectos,
   onCerrar,
 }: Props) {
   const [ocupado, setOcupado] = useState(false);
@@ -38,7 +45,14 @@ export function CotizacionDetalle({
   async function pdfTaller() {
     setOcupado(true);
     try {
-      const doc = await generarPdfTaller(cotizacion, config, materiales);
+      const proyecto =
+        proyectos.find((p) => p.id === cotizacion.proyectoId) ?? null;
+      const doc = await generarPdfTaller(
+        cotizacion,
+        config,
+        materiales,
+        proyecto,
+      );
       doc.save(`cotizacion-${cotizacion.numero}-taller.pdf`);
     } finally {
       setOcupado(false);
