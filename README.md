@@ -45,6 +45,8 @@ src/
 │   ├── pricing/     # Motor de cotización
 │   ├── pdf/         # Generación PDF (jsPDF + autotable)
 │   ├── whatsapp/    # Compartir por WhatsApp (Web Share + wa.me)
+│   ├── sync/        # Sincronización offline-first (outbox + push/pull)
+│   ├── supabase/    # Cliente Supabase
 │   └── utils/       # cn, id, format
 ├── types/           # Interfaces de dominio
 ├── constants/       # Defaults y presets
@@ -62,6 +64,21 @@ npm run build      # build de producción
 npm run lint       # lint
 npx tsc --noEmit   # verificación de tipos
 ```
+
+## Sincronización multi-dispositivo (Supabase)
+
+La app es offline-first con Dexie como fuente de verdad local. Opcionalmente puedes sincronizar entre dispositivos con Supabase:
+
+1. Crea un proyecto en [supabase.com](https://supabase.com).
+2. Ejecuta la migración `supabase/migrations/0001_init.sql` en el SQL Editor (crea la tabla `sync_rows` + RLS por usuario).
+3. Configura las variables de entorno:
+   - `NEXT_PUBLIC_SUPABASE_URL` (ej. `https://xxx.supabase.co`)
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+4. En **Configuración → Sincronización**, crea una cuenta (email/contraseña) e inicia sesión en cada dispositivo con la misma cuenta.
+
+Los cambios se encolan en `syncQueue` (Dexie) y se replican al volver a estar online o con el botón "Sincronizar ahora". Resolución de conflictos: last-write-wins por `actualizadoEn`.
+
+> Nota: en producción, agrega las variables a la configuración del proyecto en Vercel.
 
 ## Roadmap por fases
 

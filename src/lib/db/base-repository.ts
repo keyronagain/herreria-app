@@ -1,5 +1,7 @@
 import type { Table, UpdateSpec } from 'dexie';
 import { uid } from '@/lib/utils/id';
+import { encolar } from '@/lib/sync/outbox';
+import type { SyncEntidad } from '@/types';
 
 export type BaseRecord = {
   id: string;
@@ -8,6 +10,8 @@ export type BaseRecord = {
 };
 
 export abstract class BaseRepository<T extends BaseRecord> {
+  protected abstract entidad: SyncEntidad;
+
   protected constructor(protected table: Table<T, string>) {}
 
   async all(): Promise<T[]> {
@@ -25,6 +29,7 @@ export abstract class BaseRepository<T extends BaseRecord> {
     const now = Date.now();
     const record = { ...data, id, creadoEn: now, actualizadoEn: now } as T;
     await this.table.add(record);
+    void encolar(this.entidad, id);
     return id;
   }
 
@@ -33,9 +38,11 @@ export abstract class BaseRepository<T extends BaseRecord> {
       ...changes,
       actualizadoEn: Date.now(),
     } as UpdateSpec<T>);
+    void encolar(this.entidad, id);
   }
 
   async remove(id: string): Promise<void> {
     await this.table.delete(id);
+    void encolar(this.entidad, id);
   }
 }

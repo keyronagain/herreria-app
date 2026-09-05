@@ -2,6 +2,7 @@
 
 import { useConfig } from '@/hooks/use-config';
 import { ConfiguracionForm } from '@/components/configuracion/ConfiguracionForm';
+import { SyncPanel } from '@/components/configuracion/SyncPanel';
 
 export default function ConfiguracionPage() {
   const { config, cargando, guardar } = useConfig();
@@ -23,6 +24,10 @@ export default function ConfiguracionPage() {
 
       <div className="mt-6">
         <ConfiguracionForm config={config} onGuardar={guardar} />
+      </div>
+
+      <div className="mt-6">
+        <SyncPanel />
       </div>
     </div>
   );

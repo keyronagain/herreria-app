@@ -17,6 +17,7 @@ PWA offline-first para un taller de herrería: catálogo de materiales, optimiza
 - **Tailwind CSS v4** (config CSS-first vía `@import "tailwindcss"` en `src/app/globals.css`, tema con `@theme inline`).
 - **Lucide Icons**, **Dexie** (IndexedDB), **Zustand**, **clsx** + **tailwind-merge**.
 - **jsPDF** + **jspdf-autotable** (import **dinámico** para code-splitting): PDF de cotización. Nota: las fuentes estándar de jsPDF (WinAnsi) no incluyen `₡`; usar `CRC` en los PDFs.
+- **Supabase** (`@supabase/supabase-js`): backend opcional para sync multi-dispositivo. Offline-first: Dexie es la fuente de verdad; `lib/sync/` (outbox `syncQueue` + push/pull LWW) replica en segundo plano. El esquema está en `supabase/migrations/`.
 - **PWA**: `src/app/manifest.ts` + Service Worker propio en `public/sw.js`.
   - **NO usar `@ducanh2912/next-pwa`**: es webpack-only e incompatible con Turbopack.
   - **Actualización**: el SW usa `skipWaiting` + `clients.claim`; `AppShell` registra con `updateViaCache: 'none'` y revalida en `focus`/`visibilitychange`. Al desplegar cambios en assets cacheados, **incrementar la constante `CACHE`** en `public/sw.js` para purgar caches viejos.

@@ -3,6 +3,8 @@ import { BaseRepository } from '@/lib/db/base-repository';
 import type { Material } from '@/types';
 
 class MaterialRepository extends BaseRepository<Material> {
+  protected entidad = 'materiales' as const;
+
   constructor() {
     super(db.materiales);
   }
