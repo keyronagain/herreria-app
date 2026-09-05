@@ -151,7 +151,7 @@ export function CotizacionForm({
       <form onSubmit={handleSubmit} className="space-y-5">
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
           <div>
-            <label className="mb-1 block text-sm font-medium text-slate-700">
+            <label className="mb-1 block text-sm font-medium text-slate-300">
               Cliente
             </label>
             <Input
@@ -162,7 +162,7 @@ export function CotizacionForm({
             />
           </div>
           <div>
-            <label className="mb-1 block text-sm font-medium text-slate-700">
+            <label className="mb-1 block text-sm font-medium text-slate-300">
               Teléfono
             </label>
             <Input
@@ -172,7 +172,7 @@ export function CotizacionForm({
             />
           </div>
           <div>
-            <label className="mb-1 block text-sm font-medium text-slate-700">
+            <label className="mb-1 block text-sm font-medium text-slate-300">
               Dirección
             </label>
             <Input
@@ -186,7 +186,7 @@ export function CotizacionForm({
         <Card className="space-y-2">
           <div className="flex items-end gap-2">
             <div className="flex-1">
-              <label className="mb-1 block text-sm font-medium text-slate-700">
+              <label className="mb-1 block text-sm font-medium text-slate-300">
                 Generar desde proyecto
               </label>
               <Select
@@ -214,17 +214,17 @@ export function CotizacionForm({
         </Card>
 
         <div>
-          <label className="mb-1 block text-sm font-medium text-slate-700">
+          <label className="mb-1 block text-sm font-medium text-slate-300">
             Conceptos
           </label>
           <ConceptosTable conceptos={conceptos} onChange={setConceptos} />
         </div>
 
         <Card className="space-y-3">
-          <h3 className="font-semibold text-slate-900">Mano de obra</h3>
+          <h3 className="font-semibold text-slate-100">Mano de obra</h3>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="mb-1 block text-sm font-medium text-slate-700">
+              <label className="mb-1 block text-sm font-medium text-slate-300">
                 Modo
               </label>
               <Select
@@ -240,7 +240,7 @@ export function CotizacionForm({
             </div>
             {modoManoObra === 'fijo' && (
               <div>
-                <label className="mb-1 block text-sm font-medium text-slate-700">
+                <label className="mb-1 block text-sm font-medium text-slate-300">
                   Monto (₡)
                 </label>
                 <Input
@@ -254,7 +254,7 @@ export function CotizacionForm({
             )}
             {modoManoObra === 'horas' && (
               <div>
-                <label className="mb-1 block text-sm font-medium text-slate-700">
+                <label className="mb-1 block text-sm font-medium text-slate-300">
                   Horas
                 </label>
                 <Input
@@ -270,7 +270,7 @@ export function CotizacionForm({
             )}
             {modoManoObra === 'porcentaje' && (
               <div>
-                <label className="mb-1 block text-sm font-medium text-slate-700">
+                <label className="mb-1 block text-sm font-medium text-slate-300">
                   % sobre materiales
                 </label>
                 <Input
@@ -283,7 +283,7 @@ export function CotizacionForm({
               </div>
             )}
           </div>
-          <p className="text-sm text-slate-500">
+          <p className="text-sm text-slate-400">
             Mano de obra: {formatCRC(costoManoObra)}
           </p>
         </Card>
@@ -291,7 +291,7 @@ export function CotizacionForm({
         <Card className="space-y-3">
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
             <div>
-              <label className="mb-1 block text-sm font-medium text-slate-700">
+              <label className="mb-1 block text-sm font-medium text-slate-300">
                 Ganancia (%)
               </label>
               <Input
@@ -303,7 +303,7 @@ export function CotizacionForm({
               />
             </div>
             <div>
-              <label className="mb-1 block text-sm font-medium text-slate-700">
+              <label className="mb-1 block text-sm font-medium text-slate-300">
                 Vigencia (días)
               </label>
               <Input
@@ -316,18 +316,18 @@ export function CotizacionForm({
                 }
               />
             </div>
-            <label className="flex items-center gap-2 self-end pb-3 text-sm font-medium text-slate-700">
+            <label className="flex items-center gap-2 self-end pb-3 text-sm font-medium text-slate-300">
               <input
                 type="checkbox"
                 checked={aplicarIva}
                 onChange={(e) => setAplicarIva(e.target.checked)}
-                className="h-4 w-4 rounded border-slate-300 text-amber-500"
+                className="h-4 w-4 rounded border-slate-600 text-orange-500"
               />
               Aplicar IVA ({config.ivaPct}%)
             </label>
           </div>
           <div>
-            <label className="mb-1 block text-sm font-medium text-slate-700">
+            <label className="mb-1 block text-sm font-medium text-slate-300">
               Notas
             </label>
             <Input
@@ -338,34 +338,34 @@ export function CotizacionForm({
           </div>
         </Card>
 
-        <div className="space-y-1 rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm">
-          <div className="flex justify-between text-slate-600">
+        <div className="space-y-1 rounded-2xl border border-slate-700 bg-slate-800 p-4 text-sm">
+          <div className="flex justify-between text-slate-400">
             <span>Material</span>
             <span>{formatCRC(costoMaterial)}</span>
           </div>
-          <div className="flex justify-between text-slate-600">
+          <div className="flex justify-between text-slate-400">
             <span>Insumos</span>
             <span>{formatCRC(costoInsumos)}</span>
           </div>
-          <div className="flex justify-between text-slate-600">
+          <div className="flex justify-between text-slate-400">
             <span>Mano de obra</span>
             <span>{formatCRC(costoManoObra)}</span>
           </div>
-          <div className="flex justify-between font-medium text-slate-900">
+          <div className="flex justify-between font-medium text-slate-100">
             <span>Subtotal</span>
             <span>{formatCRC(totales.subtotal)}</span>
           </div>
-          <div className="flex justify-between text-slate-600">
+          <div className="flex justify-between text-slate-400">
             <span>Ganancia ({pctGanancia}%)</span>
             <span>{formatCRC(totales.ganancia)}</span>
           </div>
           {aplicarIva && (
-            <div className="flex justify-between text-slate-600">
+            <div className="flex justify-between text-slate-400">
               <span>IVA ({config.ivaPct}%)</span>
               <span>{formatCRC(totales.iva)}</span>
             </div>
           )}
-          <div className="flex justify-between border-t border-slate-200 pt-2 text-base font-bold text-slate-900">
+          <div className="flex justify-between border-t border-slate-700 pt-2 text-base font-bold text-slate-100">
             <span>Total</span>
             <span>{formatCRC(totales.totalConIva)}</span>
           </div>

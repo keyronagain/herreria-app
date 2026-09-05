@@ -9,15 +9,15 @@ export default function ConfiguracionPage() {
   if (cargando || !config) {
     return (
       <div className="mx-auto max-w-5xl px-4 py-6">
-        <p className="py-16 text-center text-sm text-slate-500">Cargando…</p>
+        <p className="py-16 text-center text-sm text-slate-400">Cargando…</p>
       </div>
     );
   }
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-6">
-      <h1 className="text-2xl font-bold text-slate-900">Configuración</h1>
-      <p className="mt-1 text-sm text-slate-500">
+      <h1 className="text-2xl font-bold text-slate-100">Configuración</h1>
+      <p className="mt-1 text-sm text-slate-400">
         Insumos, mano de obra, IVA y datos del taller.
       </p>
 

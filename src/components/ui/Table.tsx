@@ -19,7 +19,7 @@ export function THead({
 }: HTMLAttributes<HTMLTableSectionElement>) {
   return (
     <thead
-      className={cn('border-b border-slate-200 text-left', className)}
+      className={cn('border-b border-slate-700 text-left', className)}
       {...props}
     />
   );
@@ -29,7 +29,7 @@ export function TBody({
   className,
   ...props
 }: HTMLAttributes<HTMLTableSectionElement>) {
-  return <tbody className={cn('divide-y divide-slate-100', className)} {...props} />;
+  return <tbody className={cn('divide-y divide-slate-800', className)} {...props} />;
 }
 
 export function Th({
@@ -39,7 +39,7 @@ export function Th({
   return (
     <th
       className={cn(
-        'px-3 py-2 text-xs font-semibold uppercase tracking-wide text-slate-500',
+        'px-3 py-2 text-xs font-semibold uppercase tracking-wide text-slate-400',
         className,
       )}
       {...props}
@@ -52,6 +52,6 @@ export function Td({
   ...props
 }: TdHTMLAttributes<HTMLTableCellElement>) {
   return (
-    <td className={cn('px-3 py-2 text-slate-700', className)} {...props} />
+    <td className={cn('px-3 py-2 text-slate-300', className)} {...props} />
   );
 }

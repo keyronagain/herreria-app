@@ -41,7 +41,7 @@ export function CotizacionList({
       </div>
 
       {cargando ? (
-        <p className="py-16 text-center text-sm text-slate-500">Cargando…</p>
+        <p className="py-16 text-center text-sm text-slate-400">Cargando…</p>
       ) : cotizaciones.length === 0 ? (
         <EmptyState
           icono={<FileText className="h-10 w-10" />}
@@ -58,33 +58,33 @@ export function CotizacionList({
           {cotizaciones.map((c) => (
             <li
               key={c.id}
-              className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
+              className="flex items-center gap-3 rounded-2xl border border-slate-700 bg-slate-800 p-4 shadow-sm"
             >
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
-                  <span className="font-medium text-slate-900">{c.numero}</span>
+                  <span className="font-medium text-slate-100">{c.numero}</span>
                   <Badge variant={ESTADOS[c.estado]?.variant ?? 'default'}>
                     {ESTADOS[c.estado]?.label ?? c.estado}
                   </Badge>
                 </div>
-                <p className="mt-1 text-sm text-slate-500">
+                <p className="mt-1 text-sm text-slate-400">
                   {c.cliente.nombre} ·{' '}
                   {new Date(c.fecha).toLocaleDateString('es-CR')}
                 </p>
               </div>
-              <span className="shrink-0 font-semibold text-slate-900">
+              <span className="shrink-0 font-semibold text-slate-100">
                 {formatCRC(c.totalConIva)}
               </span>
               <button
                 onClick={() => onVer(c)}
-                className="rounded-lg p-2 text-slate-500 hover:bg-slate-100"
+                className="rounded-lg p-2 text-slate-400 hover:bg-slate-700"
                 aria-label="Ver cotización"
               >
                 <Eye className="h-4 w-4" />
               </button>
               <button
                 onClick={() => onEliminar(c)}
-                className="rounded-lg p-2 text-slate-500 hover:bg-red-50 hover:text-red-600"
+                className="rounded-lg p-2 text-slate-400 hover:bg-red-900/30 hover:text-red-400"
                 aria-label="Eliminar"
               >
                 <Trash2 className="h-4 w-4" />

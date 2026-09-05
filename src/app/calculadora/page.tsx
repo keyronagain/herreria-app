@@ -80,7 +80,7 @@ export default function CalculadoraPage() {
   if (!listo) {
     return (
       <div className="mx-auto max-w-5xl px-4 py-6">
-        <p className="py-16 text-center text-sm text-slate-500">Cargando…</p>
+        <p className="py-16 text-center text-sm text-slate-400">Cargando…</p>
       </div>
     );
   }
@@ -88,16 +88,16 @@ export default function CalculadoraPage() {
   return (
     <div className="mx-auto max-w-5xl space-y-6 px-4 py-6">
       <div>
-        <h1 className="text-2xl font-bold text-slate-900">
+        <h1 className="text-2xl font-bold text-slate-100">
           Optimización de cortes
         </h1>
-        <p className="mt-1 text-sm text-slate-500">
+        <p className="mt-1 text-sm text-slate-400">
           Minimiza el desperdicio en barras de 6 m.
         </p>
       </div>
 
       <Card>
-        <label className="mb-1 block text-sm font-medium text-slate-700">
+        <label className="mb-1 block text-sm font-medium text-slate-300">
           Material
         </label>
         <Select
@@ -112,7 +112,7 @@ export default function CalculadoraPage() {
           ))}
         </Select>
         {material && (
-          <p className="mt-2 text-sm text-slate-500">
+          <p className="mt-2 text-sm text-slate-400">
             Barra de {formatMedida(material.largoBarra)} ·{' '}
             {formatCRC(material.precioBarra)}/barra
           </p>

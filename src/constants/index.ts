@@ -38,3 +38,13 @@ export const ESTADOS_COTIZACION: {
   { value: 'aprobada', label: 'Aprobada' },
   { value: 'rechazada', label: 'Rechazada' },
 ];
+
+export const UNIDADES = [
+  'barra',
+  'pieza',
+  'galón',
+  'litro',
+  'kg',
+  'metro',
+  'hora',
+] as const;

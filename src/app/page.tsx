@@ -53,23 +53,23 @@ const secciones: {
 export default function DashboardPage() {
   return (
     <div className="mx-auto max-w-5xl px-4 py-6">
-      <h1 className="text-2xl font-bold text-slate-900">Inicio</h1>
-      <p className="mt-1 text-sm text-slate-500">
+      <h1 className="text-2xl font-bold text-slate-100">Inicio</h1>
+      <p className="mt-1 text-sm text-slate-400">
         Gestión del taller de herrería, 100% offline.
       </p>
 
       <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
         {secciones.map(({ href, titulo, desc, icon: Icon }) => (
           <Link key={href} href={href}>
-            <Card className="flex items-center gap-4 transition hover:border-amber-300 hover:shadow">
-              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-slate-700">
+            <Card className="flex items-center gap-4 transition hover:border-orange-500 hover:shadow">
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-slate-700 text-slate-300">
                 <Icon className="h-5 w-5" />
               </span>
               <div className="flex-1">
-                <h2 className="font-semibold text-slate-900">{titulo}</h2>
-                <p className="text-sm text-slate-500">{desc}</p>
+                <h2 className="font-semibold text-slate-100">{titulo}</h2>
+                <p className="text-sm text-slate-400">{desc}</p>
               </div>
-              <ArrowRight className="h-4 w-4 text-slate-400" />
+              <ArrowRight className="h-4 w-4 text-slate-500" />
             </Card>
           </Link>
         ))}

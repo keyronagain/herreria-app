@@ -55,8 +55,8 @@ export function ConfiguracionForm({ config, onGuardar }: Props) {
       className="space-y-6"
     >
       <Card>
-        <h2 className="mb-3 font-semibold text-slate-900">Taller</h2>
-        <label className="mb-1 block text-sm font-medium text-slate-700">
+        <h2 className="mb-3 font-semibold text-slate-100">Taller</h2>
+        <label className="mb-1 block text-sm font-medium text-slate-300">
           Nombre del taller
         </label>
         <Input
@@ -66,10 +66,10 @@ export function ConfiguracionForm({ config, onGuardar }: Props) {
       </Card>
 
       <Card className="space-y-4">
-        <h2 className="font-semibold text-slate-900">Mano de obra e impuestos</h2>
+        <h2 className="font-semibold text-slate-100">Mano de obra e impuestos</h2>
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="mb-1 block text-sm font-medium text-slate-700">
+            <label className="mb-1 block text-sm font-medium text-slate-300">
               Costo por hora (₡)
             </label>
             <Input
@@ -83,7 +83,7 @@ export function ConfiguracionForm({ config, onGuardar }: Props) {
             />
           </div>
           <div>
-            <label className="mb-1 block text-sm font-medium text-slate-700">
+            <label className="mb-1 block text-sm font-medium text-slate-300">
               Modo por defecto
             </label>
             <Select
@@ -98,7 +98,7 @@ export function ConfiguracionForm({ config, onGuardar }: Props) {
             </Select>
           </div>
           <div>
-            <label className="mb-1 block text-sm font-medium text-slate-700">
+            <label className="mb-1 block text-sm font-medium text-slate-300">
               Ganancia por defecto (%)
             </label>
             <Input
@@ -112,7 +112,7 @@ export function ConfiguracionForm({ config, onGuardar }: Props) {
             />
           </div>
           <div>
-            <label className="mb-1 block text-sm font-medium text-slate-700">
+            <label className="mb-1 block text-sm font-medium text-slate-300">
               IVA (%)
             </label>
             <Input
@@ -127,10 +127,10 @@ export function ConfiguracionForm({ config, onGuardar }: Props) {
       </Card>
 
       <Card className="space-y-4">
-        <h2 className="font-semibold text-slate-900">Corte</h2>
+        <h2 className="font-semibold text-slate-100">Corte</h2>
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="mb-1 block text-sm font-medium text-slate-700">
+            <label className="mb-1 block text-sm font-medium text-slate-300">
               Kerf por defecto (cm)
             </label>
             <Input
@@ -144,7 +144,7 @@ export function ConfiguracionForm({ config, onGuardar }: Props) {
             />
           </div>
           <div>
-            <label className="mb-1 block text-sm font-medium text-slate-700">
+            <label className="mb-1 block text-sm font-medium text-slate-300">
               Largo de barra (cm)
             </label>
             <Input

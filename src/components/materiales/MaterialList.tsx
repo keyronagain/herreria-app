@@ -50,7 +50,7 @@ export function MaterialList({
     <div className="space-y-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
           <Input
             className="pl-9"
             placeholder="Buscar material…"
@@ -77,7 +77,7 @@ export function MaterialList({
       </div>
 
       {cargando ? (
-        <p className="py-16 text-center text-sm text-slate-500">Cargando…</p>
+        <p className="py-16 text-center text-sm text-slate-400">Cargando…</p>
       ) : filtrados.length === 0 ? (
         <EmptyState
           icono={<Layers className="h-10 w-10" />}
@@ -95,17 +95,17 @@ export function MaterialList({
           {filtrados.map((m) => (
             <li
               key={m.id}
-              className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
+              className="flex items-center gap-3 rounded-2xl border border-slate-700 bg-slate-800 p-4 shadow-sm"
             >
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
-                  <span className="truncate font-medium text-slate-900">
+                  <span className="truncate font-medium text-slate-100">
                     {m.nombre}
                   </span>
                   <Badge>{etiquetaTipo(m.tipo)}</Badge>
                   {m.categoria && <Badge variant="info">{m.categoria}</Badge>}
                 </div>
-                <p className="mt-1 text-sm text-slate-500">
+                <p className="mt-1 text-sm text-slate-400">
                   {formatCRC(m.precioBarra)} / barra {formatMedida(m.largoBarra)}
                   {' · '}
                   {formatCRC(m.precioUnitario)} / m
@@ -113,14 +113,14 @@ export function MaterialList({
               </div>
               <button
                 onClick={() => onEditar(m)}
-                className="rounded-lg p-2 text-slate-500 hover:bg-slate-100"
+                className="rounded-lg p-2 text-slate-400 hover:bg-slate-700"
                 aria-label="Editar"
               >
                 <Pencil className="h-4 w-4" />
               </button>
               <button
                 onClick={() => onEliminar(m)}
-                className="rounded-lg p-2 text-slate-500 hover:bg-red-50 hover:text-red-600"
+                className="rounded-lg p-2 text-slate-400 hover:bg-red-900/30 hover:text-red-400"
                 aria-label="Eliminar"
               >
                 <Trash2 className="h-4 w-4" />

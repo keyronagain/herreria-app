@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
 import { uid } from '@/lib/utils/id';
 import { parseNumero } from '@/lib/utils/format';
+import { UNIDADES } from '@/constants';
 import type { Insumo, ModoConsumo } from '@/types';
 
 const MODOS: { value: ModoConsumo; label: string }[] = [
@@ -46,21 +47,21 @@ export function InsumosList({ insumos, onChange }: Props) {
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <h2 className="font-semibold text-slate-900">Insumos</h2>
+        <h2 className="font-semibold text-slate-100">Insumos</h2>
         <Button type="button" size="sm" variant="secondary" onClick={agregar}>
           <Plus className="h-4 w-4" /> Insumo
         </Button>
       </div>
 
       {insumos.length === 0 ? (
-        <p className="py-6 text-center text-sm text-slate-500">
+        <p className="py-6 text-center text-sm text-slate-400">
           Sin insumos configurados.
         </p>
       ) : (
         insumos.map((i) => (
           <div
             key={i.id}
-            className="space-y-2 rounded-xl border border-slate-200 p-3"
+            className="space-y-2 rounded-xl border border-slate-700 p-3"
           >
             <div className="flex gap-2">
               <Input
@@ -71,7 +72,7 @@ export function InsumosList({ insumos, onChange }: Props) {
               <button
                 type="button"
                 onClick={() => eliminar(i.id)}
-                className="shrink-0 rounded-lg p-2 text-slate-500 hover:bg-red-50 hover:text-red-600"
+                className="shrink-0 rounded-lg p-2 text-slate-400 hover:bg-red-900/30 hover:text-red-400"
                 aria-label="Eliminar insumo"
               >
                 <Trash2 className="h-4 w-4" />
@@ -88,11 +89,20 @@ export function InsumosList({ insumos, onChange }: Props) {
                   actualizar(i.id, { costoUnitario: parseNumero(e.target.value) })
                 }
               />
-              <Input
+              <Select
                 value={i.unidad}
-                placeholder="Unidad"
                 onChange={(e) => actualizar(i.id, { unidad: e.target.value })}
-              />
+              >
+                <option value="">—</option>
+                {(i.unidad && !UNIDADES.includes(i.unidad as never)
+                  ? [...UNIDADES, i.unidad]
+                  : UNIDADES
+                ).map((u) => (
+                  <option key={u} value={u}>
+                    {u}
+                  </option>
+                ))}
+              </Select>
               <Select
                 value={i.modoConsumo}
                 onChange={(e) =>

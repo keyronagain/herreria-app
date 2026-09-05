@@ -3,8 +3,10 @@
 import { Plus, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
+import { Select } from '@/components/ui/Select';
 import { parseNumero, formatCRC } from '@/lib/utils/format';
 import { uid } from '@/lib/utils/id';
+import { UNIDADES } from '@/constants';
 import type { ConceptoCosto } from '@/types';
 
 interface Props {
@@ -45,7 +47,7 @@ export function ConceptosTable({ conceptos, onChange }: Props) {
 
   if (conceptos.length === 0) {
     return (
-      <div className="rounded-xl border border-dashed border-slate-300 p-6 text-center text-sm text-slate-500">
+      <div className="rounded-xl border border-dashed border-slate-600 p-6 text-center text-sm text-slate-400">
         Sin conceptos. Genera desde un proyecto o agrega manualmente.
       </div>
     );
@@ -54,7 +56,7 @@ export function ConceptosTable({ conceptos, onChange }: Props) {
   return (
     <div className="space-y-2">
       {conceptos.map((c) => (
-        <div key={c.id} className="rounded-xl border border-slate-200 p-3">
+        <div key={c.id} className="rounded-xl border border-slate-700 p-3">
           <div className="flex gap-2">
             <Input
               value={c.descripcion}
@@ -64,7 +66,7 @@ export function ConceptosTable({ conceptos, onChange }: Props) {
             <button
               type="button"
               onClick={() => eliminar(c.id)}
-              className="shrink-0 rounded-lg p-2 text-slate-500 hover:bg-red-50 hover:text-red-600"
+              className="shrink-0 rounded-lg p-2 text-slate-400 hover:bg-red-900/30 hover:text-red-400"
               aria-label="Eliminar concepto"
             >
               <Trash2 className="h-4 w-4" />
@@ -72,7 +74,7 @@ export function ConceptosTable({ conceptos, onChange }: Props) {
           </div>
           <div className="mt-2 grid grid-cols-4 gap-2">
             <div>
-              <label className="mb-0.5 block text-xs text-slate-500">
+              <label className="mb-0.5 block text-xs text-slate-400">
                 Cantidad
               </label>
               <Input
@@ -86,17 +88,26 @@ export function ConceptosTable({ conceptos, onChange }: Props) {
               />
             </div>
             <div>
-              <label className="mb-0.5 block text-xs text-slate-500">
+              <label className="mb-0.5 block text-xs text-slate-400">
                 Unidad
               </label>
-              <Input
+              <Select
                 value={c.unidad ?? ''}
-                placeholder="u"
                 onChange={(e) => actualizar(c.id, { unidad: e.target.value })}
-              />
+              >
+                <option value="">—</option>
+                {(c.unidad && !UNIDADES.includes(c.unidad as never)
+                  ? [...UNIDADES, c.unidad]
+                  : UNIDADES
+                ).map((u) => (
+                  <option key={u} value={u}>
+                    {u}
+                  </option>
+                ))}
+              </Select>
             </div>
             <div>
-              <label className="mb-0.5 block text-xs text-slate-500">
+              <label className="mb-0.5 block text-xs text-slate-400">
                 Costo unit.
               </label>
               <Input
@@ -112,10 +123,10 @@ export function ConceptosTable({ conceptos, onChange }: Props) {
               />
             </div>
             <div>
-              <label className="mb-0.5 block text-xs text-slate-500">
+              <label className="mb-0.5 block text-xs text-slate-400">
                 Subtotal
               </label>
-              <div className="flex h-11 items-center rounded-xl bg-slate-100 px-3 text-sm font-medium text-slate-700">
+              <div className="flex h-11 items-center rounded-xl bg-slate-700 px-3 text-sm font-medium text-slate-300">
                 {formatCRC(c.subtotal)}
               </div>
             </div>

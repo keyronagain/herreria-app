@@ -29,7 +29,7 @@ export function ProyectoList({
   onEliminar,
 }: Props) {
   if (cargando) {
-    return <p className="py-16 text-center text-sm text-slate-500">Cargando…</p>;
+    return <p className="py-16 text-center text-sm text-slate-400">Cargando…</p>;
   }
 
   if (proyectos.length === 0) {
@@ -47,18 +47,18 @@ export function ProyectoList({
       {proyectos.map((p) => (
         <li
           key={p.id}
-          className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
+          className="flex items-center gap-3 rounded-2xl border border-slate-700 bg-slate-800 p-4 shadow-sm"
         >
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2">
-              <span className="truncate font-medium text-slate-900">
+              <span className="truncate font-medium text-slate-100">
                 {p.nombre}
               </span>
               <Badge variant={ESTADOS[p.estado]?.variant ?? 'default'}>
                 {ESTADOS[p.estado]?.label ?? p.estado}
               </Badge>
             </div>
-            <p className="mt-1 text-sm text-slate-500">
+            <p className="mt-1 text-sm text-slate-400">
               {p.cliente ? `${p.cliente} · ` : ''}
               {p.piezas.length} pieza{p.piezas.length !== 1 ? 's' : ''} ·{' '}
               {new Date(p.creadoEn).toLocaleDateString('es-CR')}
@@ -66,14 +66,14 @@ export function ProyectoList({
           </div>
           <button
             onClick={() => onVer(p)}
-            className="rounded-lg p-2 text-slate-500 hover:bg-slate-100"
+            className="rounded-lg p-2 text-slate-400 hover:bg-slate-700"
             aria-label="Ver proyecto"
           >
             <Eye className="h-4 w-4" />
           </button>
           <button
             onClick={() => onEliminar(p)}
-            className="rounded-lg p-2 text-slate-500 hover:bg-red-50 hover:text-red-600"
+            className="rounded-lg p-2 text-slate-400 hover:bg-red-900/30 hover:text-red-400"
             aria-label="Eliminar proyecto"
           >
             <Trash2 className="h-4 w-4" />

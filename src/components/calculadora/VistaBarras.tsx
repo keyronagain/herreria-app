@@ -10,17 +10,17 @@ interface Props {
 
 function StatBox({ etiqueta, valor }: { etiqueta: string; valor: string }) {
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-3 text-center">
-      <p className="text-xs text-slate-500">{etiqueta}</p>
-      <p className="mt-0.5 text-lg font-semibold text-slate-900">{valor}</p>
+    <div className="rounded-xl border border-slate-700 bg-slate-800 p-3 text-center">
+      <p className="text-xs text-slate-400">{etiqueta}</p>
+      <p className="mt-0.5 text-lg font-semibold text-slate-100">{valor}</p>
     </div>
   );
 }
 
 function textoUtilizacion(pct: number): string {
-  if (pct >= 90) return 'text-emerald-600';
-  if (pct >= 75) return 'text-amber-600';
-  return 'text-red-600';
+  if (pct >= 90) return 'text-emerald-400';
+  if (pct >= 75) return 'text-orange-400';
+  return 'text-red-400';
 }
 
 export function VistaBarras({ resultado, costoBarra }: Props) {
@@ -46,11 +46,11 @@ export function VistaBarras({ resultado, costoBarra }: Props) {
         {resultado.patrones.map((b, i) => (
           <div
             key={i}
-            className="rounded-2xl border border-slate-200 bg-white p-4"
+            className="rounded-2xl border border-slate-700 bg-slate-800 p-4"
           >
             <div className="mb-2 flex items-center justify-between text-sm">
-              <span className="font-medium text-slate-700">Barra {i + 1}</span>
-              <span className="text-slate-500">
+              <span className="font-medium text-slate-300">Barra {i + 1}</span>
+              <span className="text-slate-400">
                 sobrante {formatMedida(b.sobrante)} ·{' '}
                 <span className={textoUtilizacion(b.utilizacionPct)}>
                   {b.utilizacionPct}%
@@ -58,12 +58,12 @@ export function VistaBarras({ resultado, costoBarra }: Props) {
               </span>
             </div>
 
-            <div className="flex h-7 w-full overflow-hidden rounded-lg bg-slate-100">
+            <div className="flex h-7 w-full overflow-hidden rounded-lg bg-slate-700">
               {b.cortes.map((c, j) => (
                 <div
                   key={j}
                   className={`flex items-center justify-center overflow-hidden whitespace-nowrap text-[10px] font-medium text-white ${
-                    j % 2 === 0 ? 'bg-amber-500' : 'bg-amber-600'
+                    j % 2 === 0 ? 'bg-orange-500' : 'bg-orange-600'
                   }`}
                   style={{ width: `${(c.largo / b.largoBarra) * 100}%` }}
                   title={`${c.descripcion}: ${formatMedida(c.largo)}`}
@@ -73,14 +73,14 @@ export function VistaBarras({ resultado, costoBarra }: Props) {
               ))}
               {b.sobrante > 0 && (
                 <div
-                  className="bg-slate-300"
+                  className="bg-slate-600"
                   style={{ width: `${(b.sobrante / b.largoBarra) * 100}%` }}
                   title={`Sobrante ${formatMedida(b.sobrante)}`}
                 />
               )}
             </div>
 
-            <ul className="mt-2 space-y-0.5 text-xs text-slate-500">
+            <ul className="mt-2 space-y-0.5 text-xs text-slate-400">
               {b.cortes.map((c, j) => (
                 <li key={j} className="flex justify-between">
                   <span className="truncate">{c.descripcion}</span>
