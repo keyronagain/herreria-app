@@ -35,6 +35,7 @@ src/
 │   ├── layout/       # AppShell, Header, BottomNav
 │   ├── materiales/   # CRUD de materiales
 │   ├── calculadora/  # Piezas y visualización de cortes
+│   ├── proyectos/    # Lista y detalle de proyectos
 │   ├── configuracion/# Insumos y taller
 │   └── cotizaciones/ # Lista y formulario de cotización
 ├── lib/

@@ -11,6 +11,7 @@ import { useProyectos } from '@/hooks/use-proyectos';
 import { useMateriales } from '@/hooks/use-materiales';
 import { useConfig } from '@/hooks/use-config';
 import { cotizacionRepository } from '@/lib/db/repositories';
+import { useUIStore } from '@/stores/ui-store';
 import type { Cotizacion } from '@/types';
 
 export default function CotizacionesPage() {
@@ -18,7 +19,13 @@ export default function CotizacionesPage() {
   const { proyectos } = useProyectos();
   const { materiales } = useMateriales();
   const { config } = useConfig();
-  const [creando, setCreando] = useState(false);
+  const proyectoPreseleccionado = useUIStore((s) => s.proyectoIdParaCotizar);
+  const setProyectoPreseleccionado = useUIStore(
+    (s) => s.setProyectoIdParaCotizar,
+  );
+  const [creando, setCreando] = useState(() =>
+    Boolean(proyectoPreseleccionado),
+  );
 
   async function eliminarCotizacion(c: Cotizacion) {
     if (window.confirm(`¿Eliminar la cotización ${c.numero}?`)) {
@@ -29,6 +36,11 @@ export default function CotizacionesPage() {
   async function guardarCotizacion(datos: DatosCotizacion) {
     const numero = await cotizacionRepository.siguienteNumero();
     await crear({ ...datos, numero });
+  }
+
+  function cerrarFormulario() {
+    setCreando(false);
+    setProyectoPreseleccionado(null);
   }
 
   return (
@@ -52,7 +64,8 @@ export default function CotizacionesPage() {
           proyectos={proyectos}
           materiales={materiales}
           config={config}
-          onCerrar={() => setCreando(false)}
+          proyectoInicialId={proyectoPreseleccionado ?? undefined}
+          onCerrar={cerrarFormulario}
           onGuardar={guardarCotizacion}
         />
       )}

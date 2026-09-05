@@ -1,17 +1,46 @@
 'use client';
 
-import { FolderKanban } from 'lucide-react';
-import { EmptyState } from '@/components/ui/EmptyState';
+import { useState } from 'react';
+import { ProyectoList } from '@/components/proyectos/ProyectoList';
+import { ProyectoDetalle } from '@/components/proyectos/ProyectoDetalle';
+import { useProyectos } from '@/hooks/use-proyectos';
+import { useMateriales } from '@/hooks/use-materiales';
+import type { Proyecto } from '@/types';
 
 export default function ProyectosPage() {
+  const { proyectos, cargando, eliminar } = useProyectos();
+  const { materiales } = useMateriales();
+  const [proyectoVer, setProyectoVer] = useState<Proyecto | null>(null);
+
+  async function eliminarProyecto(p: Proyecto) {
+    if (window.confirm(`¿Eliminar el proyecto "${p.nombre}"?`)) {
+      await eliminar(p.id);
+    }
+  }
+
   return (
     <div className="mx-auto max-w-5xl px-4 py-6">
       <h1 className="text-2xl font-bold text-slate-900">Proyectos</h1>
-      <EmptyState
-        icono={<FolderKanban className="h-10 w-10" />}
-        titulo="Proyectos guardados"
-        descripcion="La gestión de proyectos (piezas y patrones de corte) llega en la Fase 3."
-      />
+      <p className="mt-1 text-sm text-slate-500">
+        Trabajos guardados desde la calculadora de cortes.
+      </p>
+
+      <div className="mt-6">
+        <ProyectoList
+          proyectos={proyectos}
+          cargando={cargando}
+          onVer={setProyectoVer}
+          onEliminar={eliminarProyecto}
+        />
+      </div>
+
+      {proyectoVer && (
+        <ProyectoDetalle
+          proyecto={proyectoVer}
+          materiales={materiales}
+          onCerrar={() => setProyectoVer(null)}
+        />
+      )}
     </div>
   );
 }

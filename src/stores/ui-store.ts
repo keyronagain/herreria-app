@@ -1,11 +1,11 @@
 import { create } from 'zustand';
 
 interface UIState {
-  modalMaterialAbierto: boolean;
-  setModalMaterialAbierto: (abierto: boolean) => void;
+  proyectoIdParaCotizar: string | null;
+  setProyectoIdParaCotizar: (id: string | null) => void;
 }
 
 export const useUIStore = create<UIState>((set) => ({
-  modalMaterialAbierto: false,
-  setModalMaterialAbierto: (abierto) => set({ modalMaterialAbierto: abierto }),
+  proyectoIdParaCotizar: null,
+  setProyectoIdParaCotizar: (id) => set({ proyectoIdParaCotizar: id }),
 }));
