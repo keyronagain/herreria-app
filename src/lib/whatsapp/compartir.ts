@@ -1,20 +1,27 @@
 import { generarPdfCliente } from '@/lib/pdf/generar-pdf';
+import { formatCRC } from '@/lib/utils/format';
 import type { Cotizacion, ConfiguracionTaller } from '@/types';
 
-function resumenTexto(cotizacion: Cotizacion): string {
-  const crc = (n: number) =>
-    new Intl.NumberFormat('es-CR', { maximumFractionDigits: 0 }).format(
-      Math.round(n),
-    );
-  const lineas = [
-    `*Cotización ${cotizacion.numero}*`,
-    `Cliente: ${cotizacion.cliente.nombre}`,
-  ];
-  for (const c of cotizacion.conceptos) {
-    lineas.push(`• ${c.descripcion}: ${crc(c.subtotal)}`);
-  }
-  lineas.push(`*Total: ${crc(cotizacion.totalConIva)}*`);
+export function mensajeWhatsApp(
+  cotizacion: Cotizacion,
+  proyectoNombre?: string,
+): string {
+  const lineas = [`¡Hola ${cotizacion.cliente.nombre}!`];
+  lineas.push('Te comparto la cotización de tu proyecto:');
+  lineas.push('');
+  if (proyectoNombre) lineas.push(`• Proyecto: ${proyectoNombre}`);
+  lineas.push(`• N°: ${cotizacion.numero}`);
+  lineas.push(`• Total: ${formatCRC(cotizacion.totalConIva)}`);
+  lineas.push(`• Vigencia: ${cotizacion.vigenciaDias} días`);
   return lineas.join('\n');
+}
+
+export function abrirWhatsApp(texto: string): void {
+  window.open(
+    `https://wa.me/?text=${encodeURIComponent(texto)}`,
+    '_blank',
+    'noopener,noreferrer',
+  );
 }
 
 function descargar(blob: Blob, nombre: string): void {
@@ -22,24 +29,24 @@ function descargar(blob: Blob, nombre: string): void {
   const a = document.createElement('a');
   a.href = url;
   a.download = nombre;
+  a.target = '_blank';
+  a.rel = 'noopener';
   document.body.appendChild(a);
   a.click();
   a.remove();
-  URL.revokeObjectURL(url);
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
-export async function compartirCotizacion(
+export async function compartirPdf(
   cotizacion: Cotizacion,
   config: ConfiguracionTaller,
 ): Promise<void> {
   const doc = await generarPdfCliente(cotizacion, config);
   const blob = doc.output('blob');
-  const archivo = new File(
-    [blob],
-    `cotizacion-${cotizacion.numero}.pdf`,
-    { type: 'application/pdf' },
-  );
-  const texto = resumenTexto(cotizacion);
+  const archivo = new File([blob], `cotizacion-${cotizacion.numero}.pdf`, {
+    type: 'application/pdf',
+  });
+  const texto = mensajeWhatsApp(cotizacion);
 
   if (
     typeof navigator.canShare === 'function' &&
@@ -58,9 +65,4 @@ export async function compartirCotizacion(
   }
 
   descargar(blob, `cotizacion-${cotizacion.numero}.pdf`);
-  window.open(
-    `https://wa.me/?text=${encodeURIComponent(texto)}`,
-    '_blank',
-    'noopener,noreferrer',
-  );
 }

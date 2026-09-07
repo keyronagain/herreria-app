@@ -83,7 +83,7 @@ export function VistaBarras({ resultado, costoBarra }: Props) {
             <ul className="mt-2 space-y-0.5 text-xs text-slate-400">
               {b.cortes.map((c, j) => (
                 <li key={j} className="flex justify-between">
-                  <span className="truncate">{c.descripcion}</span>
+                  <span className="break-words">{c.descripcion}</span>
                   <span className="ml-2 shrink-0">{formatMedida(c.largo)}</span>
                 </li>
               ))}

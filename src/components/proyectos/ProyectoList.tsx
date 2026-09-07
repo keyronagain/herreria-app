@@ -50,11 +50,14 @@ export function ProyectoList({
           className="flex items-center gap-3 rounded-2xl border border-slate-700 bg-slate-800 p-4 shadow-sm"
         >
           <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-2">
-              <span className="truncate font-medium text-slate-100">
+            <div className="flex items-start justify-between gap-2">
+              <span className="break-words font-medium text-slate-100">
                 {p.nombre}
               </span>
-              <Badge variant={ESTADOS[p.estado]?.variant ?? 'default'}>
+              <Badge
+                className="shrink-0"
+                variant={ESTADOS[p.estado]?.variant ?? 'default'}
+              >
                 {ESTADOS[p.estado]?.label ?? p.estado}
               </Badge>
             </div>
@@ -66,17 +69,17 @@ export function ProyectoList({
           </div>
           <button
             onClick={() => onVer(p)}
-            className="rounded-lg p-2 text-slate-400 hover:bg-slate-700"
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-slate-400 hover:bg-slate-700"
             aria-label="Ver proyecto"
           >
-            <Eye className="h-4 w-4" />
+            <Eye className="h-5 w-5" />
           </button>
           <button
             onClick={() => onEliminar(p)}
-            className="rounded-lg p-2 text-slate-400 hover:bg-red-900/30 hover:text-red-400"
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-slate-400 hover:bg-red-900/30 hover:text-red-400"
             aria-label="Eliminar proyecto"
           >
-            <Trash2 className="h-4 w-4" />
+            <Trash2 className="h-5 w-5" />
           </button>
         </li>
       ))}

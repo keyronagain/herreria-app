@@ -77,17 +77,17 @@ export function CotizacionList({
               </span>
               <button
                 onClick={() => onVer(c)}
-                className="rounded-lg p-2 text-slate-400 hover:bg-slate-700"
+                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-slate-400 hover:bg-slate-700"
                 aria-label="Ver cotización"
               >
-                <Eye className="h-4 w-4" />
+                <Eye className="h-5 w-5" />
               </button>
               <button
                 onClick={() => onEliminar(c)}
-                className="rounded-lg p-2 text-slate-400 hover:bg-red-900/30 hover:text-red-400"
+                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-slate-400 hover:bg-red-900/30 hover:text-red-400"
                 aria-label="Eliminar"
               >
-                <Trash2 className="h-4 w-4" />
+                <Trash2 className="h-5 w-5" />
               </button>
             </li>
           ))}

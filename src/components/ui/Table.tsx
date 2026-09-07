@@ -10,7 +10,11 @@ export function Table({
   className,
   ...props
 }: TableHTMLAttributes<HTMLTableElement>) {
-  return <table className={cn('w-full text-sm', className)} {...props} />;
+  return (
+    <div className="overflow-x-auto">
+      <table className={cn('w-full text-sm', className)} {...props} />
+    </div>
+  );
 }
 
 export function THead({

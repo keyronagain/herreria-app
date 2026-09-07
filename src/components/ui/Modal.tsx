@@ -39,7 +39,7 @@ export function Modal({
           <h2 className="text-lg font-semibold text-slate-100">{titulo}</h2>
           <button
             onClick={onCerrar}
-            className="rounded-lg p-1 text-slate-400 hover:bg-slate-700"
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-slate-400 hover:bg-slate-700"
             aria-label="Cerrar"
           >
             <X className="h-5 w-5" />

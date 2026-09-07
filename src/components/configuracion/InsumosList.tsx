@@ -48,7 +48,7 @@ export function InsumosList({ insumos, onChange }: Props) {
     <div className="space-y-3">
       <div className="flex items-center justify-between">
         <h2 className="font-semibold text-slate-100">Insumos</h2>
-        <Button type="button" size="sm" variant="secondary" onClick={agregar}>
+        <Button type="button" variant="secondary" onClick={agregar}>
           <Plus className="h-4 w-4" /> Insumo
         </Button>
       </div>
@@ -72,10 +72,10 @@ export function InsumosList({ insumos, onChange }: Props) {
               <button
                 type="button"
                 onClick={() => eliminar(i.id)}
-                className="shrink-0 rounded-lg p-2 text-slate-400 hover:bg-red-900/30 hover:text-red-400"
+                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-slate-400 hover:bg-red-900/30 hover:text-red-400"
                 aria-label="Eliminar insumo"
               >
-                <Trash2 className="h-4 w-4" />
+                <Trash2 className="h-5 w-5" />
               </button>
             </div>
             <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">

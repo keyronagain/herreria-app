@@ -1,12 +1,16 @@
 'use client';
 
 import { useState } from 'react';
-import { FileText, ClipboardList, MessageCircle } from 'lucide-react';
+import { Share2, ClipboardList, MessageCircle } from 'lucide-react';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
 import { Table, THead, TBody, Th, Td } from '@/components/ui/Table';
-import { generarPdfCliente, generarPdfTaller } from '@/lib/pdf/generar-pdf';
-import { compartirCotizacion } from '@/lib/whatsapp/compartir';
+import { generarPdfTaller } from '@/lib/pdf/generar-pdf';
+import {
+  mensajeWhatsApp,
+  abrirWhatsApp,
+  compartirPdf,
+} from '@/lib/whatsapp/compartir';
 import { formatCRC } from '@/lib/utils/format';
 import type {
   Cotizacion,
@@ -32,11 +36,15 @@ export function CotizacionDetalle({
 }: Props) {
   const [ocupado, setOcupado] = useState(false);
 
-  async function pdfCliente() {
+  function enviarWhatsApp() {
+    const proyecto = proyectos.find((p) => p.id === cotizacion.proyectoId);
+    abrirWhatsApp(mensajeWhatsApp(cotizacion, proyecto?.nombre));
+  }
+
+  async function compartirDocumento() {
     setOcupado(true);
     try {
-      const doc = await generarPdfCliente(cotizacion, config);
-      doc.save(`cotizacion-${cotizacion.numero}.pdf`);
+      await compartirPdf(cotizacion, config);
     } finally {
       setOcupado(false);
     }
@@ -54,15 +62,6 @@ export function CotizacionDetalle({
         proyecto,
       );
       doc.save(`cotizacion-${cotizacion.numero}-taller.pdf`);
-    } finally {
-      setOcupado(false);
-    }
-  }
-
-  async function compartir() {
-    setOcupado(true);
-    try {
-      await compartirCotizacion(cotizacion, config);
     } finally {
       setOcupado(false);
     }
@@ -134,14 +133,18 @@ export function CotizacionDetalle({
         )}
 
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
-          <Button variant="secondary" onClick={pdfCliente} disabled={ocupado}>
-            <FileText className="h-4 w-4" /> PDF Cliente
+          <Button onClick={enviarWhatsApp}>
+            <MessageCircle className="h-4 w-4" /> WhatsApp
+          </Button>
+          <Button
+            variant="secondary"
+            onClick={compartirDocumento}
+            disabled={ocupado}
+          >
+            <Share2 className="h-4 w-4" /> Compartir PDF
           </Button>
           <Button variant="secondary" onClick={pdfTaller} disabled={ocupado}>
             <ClipboardList className="h-4 w-4" /> PDF Taller
-          </Button>
-          <Button onClick={compartir} disabled={ocupado}>
-            <MessageCircle className="h-4 w-4" /> WhatsApp
           </Button>
         </div>
       </div>

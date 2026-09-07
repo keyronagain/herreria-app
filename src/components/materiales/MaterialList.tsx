@@ -19,8 +19,19 @@ interface Props {
   onEliminar: (m: Material) => void;
 }
 
+const ETIQUETA_CORTA: Record<string, string> = {
+  PTR: 'PTR',
+  TUBO_CUADRADO: 'Tubo cuadrado',
+  TUBO_REDONDO: 'Tubo redondo',
+  ANGULO: 'Ángulo',
+  PLATINA: 'Platina',
+  SOLERA: 'Solera',
+  VARILLA: 'Varilla',
+  CUSTOM: 'Otro',
+};
+
 function etiquetaTipo(tipo: string): string {
-  return TIPOS_PERFIL.find((t) => t.value === tipo)?.label ?? tipo;
+  return ETIQUETA_CORTA[tipo] ?? tipo;
 }
 
 export function MaterialList({
@@ -95,15 +106,14 @@ export function MaterialList({
           {filtrados.map((m) => (
             <li
               key={m.id}
-              className="flex items-center gap-3 rounded-2xl border border-slate-700 bg-slate-800 p-4 shadow-sm"
+              className="flex items-center gap-2 rounded-2xl border border-slate-700 bg-slate-800 p-3 shadow-sm"
             >
               <div className="min-w-0 flex-1">
-                <div className="flex items-center gap-2">
-                  <span className="truncate font-medium text-slate-100">
+                <div className="flex items-start justify-between gap-2">
+                  <span className="break-words font-medium text-slate-100">
                     {m.nombre}
                   </span>
-                  <Badge>{etiquetaTipo(m.tipo)}</Badge>
-                  {m.categoria && <Badge variant="info">{m.categoria}</Badge>}
+                  <Badge className="shrink-0">{etiquetaTipo(m.tipo)}</Badge>
                 </div>
                 <p className="mt-1 text-sm text-slate-400">
                   {formatCRC(m.precioBarra)} / barra {formatMedida(m.largoBarra)}
@@ -113,17 +123,17 @@ export function MaterialList({
               </div>
               <button
                 onClick={() => onEditar(m)}
-                className="rounded-lg p-2 text-slate-400 hover:bg-slate-700"
+                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-slate-400 hover:bg-slate-700"
                 aria-label="Editar"
               >
-                <Pencil className="h-4 w-4" />
+                <Pencil className="h-5 w-5" />
               </button>
               <button
                 onClick={() => onEliminar(m)}
-                className="rounded-lg p-2 text-slate-400 hover:bg-red-900/30 hover:text-red-400"
+                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-slate-400 hover:bg-red-900/30 hover:text-red-400"
                 aria-label="Eliminar"
               >
-                <Trash2 className="h-4 w-4" />
+                <Trash2 className="h-5 w-5" />
               </button>
             </li>
           ))}

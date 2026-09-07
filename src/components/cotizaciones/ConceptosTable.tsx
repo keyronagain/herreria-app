@@ -66,13 +66,13 @@ export function ConceptosTable({ conceptos, onChange }: Props) {
             <button
               type="button"
               onClick={() => eliminar(c.id)}
-              className="shrink-0 rounded-lg p-2 text-slate-400 hover:bg-red-900/30 hover:text-red-400"
+              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-slate-400 hover:bg-red-900/30 hover:text-red-400"
               aria-label="Eliminar concepto"
             >
-              <Trash2 className="h-4 w-4" />
+              <Trash2 className="h-5 w-5" />
             </button>
           </div>
-          <div className="mt-2 grid grid-cols-4 gap-2">
+          <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-4">
             <div>
               <label className="mb-0.5 block text-xs text-slate-400">
                 Cantidad
@@ -134,7 +134,7 @@ export function ConceptosTable({ conceptos, onChange }: Props) {
         </div>
       ))}
 
-      <Button type="button" variant="secondary" size="sm" onClick={agregar}>
+      <Button type="button" variant="secondary" onClick={agregar}>
         <Plus className="h-4 w-4" /> Concepto
       </Button>
     </div>
