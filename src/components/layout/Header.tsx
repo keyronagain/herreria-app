@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { Hammer } from 'lucide-react';
+import { NetworkIndicator } from './NetworkIndicator';
 
 export function Header() {
   return (
@@ -14,9 +15,9 @@ export function Header() {
           <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-orange-500 text-slate-950">
             <Hammer className="h-4 w-4" />
           </span>
-          Herrería
+          Forja OS
         </Link>
-        <span className="text-xs font-medium text-slate-500">PWA · Offline</span>
+        <NetworkIndicator />
       </div>
     </header>
   );

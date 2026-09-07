@@ -1,4 +1,4 @@
-# Herrería App
+# Forja OS
 
 PWA (Progressive Web App) offline-first para la gestión de un taller de herrería, optimizada para tablets y celulares. Funciona 100% offline tras la primera carga.
 

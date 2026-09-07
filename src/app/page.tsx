@@ -53,9 +53,9 @@ const secciones: {
 export default function DashboardPage() {
   return (
     <div className="mx-auto max-w-5xl px-4 py-6">
-      <h1 className="text-2xl font-bold text-slate-100">Inicio</h1>
+      <h1 className="text-2xl font-bold text-slate-100">Forja OS</h1>
       <p className="mt-1 text-sm text-slate-400">
-        Gestión del taller de herrería, 100% offline.
+        Optimizador de costos, cortes y proyectos.
       </p>
 
       <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">

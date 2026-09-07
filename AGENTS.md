@@ -8,7 +8,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 <!-- END:nextjs-agent-rules -->
 
-# Herrería App — Guía para agentes
+# Forja OS — Guía para agentes
 
 PWA offline-first para un taller de herrería: catálogo de materiales, optimización de cortes 1D y cotizaciones.
 

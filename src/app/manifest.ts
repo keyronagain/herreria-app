@@ -2,10 +2,9 @@ import type { MetadataRoute } from 'next';
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'Herrería',
-    short_name: 'Herrería',
-    description:
-      'Gestión de taller de herrería: catálogo, optimización de cortes y cotizaciones. 100% offline.',
+    name: 'Forja OS',
+    short_name: 'Forja OS',
+    description: 'Forja OS — optimizador de costos, cortes y proyectos.',
     start_url: '/',
     display: 'standalone',
     background_color: '#0f172a',

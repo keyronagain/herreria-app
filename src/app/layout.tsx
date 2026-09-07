@@ -15,14 +15,13 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Herrería',
-  description:
-    'Gestión de taller de herrería: catálogo, optimización de cortes y cotizaciones. 100% offline.',
-  applicationName: 'Herrería',
+  title: 'Forja OS',
+  description: 'Forja OS — optimizador de costos, cortes y proyectos.',
+  applicationName: 'Forja OS',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
-    title: 'Herrería',
+    title: 'Forja OS',
   },
 };
 
