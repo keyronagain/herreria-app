@@ -1,6 +1,7 @@
 import { db } from '@/lib/db/db';
 import { uid } from '@/lib/utils/id';
 import { CONFIG_ID, CONFIG_DEFAULT } from '@/constants';
+import { encolar } from '@/lib/sync/outbox';
 import type {
   ConfiguracionTaller,
   Insumo,
@@ -66,6 +67,7 @@ export async function seedMaterialesIfEmpty(): Promise<void> {
     actualizadoEn: now,
   }));
   await db.materiales.bulkAdd(materiales);
+  await Promise.all(materiales.map((m) => encolar('materiales', m.id)));
 }
 
 export async function seedConfigIfEmpty(): Promise<void> {
@@ -80,6 +82,7 @@ export async function seedConfigIfEmpty(): Promise<void> {
     actualizadoEn: now,
   };
   await db.configuracion.put(config);
+  await encolar('configuracion', CONFIG_ID);
 }
 
 export async function seedInitialData(): Promise<void> {

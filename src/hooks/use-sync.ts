@@ -20,6 +20,7 @@ export function useSync() {
       if (!activo) return;
       setSesion(data.session);
       setComprobando(false);
+      if (data.session) void sincronizar();
     });
 
     const { data: sub } = supabase.auth.onAuthStateChange((_evt, s) => {

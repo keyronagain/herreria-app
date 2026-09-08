@@ -64,11 +64,14 @@ async function empujar(supabase: SupabaseClient): Promise<number> {
       data: registro ?? {},
       deleted: !registro,
     };
-    const { error } = await supabase.from('sync_rows').upsert(fila);
-    if (!error) {
-      await db.syncQueue.delete(op.clave);
-      n++;
+    const { error } = await supabase
+      .from('sync_rows')
+      .upsert(fila, { onConflict: 'entidad,id' });
+    if (error) {
+      throw new Error(`Error al subir ${op.entidad}: ${error.message}`);
     }
+    await db.syncQueue.delete(op.clave);
+    n++;
   }
   return n;
 }
@@ -80,7 +83,10 @@ async function jalar(supabase: SupabaseClient): Promise<number> {
   if (ultimo) query = query.gt('updated_at', ultimo);
 
   const { data, error } = await query;
-  if (error || !data) return 0;
+  if (error) {
+    throw new Error(`Error al descargar: ${error.message}`);
+  }
+  if (!data) return 0;
 
   const filas = data as unknown as FilaSync[];
   let n = 0;
