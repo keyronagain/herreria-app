@@ -1,11 +1,8 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
-import { FileText } from 'lucide-react';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
 import { Table, THead, TBody, Th, Td } from '@/components/ui/Table';
-import { useUIStore } from '@/stores/ui-store';
 import { formatMedida } from '@/lib/utils/format';
 import type { Proyecto, Material } from '@/types';
 
@@ -16,18 +13,8 @@ interface Props {
 }
 
 export function ProyectoDetalle({ proyecto, materiales, onCerrar }: Props) {
-  const router = useRouter();
-  const setProyectoIdParaCotizar = useUIStore(
-    (s) => s.setProyectoIdParaCotizar,
-  );
-
   function nombreMaterial(materialId: string): string {
     return materiales.find((m) => m.id === materialId)?.nombre ?? 'Material';
-  }
-
-  function crearCotizacion() {
-    setProyectoIdParaCotizar(proyecto.id);
-    router.push('/cotizaciones');
   }
 
   return (
@@ -67,10 +54,6 @@ export function ProyectoDetalle({ proyecto, materiales, onCerrar }: Props) {
         <div className="flex justify-end gap-2 pt-2">
           <Button type="button" variant="ghost" onClick={onCerrar}>
             Cerrar
-          </Button>
-          <Button type="button" onClick={crearCotizacion}>
-            <FileText className="h-4 w-4" />
-            Crear cotización
           </Button>
         </div>
       </div>

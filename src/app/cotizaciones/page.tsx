@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { CotizacionList } from '@/components/cotizaciones/CotizacionList';
 import {
   CotizacionForm,
@@ -17,41 +17,12 @@ import type { Cotizacion } from '@/types';
 
 export default function CotizacionesPage() {
   const { cotizaciones, cargando, crear, eliminar } = useCotizaciones();
-  const { proyectos, cargando: cargandoProyectos } = useProyectos();
+  const { proyectos } = useProyectos();
   const { materiales } = useMateriales();
   const { config } = useConfig();
-  const proyectoPreseleccionado = useUIStore((s) => s.proyectoIdParaCotizar);
-  const setProyectoPreseleccionado = useUIStore(
-    (s) => s.setProyectoIdParaCotizar,
-  );
   const mostrarToast = useUIStore((s) => s.mostrarToast);
-  const [creando, setCreando] = useState(() =>
-    Boolean(proyectoPreseleccionado),
-  );
+  const [creando, setCreando] = useState(false);
   const [cotizacionVer, setCotizacionVer] = useState<Cotizacion | null>(null);
-
-  const proyectoValido = proyectoPreseleccionado
-    ? proyectos.some((p) => p.id === proyectoPreseleccionado)
-    : false;
-  const proyectoInicialId = proyectoValido
-    ? (proyectoPreseleccionado ?? undefined)
-    : undefined;
-
-  useEffect(() => {
-    if (cargandoProyectos || !proyectoPreseleccionado) return;
-    if (!proyectoValido) {
-      mostrarToast(
-        'El proyecto seleccionado ya no está disponible. Se creó una cotización manual.',
-      );
-      setProyectoPreseleccionado(null);
-    }
-  }, [
-    cargandoProyectos,
-    proyectoPreseleccionado,
-    proyectoValido,
-    mostrarToast,
-    setProyectoPreseleccionado,
-  ]);
 
   async function eliminarCotizacion(c: Cotizacion) {
     if (window.confirm(`¿Eliminar la cotización ${c.numero}?`)) {
@@ -62,11 +33,7 @@ export default function CotizacionesPage() {
   async function guardarCotizacion(datos: DatosCotizacion) {
     const numero = await cotizacionRepository.siguienteNumero();
     await crear({ ...datos, numero });
-  }
-
-  function cerrarFormulario() {
-    setCreando(false);
-    setProyectoPreseleccionado(null);
+    mostrarToast(`Cotización ${numero} guardada.`, 'success');
   }
 
   return (
@@ -86,13 +53,12 @@ export default function CotizacionesPage() {
         />
       </div>
 
-      {creando && config && !cargandoProyectos && (
+      {creando && config && (
         <CotizacionForm
           proyectos={proyectos}
           materiales={materiales}
           config={config}
-          proyectoInicialId={proyectoInicialId}
-          onCerrar={cerrarFormulario}
+          onCerrar={() => setCreando(false)}
           onGuardar={guardarCotizacion}
         />
       )}

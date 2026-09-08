@@ -12,6 +12,7 @@ import {
   compartirPdf,
 } from '@/lib/whatsapp/compartir';
 import { formatCRC } from '@/lib/utils/format';
+import { useUIStore } from '@/stores/ui-store';
 import type {
   Cotizacion,
   ConfiguracionTaller,
@@ -35,10 +36,12 @@ export function CotizacionDetalle({
   onCerrar,
 }: Props) {
   const [ocupado, setOcupado] = useState(false);
+  const mostrarToast = useUIStore((s) => s.mostrarToast);
 
   function enviarWhatsApp() {
     const proyecto = proyectos.find((p) => p.id === cotizacion.proyectoId);
     abrirWhatsApp(mensajeWhatsApp(cotizacion, proyecto?.nombre));
+    mostrarToast('Mensaje listo para enviar.', 'success');
   }
 
   async function compartirDocumento() {

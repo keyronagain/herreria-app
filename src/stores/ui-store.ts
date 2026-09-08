@@ -1,17 +1,21 @@
 import { create } from 'zustand';
 
+export type ToastTipo = 'info' | 'success' | 'error';
+
+export interface ToastData {
+  mensaje: string;
+  tipo: ToastTipo;
+}
+
 interface UIState {
-  proyectoIdParaCotizar: string | null;
-  setProyectoIdParaCotizar: (id: string | null) => void;
-  toast: string | null;
-  mostrarToast: (mensaje: string) => void;
+  toast: ToastData | null;
+  mostrarToast: (mensaje: string, tipo?: ToastTipo) => void;
   limpiarToast: () => void;
 }
 
 export const useUIStore = create<UIState>((set) => ({
-  proyectoIdParaCotizar: null,
-  setProyectoIdParaCotizar: (id) => set({ proyectoIdParaCotizar: id }),
   toast: null,
-  mostrarToast: (mensaje) => set({ toast: mensaje }),
+  mostrarToast: (mensaje, tipo = 'success') =>
+    set({ toast: { mensaje, tipo } }),
   limpiarToast: () => set({ toast: null }),
 }));

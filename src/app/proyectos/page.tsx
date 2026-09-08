@@ -6,16 +6,11 @@ import { ProyectoDetalle } from '@/components/proyectos/ProyectoDetalle';
 import { useProyectos } from '@/hooks/use-proyectos';
 import { useMateriales } from '@/hooks/use-materiales';
 import { cotizacionRepository } from '@/lib/db/repositories';
-import { useUIStore } from '@/stores/ui-store';
 import type { Proyecto } from '@/types';
 
 export default function ProyectosPage() {
   const { proyectos, cargando, eliminar } = useProyectos();
   const { materiales } = useMateriales();
-  const proyectoIdParaCotizar = useUIStore((s) => s.proyectoIdParaCotizar);
-  const setProyectoIdParaCotizar = useUIStore(
-    (s) => s.setProyectoIdParaCotizar,
-  );
   const [proyectoVer, setProyectoVer] = useState<Proyecto | null>(null);
 
   async function eliminarProyecto(p: Proyecto) {
@@ -23,7 +18,6 @@ export default function ProyectosPage() {
     await cotizacionRepository.desvincularProyecto(p.id);
     await eliminar(p.id);
     if (proyectoVer?.id === p.id) setProyectoVer(null);
-    if (proyectoIdParaCotizar === p.id) setProyectoIdParaCotizar(null);
   }
 
   return (

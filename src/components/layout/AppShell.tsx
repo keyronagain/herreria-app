@@ -4,9 +4,28 @@ import { useEffect, type ReactNode } from 'react';
 import { Header } from './Header';
 import { BottomNav } from './BottomNav';
 import { Toast } from '@/components/ui/Toast';
+import { useUIStore } from '@/stores/ui-store';
 import { seedInitialData } from '@/data/seed';
 
 export function AppShell({ children }: { children: ReactNode }) {
+  const mostrarToast = useUIStore((s) => s.mostrarToast);
+
+  useEffect(() => {
+    const onOffline = () =>
+      mostrarToast(
+        'Modo sin conexión: los cambios se guardarán localmente.',
+        'info',
+      );
+    const onOnline = () => mostrarToast('Conexión restablecida.', 'success');
+
+    window.addEventListener('offline', onOffline);
+    window.addEventListener('online', onOnline);
+    return () => {
+      window.removeEventListener('offline', onOffline);
+      window.removeEventListener('online', onOnline);
+    };
+  }, [mostrarToast]);
+
   useEffect(() => {
     void seedInitialData();
 

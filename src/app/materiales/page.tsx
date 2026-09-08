@@ -4,10 +4,12 @@ import { useState } from 'react';
 import { MaterialList } from '@/components/materiales/MaterialList';
 import { MaterialForm } from '@/components/materiales/MaterialForm';
 import { useMateriales, type MaterialInput } from '@/hooks/use-materiales';
+import { useUIStore } from '@/stores/ui-store';
 import type { Material } from '@/types';
 
 export default function MaterialesPage() {
   const { materiales, cargando, crear, actualizar, eliminar } = useMateriales();
+  const mostrarToast = useUIStore((s) => s.mostrarToast);
   const [modalAbierto, setModalAbierto] = useState(false);
   const [materialEditar, setMaterialEditar] = useState<Material | null>(null);
 
@@ -24,12 +26,18 @@ export default function MaterialesPage() {
   async function eliminarMaterial(m: Material) {
     if (window.confirm(`¿Eliminar "${m.nombre}"?`)) {
       await eliminar(m.id);
+      mostrarToast('Material eliminado.', 'success');
     }
   }
 
   async function handleGuardar(input: MaterialInput, id?: string) {
-    if (id) await actualizar(id, input);
-    else await crear(input);
+    if (id) {
+      await actualizar(id, input);
+      mostrarToast('Material actualizado correctamente.', 'success');
+    } else {
+      await crear(input);
+      mostrarToast('Material creado.', 'success');
+    }
   }
 
   return (

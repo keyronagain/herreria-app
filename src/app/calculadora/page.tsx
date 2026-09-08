@@ -14,6 +14,7 @@ import { optimizarCortes } from '@/lib/cutting/optimizar';
 import { useMateriales } from '@/hooks/use-materiales';
 import { useProyectos } from '@/hooks/use-proyectos';
 import { useConfig } from '@/hooks/use-config';
+import { useUIStore } from '@/stores/ui-store';
 import { formatCRC, formatMedida } from '@/lib/utils/format';
 import type { PiezaRequerida, ResultadoOptimizacion } from '@/types';
 
@@ -21,6 +22,7 @@ export default function CalculadoraPage() {
   const { materiales, cargando: cargandoMateriales } = useMateriales();
   const { crear: crearProyecto } = useProyectos();
   const { config, cargando: cargandoConfig } = useConfig();
+  const mostrarToast = useUIStore((s) => s.mostrarToast);
 
   const [materialId, setMaterialId] = useState('');
   const [piezas, setPiezas] = useState<PiezaRequerida[]>([]);
@@ -65,6 +67,7 @@ export default function CalculadoraPage() {
   function optimizar() {
     if (!material) return;
     setResultado(optimizarCortes(piezas, material.largoBarra, material.id));
+    mostrarToast('Cortes calculados.', 'success');
   }
 
   async function guardarProyecto(nombre: string, cliente: string) {
@@ -75,6 +78,7 @@ export default function CalculadoraPage() {
       piezas,
       estado: 'borrador',
     });
+    mostrarToast('Proyecto guardado.', 'success');
   }
 
   if (!listo) {

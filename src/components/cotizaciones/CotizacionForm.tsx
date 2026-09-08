@@ -36,7 +36,6 @@ interface Props {
   proyectos: Proyecto[];
   materiales: Material[];
   config: ConfiguracionTaller;
-  proyectoInicialId?: string;
   onCerrar: () => void;
   onGuardar: (datos: DatosCotizacion) => Promise<void>;
 }
@@ -45,29 +44,15 @@ export function CotizacionForm({
   proyectos,
   materiales,
   config,
-  proyectoInicialId,
   onCerrar,
   onGuardar,
 }: Props) {
-  const [nombreCliente, setNombreCliente] = useState(() => {
-    const proyecto = proyectos.find((p) => p.id === proyectoInicialId);
-    return proyecto?.cliente ?? '';
-  });
+  const [nombreCliente, setNombreCliente] = useState('');
   const [telefono, setTelefono] = useState('');
   const [direccion, setDireccion] = useState('');
-  const [proyectoId, setProyectoId] = useState(proyectoInicialId ?? '');
-  const [conceptos, setConceptos] = useState<ConceptoCosto[]>(() => {
-    if (!proyectoInicialId) return [];
-    const proyecto = proyectos.find((p) => p.id === proyectoInicialId);
-    return proyecto
-      ? generarConceptos(proyecto.piezas, materiales, config, 0)
-      : [];
-  });
-  const [patrones, setPatrones] = useState<ResultadoOptimizacion[]>(() => {
-    if (!proyectoInicialId) return [];
-    const proyecto = proyectos.find((p) => p.id === proyectoInicialId);
-    return proyecto ? generarPatrones(proyecto.piezas, materiales, config) : [];
-  });
+  const [proyectoId, setProyectoId] = useState('');
+  const [conceptos, setConceptos] = useState<ConceptoCosto[]>([]);
+  const [patrones, setPatrones] = useState<ResultadoOptimizacion[]>([]);
   const [modoManoObra, setModoManoObra] = useState<ModoManoObra>(
     config.modoManoObraDefault,
   );
