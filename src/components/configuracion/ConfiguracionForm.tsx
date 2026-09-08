@@ -12,21 +12,25 @@ import type { ConfiguracionTaller, ModoManoObra } from '@/types';
 
 interface Props {
   config: ConfiguracionTaller;
+  formId: string;
   onGuardar: (config: ConfiguracionTaller) => Promise<void>;
 }
 
-export function ConfiguracionForm({ config, onGuardar }: Props) {
-  const [local, setLocal] = useState<ConfiguracionTaller>(() => ({
-    ...config,
-    insumos: config.insumos.map((i) => ({ ...i })),
-  }));
+function copia(config: ConfiguracionTaller): ConfiguracionTaller {
+  return { ...config, insumos: config.insumos.map((i) => ({ ...i })) };
+}
+
+export function ConfiguracionForm({ config, formId, onGuardar }: Props) {
+  const [local, setLocal] = useState<ConfiguracionTaller>(() => copia(config));
   const [guardando, setGuardando] = useState(false);
+  const [sucio, setSucio] = useState(false);
 
   function setCampo<K extends keyof ConfiguracionTaller>(
     campo: K,
     valor: ConfiguracionTaller[K],
   ) {
     setLocal((c) => ({ ...c, [campo]: valor }));
+    setSucio(true);
   }
 
   async function guardar() {
@@ -41,139 +45,174 @@ export function ConfiguracionForm({ config, onGuardar }: Props) {
           unidad: i.unidad.trim(),
         })),
       });
+      setSucio(false);
     } finally {
       setGuardando(false);
     }
   }
 
+  function descartar() {
+    setLocal(copia(config));
+    setSucio(false);
+  }
+
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        void guardar();
-      }}
-      className="space-y-6"
-    >
-      <Card>
-        <h2 className="mb-3 font-semibold text-slate-100">Taller</h2>
-        <label className="mb-1 block text-sm font-medium text-slate-300">
-          Nombre del taller
-        </label>
-        <Input
-          value={local.nombreTaller}
-          onChange={(e) => setCampo('nombreTaller', e.target.value)}
-        />
-      </Card>
+    <>
+      <form
+        id={formId}
+        onSubmit={(e) => {
+          e.preventDefault();
+          void guardar();
+        }}
+        className="space-y-6"
+      >
+        <Card>
+          <h2 className="mb-3 font-semibold text-slate-100">Taller</h2>
+          <label className="mb-1 block text-sm font-medium text-slate-300">
+            Nombre del taller
+          </label>
+          <Input
+            value={local.nombreTaller}
+            onChange={(e) => setCampo('nombreTaller', e.target.value)}
+          />
+        </Card>
 
-      <Card className="space-y-4">
-        <h2 className="font-semibold text-slate-100">Mano de obra e impuestos</h2>
-        <div className="grid grid-cols-2 gap-3">
-          <div>
-            <label className="mb-1 block text-sm font-medium text-slate-300">
-              Costo por hora (₡)
-            </label>
-            <Input
-              type="number"
-              min="0"
-              step="1"
-              value={local.costoManoObraHora}
-              onChange={(e) =>
-                setCampo('costoManoObraHora', parseNumero(e.target.value))
-              }
-            />
+        <Card className="space-y-4">
+          <h2 className="font-semibold text-slate-100">
+            Mano de obra e impuestos
+          </h2>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="mb-1 block text-sm font-medium text-slate-300">
+                Costo por hora (₡)
+              </label>
+              <Input
+                type="number"
+                min="0"
+                step="1"
+                value={local.costoManoObraHora}
+                onChange={(e) =>
+                  setCampo('costoManoObraHora', parseNumero(e.target.value))
+                }
+              />
+            </div>
+            <div>
+              <label className="mb-1 block text-sm font-medium text-slate-300">
+                Modo por defecto
+              </label>
+              <Select
+                value={local.modoManoObraDefault}
+                onChange={(e) =>
+                  setCampo(
+                    'modoManoObraDefault',
+                    e.target.value as ModoManoObra,
+                  )
+                }
+              >
+                <option value="fijo">Fijo</option>
+                <option value="horas">Horas</option>
+                <option value="porcentaje">Porcentaje</option>
+              </Select>
+            </div>
+            <div>
+              <label className="mb-1 block text-sm font-medium text-slate-300">
+                Ganancia por defecto (%)
+              </label>
+              <Input
+                type="number"
+                min="0"
+                step="1"
+                value={local.pctGananciaDefault}
+                onChange={(e) =>
+                  setCampo('pctGananciaDefault', parseNumero(e.target.value))
+                }
+              />
+            </div>
+            <div>
+              <label className="mb-1 block text-sm font-medium text-slate-300">
+                IVA (%)
+              </label>
+              <Input
+                type="number"
+                min="0"
+                step="1"
+                value={local.ivaPct}
+                onChange={(e) =>
+                  setCampo('ivaPct', parseNumero(e.target.value))
+                }
+              />
+            </div>
           </div>
-          <div>
-            <label className="mb-1 block text-sm font-medium text-slate-300">
-              Modo por defecto
-            </label>
-            <Select
-              value={local.modoManoObraDefault}
-              onChange={(e) =>
-                setCampo('modoManoObraDefault', e.target.value as ModoManoObra)
-              }
+        </Card>
+
+        <Card className="space-y-4">
+          <h2 className="font-semibold text-slate-100">Corte</h2>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="mb-1 block text-sm font-medium text-slate-300">
+                Kerf por defecto (cm)
+              </label>
+              <Input
+                type="number"
+                min="0"
+                step="any"
+                value={local.kerfDefault}
+                onChange={(e) =>
+                  setCampo('kerfDefault', parseNumero(e.target.value))
+                }
+              />
+            </div>
+            <div>
+              <label className="mb-1 block text-sm font-medium text-slate-300">
+                Largo de barra (cm)
+              </label>
+              <Input
+                type="number"
+                min="1"
+                step="1"
+                value={local.largoBarraDefault}
+                onChange={(e) =>
+                  setCampo(
+                    'largoBarraDefault',
+                    parseNumero(e.target.value) || 600,
+                  )
+                }
+              />
+            </div>
+          </div>
+        </Card>
+
+        <Card>
+          <InsumosList
+            insumos={local.insumos}
+            onChange={(insumos) => setCampo('insumos', insumos)}
+          />
+        </Card>
+      </form>
+
+      {sucio && (
+        <div className="fixed inset-x-0 bottom-20 z-40 flex justify-center px-4">
+          <div className="flex w-full max-w-lg gap-2 rounded-2xl border border-slate-700 bg-slate-800/95 p-2 shadow-lg backdrop-blur">
+            <Button
+              type="button"
+              variant="ghost"
+              className="flex-1"
+              onClick={descartar}
             >
-              <option value="fijo">Fijo</option>
-              <option value="horas">Horas</option>
-              <option value="porcentaje">Porcentaje</option>
-            </Select>
-          </div>
-          <div>
-            <label className="mb-1 block text-sm font-medium text-slate-300">
-              Ganancia por defecto (%)
-            </label>
-            <Input
-              type="number"
-              min="0"
-              step="1"
-              value={local.pctGananciaDefault}
-              onChange={(e) =>
-                setCampo('pctGananciaDefault', parseNumero(e.target.value))
-              }
-            />
-          </div>
-          <div>
-            <label className="mb-1 block text-sm font-medium text-slate-300">
-              IVA (%)
-            </label>
-            <Input
-              type="number"
-              min="0"
-              step="1"
-              value={local.ivaPct}
-              onChange={(e) => setCampo('ivaPct', parseNumero(e.target.value))}
-            />
+              Descartar
+            </Button>
+            <Button
+              type="submit"
+              form={formId}
+              className="flex-1"
+              disabled={guardando}
+            >
+              <Save className="h-4 w-4" />
+              {guardando ? 'Guardando…' : 'Guardar cambios'}
+            </Button>
           </div>
         </div>
-      </Card>
-
-      <Card className="space-y-4">
-        <h2 className="font-semibold text-slate-100">Corte</h2>
-        <div className="grid grid-cols-2 gap-3">
-          <div>
-            <label className="mb-1 block text-sm font-medium text-slate-300">
-              Kerf por defecto (cm)
-            </label>
-            <Input
-              type="number"
-              min="0"
-              step="any"
-              value={local.kerfDefault}
-              onChange={(e) =>
-                setCampo('kerfDefault', parseNumero(e.target.value))
-              }
-            />
-          </div>
-          <div>
-            <label className="mb-1 block text-sm font-medium text-slate-300">
-              Largo de barra (cm)
-            </label>
-            <Input
-              type="number"
-              min="1"
-              step="1"
-              value={local.largoBarraDefault}
-              onChange={(e) =>
-                setCampo(
-                  'largoBarraDefault',
-                  parseNumero(e.target.value) || 600,
-                )
-              }
-            />
-          </div>
-        </div>
-      </Card>
-
-      <Card>
-        <InsumosList
-          insumos={local.insumos}
-          onChange={(insumos) => setCampo('insumos', insumos)}
-        />
-      </Card>
-
-      <Button type="submit" disabled={guardando}>
-        <Save className="h-4 w-4" />
-        {guardando ? 'Guardando…' : 'Guardar configuración'}
-      </Button>
-    </form>
+      )}
+    </>
   );
 }

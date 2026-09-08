@@ -1,11 +1,18 @@
 'use client';
 
+import { Save } from 'lucide-react';
 import { useConfig } from '@/hooks/use-config';
 import { ConfiguracionForm } from '@/components/configuracion/ConfiguracionForm';
 import { SyncPanel } from '@/components/configuracion/SyncPanel';
+import { Button } from '@/components/ui/Button';
+import { useUIStore } from '@/stores/ui-store';
+import type { ConfiguracionTaller } from '@/types';
+
+const FORM_ID = 'configuracion-form';
 
 export default function ConfiguracionPage() {
   const { config, cargando, guardar } = useConfig();
+  const mostrarToast = useUIStore((s) => s.mostrarToast);
 
   if (cargando || !config) {
     return (
@@ -15,15 +22,29 @@ export default function ConfiguracionPage() {
     );
   }
 
+  async function handleGuardar(c: ConfiguracionTaller) {
+    await guardar(c);
+    mostrarToast('Configuración guardada correctamente.', 'success');
+  }
+
   return (
     <div className="mx-auto max-w-5xl px-4 py-6">
-      <h1 className="text-2xl font-bold text-slate-100">Configuración</h1>
+      <div className="flex items-center justify-between gap-3">
+        <h1 className="text-2xl font-bold text-slate-100">Configuración</h1>
+        <Button form={FORM_ID} type="submit">
+          <Save className="h-4 w-4" /> Guardar
+        </Button>
+      </div>
       <p className="mt-1 text-sm text-slate-400">
         Insumos, mano de obra, IVA y datos del taller.
       </p>
 
       <div className="mt-6">
-        <ConfiguracionForm config={config} onGuardar={guardar} />
+        <ConfiguracionForm
+          config={config}
+          formId={FORM_ID}
+          onGuardar={handleGuardar}
+        />
       </div>
 
       <div className="mt-6">
