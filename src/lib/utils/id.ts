@@ -5,3 +5,7 @@ export function uid(prefix = ''): string {
       : `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
   return prefix ? `${prefix}-${id}` : id;
 }
+
+export function ahoraMs(): number {
+  return Date.now();
+}

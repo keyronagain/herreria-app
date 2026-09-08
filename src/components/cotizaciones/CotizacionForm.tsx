@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
 import { ConceptosTable } from './ConceptosTable';
 import { parseNumero, formatCRC } from '@/lib/utils/format';
+import { ahoraMs } from '@/lib/utils/id';
 import {
   generarConceptos,
   generarPatrones,
@@ -48,7 +49,10 @@ export function CotizacionForm({
   onCerrar,
   onGuardar,
 }: Props) {
-  const [nombreCliente, setNombreCliente] = useState('');
+  const [nombreCliente, setNombreCliente] = useState(() => {
+    const proyecto = proyectos.find((p) => p.id === proyectoInicialId);
+    return proyecto?.cliente ?? '';
+  });
   const [telefono, setTelefono] = useState('');
   const [direccion, setDireccion] = useState('');
   const [proyectoId, setProyectoId] = useState(proyectoInicialId ?? '');
@@ -75,6 +79,7 @@ export function CotizacionForm({
   const [vigenciaDias, setVigenciaDias] = useState(15);
   const [notas, setNotas] = useState('');
   const [guardando, setGuardando] = useState(false);
+  const [error, setError] = useState('');
 
   const { costoMaterial, costoInsumos } = resumenPorTipo(conceptos);
   const costoManoObra = calcularManoObra(
@@ -100,6 +105,9 @@ export function CotizacionForm({
       generarConceptos(proyecto.piezas, materiales, config, horasManoObra),
     );
     setPatrones(generarPatrones(proyecto.piezas, materiales, config));
+    if (!nombreCliente.trim() && proyecto.cliente) {
+      setNombreCliente(proyecto.cliente);
+    }
   }
 
   async function handleSubmit(e: FormEvent) {
@@ -107,6 +115,7 @@ export function CotizacionForm({
     if (!nombreCliente.trim()) return;
 
     setGuardando(true);
+    setError('');
     try {
       await onGuardar({
         cliente: {
@@ -115,7 +124,7 @@ export function CotizacionForm({
           direccion: direccion.trim() || undefined,
         },
         proyectoId: proyectoId || undefined,
-        fecha: Date.now(),
+        fecha: ahoraMs(),
         vigenciaDias: Math.max(0, Math.round(vigenciaDias)),
         conceptos,
         patrones: patrones.length > 0 ? patrones : undefined,
@@ -136,6 +145,8 @@ export function CotizacionForm({
         estado: 'borrador',
       });
       onCerrar();
+    } catch {
+      setError('No se pudo guardar la cotización. Inténtalo de nuevo.');
     } finally {
       setGuardando(false);
     }
@@ -372,6 +383,7 @@ export function CotizacionForm({
         </div>
 
         <div className="flex justify-end gap-2">
+          {error && <p className="mr-auto self-center text-sm text-red-400">{error}</p>}
           <Button type="button" variant="ghost" onClick={onCerrar}>
             Cancelar
           </Button>

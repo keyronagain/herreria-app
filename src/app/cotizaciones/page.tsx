@@ -86,7 +86,7 @@ export default function CotizacionesPage() {
         />
       </div>
 
-      {creando && config && (
+      {creando && config && !cargandoProyectos && (
         <CotizacionForm
           proyectos={proyectos}
           materiales={materiales}
