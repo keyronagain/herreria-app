@@ -50,7 +50,6 @@ interface FormValues {
   largoBarra: string;
   precioBarra: string;
   unidad: 'metro' | 'pieza';
-  categoria: string;
   proveedor: string;
 }
 
@@ -64,7 +63,6 @@ const VALORES_INICIALES: FormValues = {
   largoBarra: '600',
   precioBarra: '',
   unidad: 'metro',
-  categoria: '',
   proveedor: '',
 };
 
@@ -80,7 +78,6 @@ function valoresDe(material: Material | null): FormValues {
     largoBarra: material.largoBarra.toString(),
     precioBarra: material.precioBarra.toString(),
     unidad: material.unidad,
-    categoria: material.categoria ?? '',
     proveedor: material.proveedor ?? '',
   };
 }
@@ -128,7 +125,7 @@ export function MaterialForm({ material, onCerrar, onGuardar }: Props) {
           precioBarra,
           precioUnitario,
           unidad: values.unidad,
-          categoria: values.categoria.trim() || undefined,
+          categoria: values.tipo,
           proveedor: values.proveedor.trim() || undefined,
           activo: material?.activo ?? true,
         },
@@ -287,27 +284,15 @@ export function MaterialForm({ material, onCerrar, onGuardar }: Props) {
           </div>
         </fieldset>
 
-        <div className="grid grid-cols-2 gap-3">
-          <div>
-            <label className="mb-1 block text-sm font-medium text-slate-300">
-              Categoría
-            </label>
-            <Input
-              value={values.categoria}
-              onChange={(e) => setCampo('categoria', e.target.value)}
-              placeholder="Opcional"
-            />
-          </div>
-          <div>
-            <label className="mb-1 block text-sm font-medium text-slate-300">
-              Proveedor
-            </label>
-            <Input
-              value={values.proveedor}
-              onChange={(e) => setCampo('proveedor', e.target.value)}
-              placeholder="Opcional"
-            />
-          </div>
+        <div>
+          <label className="mb-1 block text-sm font-medium text-slate-300">
+            Proveedor
+          </label>
+          <Input
+            value={values.proveedor}
+            onChange={(e) => setCampo('proveedor', e.target.value)}
+            placeholder="Opcional"
+          />
         </div>
 
         <div className="flex justify-end gap-2 pt-2">

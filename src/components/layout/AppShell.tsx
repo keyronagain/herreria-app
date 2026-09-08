@@ -3,6 +3,7 @@
 import { useEffect, type ReactNode } from 'react';
 import { Header } from './Header';
 import { BottomNav } from './BottomNav';
+import { Toast } from '@/components/ui/Toast';
 import { seedInitialData } from '@/data/seed';
 
 export function AppShell({ children }: { children: ReactNode }) {
@@ -41,6 +42,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       <Header />
       <main className="flex-1 pb-24">{children}</main>
       <BottomNav />
+      <Toast />
     </div>
   );
 }

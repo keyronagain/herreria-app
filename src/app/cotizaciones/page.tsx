@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { CotizacionList } from '@/components/cotizaciones/CotizacionList';
 import {
   CotizacionForm,
@@ -17,17 +17,41 @@ import type { Cotizacion } from '@/types';
 
 export default function CotizacionesPage() {
   const { cotizaciones, cargando, crear, eliminar } = useCotizaciones();
-  const { proyectos } = useProyectos();
+  const { proyectos, cargando: cargandoProyectos } = useProyectos();
   const { materiales } = useMateriales();
   const { config } = useConfig();
   const proyectoPreseleccionado = useUIStore((s) => s.proyectoIdParaCotizar);
   const setProyectoPreseleccionado = useUIStore(
     (s) => s.setProyectoIdParaCotizar,
   );
+  const mostrarToast = useUIStore((s) => s.mostrarToast);
   const [creando, setCreando] = useState(() =>
     Boolean(proyectoPreseleccionado),
   );
   const [cotizacionVer, setCotizacionVer] = useState<Cotizacion | null>(null);
+
+  const proyectoValido = proyectoPreseleccionado
+    ? proyectos.some((p) => p.id === proyectoPreseleccionado)
+    : false;
+  const proyectoInicialId = proyectoValido
+    ? (proyectoPreseleccionado ?? undefined)
+    : undefined;
+
+  useEffect(() => {
+    if (cargandoProyectos || !proyectoPreseleccionado) return;
+    if (!proyectoValido) {
+      mostrarToast(
+        'El proyecto seleccionado ya no está disponible. Se creó una cotización manual.',
+      );
+      setProyectoPreseleccionado(null);
+    }
+  }, [
+    cargandoProyectos,
+    proyectoPreseleccionado,
+    proyectoValido,
+    mostrarToast,
+    setProyectoPreseleccionado,
+  ]);
 
   async function eliminarCotizacion(c: Cotizacion) {
     if (window.confirm(`¿Eliminar la cotización ${c.numero}?`)) {
@@ -67,7 +91,7 @@ export default function CotizacionesPage() {
           proyectos={proyectos}
           materiales={materiales}
           config={config}
-          proyectoInicialId={proyectoPreseleccionado ?? undefined}
+          proyectoInicialId={proyectoInicialId}
           onCerrar={cerrarFormulario}
           onGuardar={guardarCotizacion}
         />
