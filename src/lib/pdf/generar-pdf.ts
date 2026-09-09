@@ -48,18 +48,72 @@ function parseLogo(dataUrl: string): { formato: string; data: string } | null {
   return { formato, data: dataUrl };
 }
 
-function dibujarLogo(doc: jsPDF, logo: string): number {
-  const parsed = parseLogo(logo);
-  if (!parsed) return MARGEN;
-  try {
-    const props = doc.getImageProperties(parsed.data);
-    const alto = 16;
-    const ancho = (props.width / props.height) * alto;
-    doc.addImage(parsed.data, parsed.formato, MARGEN, 12, ancho, alto);
-    return MARGEN + ancho + 5;
-  } catch {
-    return MARGEN;
+function dibujarHeader(
+  doc: jsPDF,
+  config: ConfiguracionTaller,
+  titulo: string,
+  cotizacion: Cotizacion,
+): number {
+  const ancho = doc.internal.pageSize.getWidth();
+
+  if (config.logoBase64) {
+    const parsed = parseLogo(config.logoBase64);
+    if (parsed) {
+      try {
+        const props = doc.getImageProperties(parsed.data);
+        const alto = 16;
+        const anchoLogo = (props.width / props.height) * alto;
+        doc.addImage(parsed.data, parsed.formato, MARGEN, 12, anchoLogo, alto);
+      } catch {
+        // sin logo
+      }
+    }
+  } else {
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(16);
+    doc.text(config.nombreTaller, MARGEN, 20);
   }
+
+  const x = ancho - MARGEN;
+  let y = 18;
+
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(15);
+  doc.text(titulo, x, y, { align: 'right' });
+  y += 6;
+
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(9);
+  doc.text(`N°: ${cotizacion.numero}`, x, y, { align: 'right' });
+  y += 5;
+  doc.text(
+    `Fecha: ${new Date(cotizacion.fecha).toLocaleDateString('es-CR')}`,
+    x,
+    y,
+    { align: 'right' },
+  );
+  y += 5;
+  doc.text(`Vigencia: ${cotizacion.vigenciaDias} días`, x, y, {
+    align: 'right',
+  });
+  y += 7;
+
+  doc.setFont('helvetica', 'bold');
+  doc.text('Cliente', x, y, { align: 'right' });
+  y += 5;
+  doc.setFont('helvetica', 'normal');
+  doc.text(cotizacion.cliente.nombre, x, y, { align: 'right' });
+  y += 5;
+  if (cotizacion.cliente.telefono) {
+    doc.text(cotizacion.cliente.telefono, x, y, { align: 'right' });
+    y += 5;
+  }
+  if (cotizacion.cliente.direccion) {
+    doc.text(cotizacion.cliente.direccion, x, y, { align: 'right' });
+    y += 5;
+  }
+
+  return y + 6;
 }
 
 async function construirBase(
@@ -72,43 +126,10 @@ async function construirBase(
   const doc = new jsPDF({ unit: 'mm', format: 'a4' });
   const ancho = doc.internal.pageSize.getWidth();
 
-  const xTexto = config.logoBase64
-    ? dibujarLogo(doc, config.logoBase64)
-    : MARGEN;
-
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(18);
-  doc.text(config.nombreTaller, xTexto, 20);
-  doc.setFont('helvetica', 'normal');
-  doc.setFontSize(12);
-  doc.text('Cotización', xTexto, 27);
-
-  doc.setFontSize(9);
-  doc.text(`N°: ${cotizacion.numero}`, MARGEN, 35);
-  doc.text(
-    `Fecha: ${new Date(cotizacion.fecha).toLocaleDateString('es-CR')}`,
-    MARGEN,
-    40,
-  );
-  doc.text(`Vigencia: ${cotizacion.vigenciaDias} días`, MARGEN, 45);
-
-  doc.setFontSize(10);
-  doc.setFont('helvetica', 'bold');
-  doc.text('Cliente', MARGEN, 54);
-  doc.setFont('helvetica', 'normal');
-  doc.text(cotizacion.cliente.nombre, MARGEN, 60);
-  let yCliente = 65;
-  if (cotizacion.cliente.telefono) {
-    doc.text(`Teléfono: ${cotizacion.cliente.telefono}`, MARGEN, yCliente);
-    yCliente += 5;
-  }
-  if (cotizacion.cliente.direccion) {
-    doc.text(`Dirección: ${cotizacion.cliente.direccion}`, MARGEN, yCliente);
-    yCliente += 5;
-  }
+  const yInicio = dibujarHeader(doc, config, 'Cotización', cotizacion);
 
   autoTable(doc, {
-    startY: yCliente + 4,
+    startY: yInicio,
     head: [['Descripción', 'Cant.', 'Unidad', 'Costo unit.', 'Subtotal']],
     body: cotizacion.conceptos.map((c) => [
       c.descripcion,
@@ -164,7 +185,7 @@ async function construirBase(
   autoTable(doc, {
     startY: finalY(doc) + 6,
     body: filasResumen.map((f) => [f.label, f.valor]),
-    margin: { left: MARGEN, right: MARGEN },
+    margin: { left: ancho * 0.6, right: MARGEN },
     theme: 'grid',
     styles: {
       fontSize: 10,
@@ -213,17 +234,16 @@ async function construirBase(
 function dibujarFichaTaller(
   doc: jsPDF,
   autoTable: AutoTable,
+  cotizacion: Cotizacion,
+  config: ConfiguracionTaller,
   piezas: PiezaRequerida[],
   patrones: ResultadoOptimizacion[],
   materiales: Material[],
 ) {
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(14);
-  doc.text('Ficha de taller', MARGEN, 20);
-
-  let y = 28;
+  let y = dibujarHeader(doc, config, 'Ficha de taller', cotizacion);
 
   if (piezas.length > 0) {
+    doc.setFont('helvetica', 'bold');
     doc.setFontSize(11);
     doc.text('Lista de piezas', MARGEN, y);
     y += 3;
@@ -234,19 +254,21 @@ function dibujarFichaTaller(
       body: piezas.map((p) => [p.descripcion, cmTexto(p.largo), String(p.cantidad)]),
       margin: { left: MARGEN, right: MARGEN },
       theme: 'grid',
-      styles: { fontSize: 9, cellPadding: 2, textColor: CARBON, lineColor: METAL },
+      styles: { fontSize: 9, cellPadding: 1, textColor: CARBON, lineColor: METAL },
       headStyles: { fillColor: ROJO, textColor: BLANCO, fontStyle: 'bold' },
     });
 
-    y = finalY(doc) + 10;
+    y = finalY(doc) + 8;
   }
 
+  doc.setFont('helvetica', 'bold');
   doc.setFontSize(11);
   doc.text('Plan de corte por barra', MARGEN, y);
   y += 4;
 
   for (const p of patrones) {
     const nombre = nombreMaterial(p.materialId, materiales);
+    doc.setFont('helvetica', 'normal');
     doc.setFontSize(10);
     doc.text(
       `${nombre} — ${p.totalBarras} barra(s) · sobrante ${cmTexto(p.sobranteTotal)} · uso ${p.utilizacionPct}%`,
@@ -266,11 +288,11 @@ function dibujarFichaTaller(
       ]),
       margin: { left: MARGEN, right: MARGEN },
       theme: 'grid',
-      styles: { fontSize: 8, cellPadding: 2, textColor: CARBON, lineColor: METAL },
+      styles: { fontSize: 8, cellPadding: 1, textColor: CARBON, lineColor: METAL },
       headStyles: { fillColor: ROJO, textColor: BLANCO, fontStyle: 'bold' },
     });
 
-    y = finalY(doc) + 10;
+    y = finalY(doc) + 8;
   }
 }
 
@@ -299,14 +321,23 @@ export async function generarPdfTaller(
   doc.addPage();
 
   if (patrones.length > 0 || piezas.length > 0) {
-    dibujarFichaTaller(doc, autoTable, piezas, patrones, materiales);
+    dibujarFichaTaller(
+      doc,
+      autoTable,
+      cotizacion,
+      config,
+      piezas,
+      patrones,
+      materiales,
+    );
   } else {
+    const y = dibujarHeader(doc, config, 'Ficha de taller', cotizacion);
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(11);
     doc.text(
       'Cotización manual sin proyecto de corte vinculado.',
       MARGEN,
-      28,
+      y,
     );
   }
 
