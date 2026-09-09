@@ -47,7 +47,8 @@ export function CotizacionDetalle({
   async function compartirDocumento() {
     setOcupado(true);
     try {
-      await compartirPdf(cotizacion, config);
+      const proyecto = proyectos.find((p) => p.id === cotizacion.proyectoId);
+      await compartirPdf(cotizacion, config, proyecto?.nombre);
     } finally {
       setOcupado(false);
     }

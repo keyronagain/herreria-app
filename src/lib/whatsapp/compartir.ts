@@ -7,12 +7,25 @@ export function mensajeWhatsApp(
   proyectoNombre?: string,
 ): string {
   const lineas = [`¡Hola ${cotizacion.cliente.nombre}!`];
-  lineas.push('Te comparto la cotización de tu proyecto:');
+  lineas.push(
+    `Te comparto el resumen de la cotización ${cotizacion.numero} para el proyecto: ${proyectoNombre ?? 'tu proyecto'}.`,
+  );
   lineas.push('');
-  if (proyectoNombre) lineas.push(`• Proyecto: ${proyectoNombre}`);
-  lineas.push(`• N°: ${cotizacion.numero}`);
-  lineas.push(`• Total: ${formatCRC(cotizacion.totalConIva)}`);
-  lineas.push(`• Vigencia: ${cotizacion.vigenciaDias} días`);
+
+  for (const c of cotizacion.conceptos) {
+    const unidad = c.unidad ? ` ${c.unidad}` : '';
+    lineas.push(`• ${c.descripcion}: ${c.cantidad}${unidad}`);
+  }
+
+  lineas.push('');
+  lineas.push(
+    `Total estimado: ${formatCRC(cotizacion.totalConIva)} y Vigencia: ${cotizacion.vigenciaDias} días.`,
+  );
+  lineas.push('');
+  lineas.push(
+    'Con gusto te puedo enviar el documento PDF formal si lo necesitas. Quedo atento para coordinar el inicio del trabajo.',
+  );
+
   return lineas.join('\n');
 }
 
@@ -40,13 +53,14 @@ function descargar(blob: Blob, nombre: string): void {
 export async function compartirPdf(
   cotizacion: Cotizacion,
   config: ConfiguracionTaller,
+  proyectoNombre?: string,
 ): Promise<void> {
   const doc = await generarPdfCliente(cotizacion, config);
   const blob = doc.output('blob');
   const archivo = new File([blob], `cotizacion-${cotizacion.numero}.pdf`, {
     type: 'application/pdf',
   });
-  const texto = mensajeWhatsApp(cotizacion);
+  const texto = mensajeWhatsApp(cotizacion, proyectoNombre);
 
   if (
     typeof navigator.canShare === 'function' &&
