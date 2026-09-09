@@ -1,13 +1,15 @@
 'use client';
 
-import { useState } from 'react';
-import { Save } from 'lucide-react';
+import { useState, useRef, type ChangeEvent } from 'react';
+import { Save, ImagePlus } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
 import { InsumosList } from './InsumosList';
 import { parseNumero } from '@/lib/utils/format';
+import { redimensionarImagen } from '@/lib/utils/imagen';
+import { useUIStore } from '@/stores/ui-store';
 import type { ConfiguracionTaller, ModoManoObra } from '@/types';
 
 interface Props {
@@ -24,6 +26,8 @@ export function ConfiguracionForm({ config, formId, onGuardar }: Props) {
   const [local, setLocal] = useState<ConfiguracionTaller>(() => copia(config));
   const [guardando, setGuardando] = useState(false);
   const [sucio, setSucio] = useState(false);
+  const mostrarToast = useUIStore((s) => s.mostrarToast);
+  const inputLogoRef = useRef<HTMLInputElement>(null);
 
   function setCampo<K extends keyof ConfiguracionTaller>(
     campo: K,
@@ -56,6 +60,26 @@ export function ConfiguracionForm({ config, formId, onGuardar }: Props) {
     setSucio(false);
   }
 
+  function abrirSelectorLogo() {
+    inputLogoRef.current?.click();
+  }
+
+  async function manejarLogo(e: ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      const dataUrl = await redimensionarImagen(file, 512);
+      setCampo('logoBase64', dataUrl);
+    } catch {
+      mostrarToast('No se pudo cargar la imagen.', 'error');
+    }
+    e.target.value = '';
+  }
+
+  function quitarLogo() {
+    setCampo('logoBase64', undefined);
+  }
+
   return (
     <>
       <form
@@ -75,6 +99,49 @@ export function ConfiguracionForm({ config, formId, onGuardar }: Props) {
             value={local.nombreTaller}
             onChange={(e) => setCampo('nombreTaller', e.target.value)}
           />
+
+          <div className="mt-4">
+            <label className="mb-1 block text-sm font-medium text-slate-300">
+              Logo
+            </label>
+            {local.logoBase64 ? (
+              <div className="flex items-center gap-3">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={local.logoBase64}
+                  alt="Logo del taller"
+                  className="h-16 w-16 rounded-lg border border-slate-700 bg-slate-700 object-contain"
+                />
+                <div className="flex flex-col gap-2">
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    onClick={abrirSelectorLogo}
+                  >
+                    <ImagePlus className="h-4 w-4" /> Cambiar
+                  </Button>
+                  <Button type="button" variant="ghost" onClick={quitarLogo}>
+                    Quitar
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={abrirSelectorLogo}
+              >
+                <ImagePlus className="h-4 w-4" /> Cargar logo
+              </Button>
+            )}
+            <input
+              ref={inputLogoRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={manejarLogo}
+            />
+          </div>
         </Card>
 
         <Card className="space-y-4">

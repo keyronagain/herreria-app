@@ -1,4 +1,5 @@
 import type { jsPDF } from 'jspdf';
+import type { CellHookData } from 'jspdf-autotable';
 import type {
   Cotizacion,
   ConfiguracionTaller,
@@ -12,6 +13,12 @@ import { generarPatrones } from '@/lib/pricing/calcular-cotizacion';
 type AutoTable = (doc: jsPDF, options: Record<string, unknown>) => void;
 
 const MARGEN = 15;
+
+const ROJO: [number, number, number] = [231, 27, 35]; // #E31B23
+const CARBON: [number, number, number] = [45, 45, 45]; // #2D2D2D
+const METAL: [number, number, number] = [209, 209, 209]; // #D1D1D1
+const PLATINO: [number, number, number] = [244, 244, 244]; // #F4F4F4
+const BLANCO: [number, number, number] = [255, 255, 255];
 
 function crc(n: number): string {
   return new Intl.NumberFormat('es-CR', { maximumFractionDigits: 0 }).format(
@@ -32,6 +39,29 @@ function finalY(doc: jsPDF): number {
     .finalY;
 }
 
+function parseLogo(dataUrl: string): { formato: string; data: string } | null {
+  const match = /^data:image\/(png|jpe?g|svg\+xml);base64,(.+)$/.exec(dataUrl);
+  if (!match) return null;
+  const mime = match[1];
+  const formato =
+    mime === 'png' ? 'PNG' : mime === 'jpeg' || mime === 'jpg' ? 'JPEG' : 'SVG';
+  return { formato, data: dataUrl };
+}
+
+function dibujarLogo(doc: jsPDF, logo: string): number {
+  const parsed = parseLogo(logo);
+  if (!parsed) return MARGEN;
+  try {
+    const props = doc.getImageProperties(parsed.data);
+    const alto = 16;
+    const ancho = (props.width / props.height) * alto;
+    doc.addImage(parsed.data, parsed.formato, MARGEN, 12, ancho, alto);
+    return MARGEN + ancho + 5;
+  } catch {
+    return MARGEN;
+  }
+}
+
 async function construirBase(
   cotizacion: Cotizacion,
   config: ConfiguracionTaller,
@@ -42,12 +72,16 @@ async function construirBase(
   const doc = new jsPDF({ unit: 'mm', format: 'a4' });
   const ancho = doc.internal.pageSize.getWidth();
 
+  const xTexto = config.logoBase64
+    ? dibujarLogo(doc, config.logoBase64)
+    : MARGEN;
+
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(18);
-  doc.text(config.nombreTaller, MARGEN, 20);
+  doc.text(config.nombreTaller, xTexto, 20);
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(12);
-  doc.text('Cotización', MARGEN, 27);
+  doc.text('Cotización', xTexto, 27);
 
   doc.setFontSize(9);
   doc.text(`N°: ${cotizacion.numero}`, MARGEN, 35);
@@ -85,37 +119,75 @@ async function construirBase(
     ]),
     margin: { left: MARGEN, right: MARGEN },
     theme: 'grid',
-    styles: { fontSize: 9, cellPadding: 2 },
+    styles: { fontSize: 9, cellPadding: 2, textColor: CARBON, lineColor: METAL },
     headStyles: {
-      fillColor: [245, 158, 11],
-      textColor: [15, 23, 42],
+      fillColor: ROJO,
+      textColor: BLANCO,
       fontStyle: 'bold',
     },
   });
 
-  let y = finalY(doc) + 8;
-
-  const lineas: [string, string][] = [
-    ['Subtotal', crc(cotizacion.subtotal)],
-    [`Ganancia (${cotizacion.pctGanancia}%)`, crc(cotizacion.ganancia)],
+  const filasResumen: {
+    label: string;
+    valor: string;
+    esTotal: boolean;
+    esSubtotal: boolean;
+  }[] = [
+    {
+      label: 'Subtotal',
+      valor: crc(cotizacion.subtotal),
+      esTotal: false,
+      esSubtotal: true,
+    },
+    {
+      label: `Ganancia (${cotizacion.pctGanancia}%)`,
+      valor: crc(cotizacion.ganancia),
+      esTotal: false,
+      esSubtotal: false,
+    },
   ];
   if (cotizacion.aplicarIva) {
-    lineas.push([
-      `IVA (${cotizacion.ivaPct}%)`,
-      crc(cotizacion.totalConIva - cotizacion.total),
-    ]);
+    filasResumen.push({
+      label: `IVA (${cotizacion.ivaPct}%)`,
+      valor: crc(cotizacion.totalConIva - cotizacion.total),
+      esTotal: false,
+      esSubtotal: false,
+    });
   }
-  lineas.push(['Total', crc(cotizacion.totalConIva)]);
+  filasResumen.push({
+    label: 'Total',
+    valor: crc(cotizacion.totalConIva),
+    esTotal: true,
+    esSubtotal: false,
+  });
 
-  doc.setFontSize(10);
-  for (const [label, valor] of lineas) {
-    const esTotal = label === 'Total';
-    if (esTotal) doc.setFont('helvetica', 'bold');
-    doc.text(label, MARGEN, y);
-    doc.text(valor, ancho - MARGEN, y, { align: 'right' });
-    doc.setFont('helvetica', 'normal');
-    y += 6;
-  }
+  autoTable(doc, {
+    startY: finalY(doc) + 6,
+    body: filasResumen.map((f) => [f.label, f.valor]),
+    margin: { left: MARGEN, right: MARGEN },
+    theme: 'grid',
+    styles: {
+      fontSize: 10,
+      cellPadding: 2.5,
+      textColor: CARBON,
+      lineColor: METAL,
+    },
+    columnStyles: { 1: { halign: 'right' } },
+    didParseCell: (data: CellHookData) => {
+      if (data.section !== 'body') return;
+      const fila = filasResumen[data.row.index];
+      if (!fila) return;
+      if (fila.esSubtotal || fila.esTotal) {
+        data.cell.styles.fillColor = PLATINO;
+      }
+      if (fila.esTotal) {
+        data.cell.styles.textColor = ROJO;
+        data.cell.styles.fontStyle = 'bold';
+      }
+    },
+  });
+
+  let y = finalY(doc) + 8;
 
   if (cotizacion.notas) {
     y += 4;
@@ -162,8 +234,8 @@ function dibujarFichaTaller(
       body: piezas.map((p) => [p.descripcion, cmTexto(p.largo), String(p.cantidad)]),
       margin: { left: MARGEN, right: MARGEN },
       theme: 'grid',
-      styles: { fontSize: 9, cellPadding: 2 },
-      headStyles: { fillColor: [30, 41, 59], textColor: [255, 255, 255] },
+      styles: { fontSize: 9, cellPadding: 2, textColor: CARBON, lineColor: METAL },
+      headStyles: { fillColor: ROJO, textColor: BLANCO, fontStyle: 'bold' },
     });
 
     y = finalY(doc) + 10;
@@ -194,8 +266,8 @@ function dibujarFichaTaller(
       ]),
       margin: { left: MARGEN, right: MARGEN },
       theme: 'grid',
-      styles: { fontSize: 8, cellPadding: 2 },
-      headStyles: { fillColor: [30, 41, 59], textColor: [255, 255, 255] },
+      styles: { fontSize: 8, cellPadding: 2, textColor: CARBON, lineColor: METAL },
+      headStyles: { fillColor: ROJO, textColor: BLANCO, fontStyle: 'bold' },
     });
 
     y = finalY(doc) + 10;
