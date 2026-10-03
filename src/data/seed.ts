@@ -14,25 +14,39 @@ interface SeedMaterial {
 }
 
 export const CATALOGO: SeedMaterial[] = [
-  { nombre: 'PTR 1x1 cal.18', tipo: 'PTR', dims: { ancho: 2.54, alto: 2.54, espesor: 0.12 }, precioBarra: 6500, categoria: 'PTR' },
-  { nombre: 'PTR 2x1 cal.18', tipo: 'PTR', dims: { ancho: 5.08, alto: 2.54, espesor: 0.12 }, precioBarra: 9800, categoria: 'PTR' },
-  { nombre: 'PTR 2x1 cal.14', tipo: 'PTR', dims: { ancho: 5.08, alto: 2.54, espesor: 0.18 }, precioBarra: 14500, categoria: 'PTR' },
-  { nombre: 'PTR 2x2 cal.14', tipo: 'PTR', dims: { ancho: 5.08, alto: 5.08, espesor: 0.18 }, precioBarra: 18900, categoria: 'PTR' },
-  { nombre: 'PTR 3x1.5 cal.14', tipo: 'PTR', dims: { ancho: 7.62, alto: 3.81, espesor: 0.18 }, precioBarra: 22500, categoria: 'PTR' },
-  { nombre: 'PTR 3x3 cal.11', tipo: 'PTR', dims: { ancho: 7.62, alto: 7.62, espesor: 0.29 }, precioBarra: 38000, categoria: 'PTR' },
-  { nombre: 'PTR 4x2 cal.11', tipo: 'PTR', dims: { ancho: 10.16, alto: 5.08, espesor: 0.29 }, precioBarra: 41000, categoria: 'PTR' },
-  { nombre: 'Tubo cuadrado 1" cal.18', tipo: 'TUBO_CUADRADO', dims: { ancho: 2.54, alto: 2.54, espesor: 0.12 }, precioBarra: 7200, categoria: 'Tubo' },
-  { nombre: 'Tubo cuadrado 1.5" cal.14', tipo: 'TUBO_CUADRADO', dims: { ancho: 3.81, alto: 3.81, espesor: 0.18 }, precioBarra: 12500, categoria: 'Tubo' },
-  { nombre: 'Tubo redondo 1" cal.18', tipo: 'TUBO_REDONDO', dims: { diametro: 2.54, espesor: 0.12 }, precioBarra: 6800, categoria: 'Tubo' },
-  { nombre: 'Tubo redondo 1.5" cal.14', tipo: 'TUBO_REDONDO', dims: { diametro: 3.81, espesor: 0.18 }, precioBarra: 11900, categoria: 'Tubo' },
-  { nombre: 'Ángulo 1"x1/8"', tipo: 'ANGULO', dims: { ancho: 2.54, espesor: 0.32 }, precioBarra: 8500, categoria: 'Ángulo' },
-  { nombre: 'Ángulo 1.5"x3/16"', tipo: 'ANGULO', dims: { ancho: 3.81, espesor: 0.48 }, precioBarra: 13800, categoria: 'Ángulo' },
-  { nombre: 'Platina 1"x1/4"', tipo: 'PLATINA', dims: { ancho: 2.54, espesor: 0.64 }, precioBarra: 7500, categoria: 'Platina' },
-  { nombre: 'Platina 2"x1/4"', tipo: 'PLATINA', dims: { ancho: 5.08, espesor: 0.64 }, precioBarra: 13200, categoria: 'Platina' },
-  { nombre: 'Solera 1"x1/8"', tipo: 'SOLERA', dims: { ancho: 2.54, espesor: 0.32 }, precioBarra: 5900, categoria: 'Solera' },
-  { nombre: 'Solera 1.5"x3/16"', tipo: 'SOLERA', dims: { ancho: 3.81, espesor: 0.48 }, precioBarra: 9600, categoria: 'Solera' },
-  { nombre: 'Varilla 3/8"', tipo: 'VARILLA', dims: { diametro: 0.95 }, precioBarra: 4800, categoria: 'Varilla' },
-  { nombre: 'Varilla 1/2"', tipo: 'VARILLA', dims: { diametro: 1.27 }, precioBarra: 7900, categoria: 'Varilla' },
+  // Industrial cal. 1.20 mm (espesor 0.12 cm)
+  { nombre: 'TUBO IND.CUAD. 12X12 1.20MM', tipo: 'TUBO_CUADRADO', dims: { ancho: 1.2, alto: 1.2, espesor: 0.12 }, precioBarra: 2370, categoria: 'Industrial' },
+  { nombre: 'TUBO IND.CUAD. 18X18 1.20MM', tipo: 'TUBO_CUADRADO', dims: { ancho: 1.8, alto: 1.8, espesor: 0.12 }, precioBarra: 2970, categoria: 'Industrial' },
+  { nombre: 'TUBO IND.CUAD. 22X22 1.20MM', tipo: 'TUBO_CUADRADO', dims: { ancho: 2.2, alto: 2.2, espesor: 0.12 }, precioBarra: 3465, categoria: 'Industrial' },
+  { nombre: 'TUBO IND.CUAD. 25X25 1.20MM', tipo: 'TUBO_CUADRADO', dims: { ancho: 2.5, alto: 2.5, espesor: 0.12 }, precioBarra: 3825, categoria: 'Industrial' },
+  { nombre: 'TUBO IND.CUAD. 31X31 1.20MM', tipo: 'TUBO_CUADRADO', dims: { ancho: 3.1, alto: 3.1, espesor: 0.12 }, precioBarra: 4735, categoria: 'Industrial' },
+  { nombre: 'TUBO IND.CUAD. 38X38 1.20MM', tipo: 'TUBO_CUADRADO', dims: { ancho: 3.8, alto: 3.8, espesor: 0.12 }, precioBarra: 5875, categoria: 'Industrial' },
+  // Galvanizado cal. 1.20 mm
+  { nombre: 'TUBO IND.GALV. CUAD. 25X25 1.20MM', tipo: 'TUBO_CUADRADO', dims: { ancho: 2.5, alto: 2.5, espesor: 0.12 }, precioBarra: 4005, categoria: 'Galvanizado' },
+  // Estructural Negro cal. 1.20 mm
+  { nombre: 'TUBO NEGRO ESTRUC. 50X50X1.20MM SEG.', tipo: 'TUBO_CUADRADO', dims: { ancho: 5.0, alto: 5.0, espesor: 0.12 }, precioBarra: 6445, categoria: 'Estructural Negro' },
+  { nombre: 'TUBO NEGRO ESTRUC. 50X50X1.20MM', tipo: 'TUBO_CUADRADO', dims: { ancho: 5.0, alto: 5.0, espesor: 0.12 }, precioBarra: 7685, categoria: 'Estructural Negro' },
+  { nombre: 'TUBO NEGRO ESTRUC. 72X72X1.20MM', tipo: 'TUBO_CUADRADO', dims: { ancho: 7.2, alto: 7.2, espesor: 0.12 }, precioBarra: 10665, categoria: 'Estructural Negro' },
+  // Industrial cal. 1.50 mm (espesor 0.15 cm)
+  { nombre: 'TUBO IND.CUAD. 18X18 1.50MM', tipo: 'TUBO_CUADRADO', dims: { ancho: 1.8, alto: 1.8, espesor: 0.15 }, precioBarra: 3465, categoria: 'Industrial' },
+  { nombre: 'TUBO IND.CUAD. 25X25 1.50MM', tipo: 'TUBO_CUADRADO', dims: { ancho: 2.5, alto: 2.5, espesor: 0.15 }, precioBarra: 4470, categoria: 'Industrial' },
+  { nombre: 'TUBO IND.CUAD. 31X31 1.50MM', tipo: 'TUBO_CUADRADO', dims: { ancho: 3.1, alto: 3.1, espesor: 0.15 }, precioBarra: 5505, categoria: 'Industrial' },
+  { nombre: 'TUBO IND.CUAD. 38X38 1.50MM', tipo: 'TUBO_CUADRADO', dims: { ancho: 3.8, alto: 3.8, espesor: 0.15 }, precioBarra: 7290, categoria: 'Industrial' },
+  // Galvanizado cal. 1.50 mm
+  { nombre: 'TUBO IND.GALV. CUAD. 25X25 1.50MM', tipo: 'TUBO_CUADRADO', dims: { ancho: 2.5, alto: 2.5, espesor: 0.15 }, precioBarra: 4995, categoria: 'Galvanizado' },
+  { nombre: 'TUBO IND.GALV. CUAD. 38X38 1.50MM', tipo: 'TUBO_CUADRADO', dims: { ancho: 3.8, alto: 3.8, espesor: 0.15 }, precioBarra: 7445, categoria: 'Galvanizado' },
+  // Estructural Negro cal. 1.50 mm
+  { nombre: 'TUBO NEGRO ESTRUC. 50X50X1.50MM', tipo: 'TUBO_CUADRADO', dims: { ancho: 5.0, alto: 5.0, espesor: 0.15 }, precioBarra: 9495, categoria: 'Estructural Negro' },
+  { nombre: 'TUBO NEGRO ESTRUC. 72X72X1.50MM', tipo: 'TUBO_CUADRADO', dims: { ancho: 7.2, alto: 7.2, espesor: 0.15 }, precioBarra: 13540, categoria: 'Estructural Negro' },
+  { nombre: 'TUBO NEGRO ESTRUC. 92X92X1.50MM', tipo: 'TUBO_CUADRADO', dims: { ancho: 9.2, alto: 9.2, espesor: 0.15 }, precioBarra: 17230, categoria: 'Estructural Negro' },
+  { nombre: 'TUBO NEGRO ESTRUC. 100X100X1.50MM', tipo: 'TUBO_CUADRADO', dims: { ancho: 10.0, alto: 10.0, espesor: 0.15 }, precioBarra: 18690, categoria: 'Estructural Negro' },
+  // Estructural Negro cal. 1.80 mm (espesor 0.18 cm)
+  { nombre: 'TUBO NEGRO ESTRUC. 25X25X1.80MM', tipo: 'TUBO_CUADRADO', dims: { ancho: 2.5, alto: 2.5, espesor: 0.18 }, precioBarra: 6115, categoria: 'Estructural Negro' },
+  { nombre: 'TUBO NEGRO ESTRUC. 38X38X1.80MM', tipo: 'TUBO_CUADRADO', dims: { ancho: 3.8, alto: 3.8, espesor: 0.18 }, precioBarra: 11254.8, categoria: 'Estructural Negro' },
+  { nombre: 'TUBO NEGRO ESTRUC. 50X50X1.80MM', tipo: 'TUBO_CUADRADO', dims: { ancho: 5.0, alto: 5.0, espesor: 0.18 }, precioBarra: 11405, categoria: 'Estructural Negro' },
+  { nombre: 'TUBO NEGRO ESTRUC. 72X72X1.80MM', tipo: 'TUBO_CUADRADO', dims: { ancho: 7.2, alto: 7.2, espesor: 0.18 }, precioBarra: 15850, categoria: 'Estructural Negro' },
+  { nombre: 'TUBO NEGRO ESTRUC. 92X92X1.80MM', tipo: 'TUBO_CUADRADO', dims: { ancho: 9.2, alto: 9.2, espesor: 0.18 }, precioBarra: 20700, categoria: 'Estructural Negro' },
+  { nombre: 'TUBO NEGRO ESTRUC. 100X100X1.80MM', tipo: 'TUBO_CUADRADO', dims: { ancho: 10.0, alto: 10.0, espesor: 0.18 }, precioBarra: 22150, categoria: 'Estructural Negro' },
 ];
 
 const INSUMOS_DEFAULT: Omit<Insumo, 'id'>[] = [

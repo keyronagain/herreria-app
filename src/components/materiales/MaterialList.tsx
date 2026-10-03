@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { Plus, Pencil, Trash2, Search, Layers } from 'lucide-react';
+import { Plus, Pencil, Trash2, Search, Layers, RotateCcw } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
@@ -17,6 +17,7 @@ interface Props {
   onCrear: () => void;
   onEditar: (m: Material) => void;
   onEliminar: (m: Material) => void;
+  onRestablecer: () => void;
 }
 
 const ETIQUETA_CORTA: Record<string, string> = {
@@ -40,6 +41,7 @@ export function MaterialList({
   onCrear,
   onEditar,
   onEliminar,
+  onRestablecer,
 }: Props) {
   const [termino, setTermino] = useState('');
   const [filtroTipo, setFiltroTipo] = useState('');
@@ -84,6 +86,10 @@ export function MaterialList({
         <Button onClick={onCrear}>
           <Plus className="h-4 w-4" />
           Nuevo
+        </Button>
+        <Button variant="ghost" onClick={onRestablecer} title="Reemplaza todos los materiales con el catálogo de proveedor">
+          <RotateCcw className="h-4 w-4" />
+          Restablecer
         </Button>
       </div>
 

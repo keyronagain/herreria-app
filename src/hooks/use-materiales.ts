@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { getSupabase } from '@/lib/supabase/client';
 import { uid } from '@/lib/utils/id';
-import { seedMateriales } from '@/data/seed';
+import { seedMateriales, CATALOGO, LARGO_BARRA_CM } from '@/data/seed';
 import type { Material } from '@/types';
 
 export type MaterialInput = Omit<Material, 'id' | 'creadoEn' | 'actualizadoEn'>;
@@ -77,5 +77,29 @@ export function useMateriales() {
     if (error) throw new Error(error.message);
   }, []);
 
-  return { materiales, cargando, crear, actualizar, eliminar };
+  const restablecerCatalogo = useCallback(async () => {
+    const sb = getSupabase();
+    if (!sb) throw new Error('Supabase no configurado');
+    const { error: errDel } = await sb.from('materiales').delete().neq('id', '');
+    if (errDel) throw new Error(errDel.message);
+    const now = Date.now();
+    const nuevos: Material[] = CATALOGO.map((m) => ({
+      id: uid(),
+      nombre: m.nombre,
+      tipo: m.tipo,
+      dims: m.dims,
+      largoBarra: LARGO_BARRA_CM,
+      precioBarra: m.precioBarra,
+      precioUnitario: Math.round((m.precioBarra / (LARGO_BARRA_CM / 100)) * 100) / 100,
+      unidad: 'metro' as const,
+      categoria: m.categoria,
+      activo: true,
+      creadoEn: now,
+      actualizadoEn: now,
+    }));
+    const { error: errIns } = await sb.from('materiales').insert(nuevos);
+    if (errIns) throw new Error(errIns.message);
+  }, []);
+
+  return { materiales, cargando, crear, actualizar, eliminar, restablecerCatalogo };
 }
