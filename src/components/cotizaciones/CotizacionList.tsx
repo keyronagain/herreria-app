@@ -41,7 +41,7 @@ export function CotizacionList({
       </div>
 
       {cargando ? (
-        <p className="py-16 text-center text-sm text-slate-400">Cargando…</p>
+        <p className="py-16 text-center text-sm text-forge-muted">Cargando…</p>
       ) : cotizaciones.length === 0 ? (
         <EmptyState
           icono={<FileText className="h-10 w-10" />}
@@ -58,33 +58,33 @@ export function CotizacionList({
           {cotizaciones.map((c) => (
             <li
               key={c.id}
-              className="flex items-center gap-3 rounded-2xl border border-slate-700 bg-slate-800 p-4 shadow-sm"
+              className="flex items-center gap-3 rounded-lg border border-forge-edge bg-forge-surface p-4 transition-colors hover:bg-forge-elevated"
             >
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
-                  <span className="font-medium text-slate-100">{c.numero}</span>
+                  <span className="font-semibold text-forge-platinum">{c.numero}</span>
                   <Badge variant={ESTADOS[c.estado]?.variant ?? 'default'}>
                     {ESTADOS[c.estado]?.label ?? c.estado}
                   </Badge>
                 </div>
-                <p className="mt-1 text-sm text-slate-400">
+                <p className="mt-1 text-sm text-forge-muted">
                   {c.cliente.nombre} ·{' '}
                   {new Date(c.fecha).toLocaleDateString('es-CR')}
                 </p>
               </div>
-              <span className="shrink-0 font-semibold text-slate-100">
+              <span className="shrink-0 font-semibold text-forge-platinum">
                 {formatCRC(c.totalConIva)}
               </span>
               <button
                 onClick={() => onVer(c)}
-                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-slate-400 hover:bg-slate-700"
+                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md text-forge-ghost hover:bg-forge-edge hover:text-forge-platinum"
                 aria-label="Ver cotización"
               >
                 <Eye className="h-5 w-5" />
               </button>
               <button
                 onClick={() => onEliminar(c)}
-                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-slate-400 hover:bg-red-900/30 hover:text-red-400"
+                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md text-forge-ghost hover:bg-forge-red/10 hover:text-forge-red"
                 aria-label="Eliminar"
               >
                 <Trash2 className="h-5 w-5" />
