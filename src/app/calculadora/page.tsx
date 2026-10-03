@@ -118,12 +118,17 @@ export default function CalculadoraPage() {
   }
 
   async function guardarProyecto(nombre: string, cliente: string) {
-    await crearProyecto({ nombre, cliente, piezas, estado: 'borrador' });
-    setModoGuardar(null);
-    mostrarToast('Proyecto guardado.', 'success');
+    try {
+      await crearProyecto({ nombre, cliente, piezas, estado: 'borrador' });
+      setModoGuardar(null);
+      mostrarToast('Proyecto guardado.', 'success');
+    } catch (err) {
+      mostrarToast(err instanceof Error ? err.message : 'Error al guardar el proyecto', 'error');
+    }
   }
 
   async function agregarACotizacion(nombre: string, cliente: string) {
+    try {
     await crearProyecto({ nombre, cliente, piezas, estado: 'cotizado' });
 
     const conceptos: ConceptoCosto[] = materialesConPiezas
@@ -164,8 +169,11 @@ export default function CalculadoraPage() {
       estado: 'borrador',
     });
 
-    setModoGuardar(null);
-    mostrarToast('Cotización creada con los materiales calculados.', 'success');
+      setModoGuardar(null);
+      mostrarToast('Cotización creada con los materiales calculados.', 'success');
+    } catch (err) {
+      mostrarToast(err instanceof Error ? err.message : 'Error al crear la cotización', 'error');
+    }
   }
 
   if (!listo) {

@@ -52,21 +52,24 @@ export function useMateriales() {
 
   const crear = useCallback(async (input: MaterialInput) => {
     const sb = getSupabase();
-    if (!sb) return;
+    if (!sb) throw new Error('Supabase no configurado');
     const now = Date.now();
-    await sb.from('materiales').insert({ ...input, id: uid(), creadoEn: now, actualizadoEn: now });
+    const { error } = await sb.from('materiales').insert({ ...input, id: uid(), creadoEn: now, actualizadoEn: now });
+    if (error) throw new Error(error.message);
   }, []);
 
   const actualizar = useCallback(async (id: string, changes: Partial<Material>) => {
     const sb = getSupabase();
-    if (!sb) return;
-    await sb.from('materiales').update({ ...changes, actualizadoEn: Date.now() }).eq('id', id);
+    if (!sb) throw new Error('Supabase no configurado');
+    const { error } = await sb.from('materiales').update({ ...changes, actualizadoEn: Date.now() }).eq('id', id);
+    if (error) throw new Error(error.message);
   }, []);
 
   const eliminar = useCallback(async (id: string) => {
     const sb = getSupabase();
-    if (!sb) return;
-    await sb.from('materiales').delete().eq('id', id);
+    if (!sb) throw new Error('Supabase no configurado');
+    const { error } = await sb.from('materiales').delete().eq('id', id);
+    if (error) throw new Error(error.message);
   }, []);
 
   return { materiales, cargando, crear, actualizar, eliminar };

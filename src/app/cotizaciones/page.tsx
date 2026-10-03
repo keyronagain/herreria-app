@@ -25,14 +25,22 @@ export default function CotizacionesPage() {
 
   async function eliminarCotizacion(c: Cotizacion) {
     if (window.confirm(`¿Eliminar la cotización ${c.numero}?`)) {
-      await eliminar(c.id);
+      try {
+        await eliminar(c.id);
+      } catch (err) {
+        mostrarToast(err instanceof Error ? err.message : 'Error al eliminar', 'error');
+      }
     }
   }
 
   async function guardarCotizacion(datos: DatosCotizacion) {
-    const numero = siguienteNumero();
-    await crear({ ...datos, numero });
-    mostrarToast(`Cotización ${numero} guardada.`, 'success');
+    try {
+      const numero = siguienteNumero();
+      await crear({ ...datos, numero });
+      mostrarToast(`Cotización ${numero} guardada.`, 'success');
+    } catch (err) {
+      mostrarToast(err instanceof Error ? err.message : 'Error al guardar la cotización', 'error');
+    }
   }
 
   return (

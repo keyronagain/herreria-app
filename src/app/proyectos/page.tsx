@@ -6,19 +6,25 @@ import { ProyectoDetalle } from '@/components/proyectos/ProyectoDetalle';
 import { useProyectos } from '@/hooks/use-proyectos';
 import { useMateriales } from '@/hooks/use-materiales';
 import { useCotizaciones } from '@/hooks/use-cotizaciones';
+import { useUIStore } from '@/stores/ui-store';
 import type { Proyecto } from '@/types';
 
 export default function ProyectosPage() {
   const { proyectos, cargando, eliminar } = useProyectos();
   const { materiales } = useMateriales();
   const { desvincularProyecto } = useCotizaciones();
+  const mostrarToast = useUIStore((s) => s.mostrarToast);
   const [proyectoVer, setProyectoVer] = useState<Proyecto | null>(null);
 
   async function eliminarProyecto(p: Proyecto) {
     if (!window.confirm(`¿Eliminar el proyecto "${p.nombre}"?`)) return;
-    await desvincularProyecto(p.id);
-    await eliminar(p.id);
-    if (proyectoVer?.id === p.id) setProyectoVer(null);
+    try {
+      await desvincularProyecto(p.id);
+      await eliminar(p.id);
+      if (proyectoVer?.id === p.id) setProyectoVer(null);
+    } catch (err) {
+      mostrarToast(err instanceof Error ? err.message : 'Error al eliminar', 'error');
+    }
   }
 
   return (

@@ -18,8 +18,8 @@ export function useCotizaciones() {
     sb.from('cotizaciones')
       .select('*')
       .order('fecha', { ascending: false })
-      .then(({ data }) => {
-        setCotizaciones((data ?? []) as Cotizacion[]);
+      .then(({ data, error }) => {
+        if (!error) setCotizaciones((data ?? []) as Cotizacion[]);
         setCargando(false);
       });
 
@@ -55,21 +55,24 @@ export function useCotizaciones() {
 
   const crear = useCallback(async (input: CotizacionInput) => {
     const sb = getSupabase();
-    if (!sb) return;
+    if (!sb) throw new Error('Supabase no configurado');
     const now = Date.now();
-    await sb.from('cotizaciones').insert({ ...input, id: uid(), creadoEn: now, actualizadoEn: now });
+    const { error } = await sb.from('cotizaciones').insert({ ...input, id: uid(), creadoEn: now, actualizadoEn: now });
+    if (error) throw new Error(error.message);
   }, []);
 
   const actualizar = useCallback(async (id: string, changes: Partial<Cotizacion>) => {
     const sb = getSupabase();
-    if (!sb) return;
-    await sb.from('cotizaciones').update({ ...changes, actualizadoEn: Date.now() }).eq('id', id);
+    if (!sb) throw new Error('Supabase no configurado');
+    const { error } = await sb.from('cotizaciones').update({ ...changes, actualizadoEn: Date.now() }).eq('id', id);
+    if (error) throw new Error(error.message);
   }, []);
 
   const eliminar = useCallback(async (id: string) => {
     const sb = getSupabase();
-    if (!sb) return;
-    await sb.from('cotizaciones').delete().eq('id', id);
+    if (!sb) throw new Error('Supabase no configurado');
+    const { error } = await sb.from('cotizaciones').delete().eq('id', id);
+    if (error) throw new Error(error.message);
   }, []);
 
   const desvincularProyecto = useCallback(async (proyectoId: string): Promise<void> => {

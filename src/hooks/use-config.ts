@@ -48,9 +48,10 @@ export function useConfig() {
 
   const guardar = useCallback(async (c: ConfiguracionTaller) => {
     const sb = getSupabase();
-    if (!sb) return;
+    if (!sb) throw new Error('Supabase no configurado');
     const updated = { ...c, actualizadoEn: Date.now() };
-    await sb.from('configuracion').upsert(updated, { onConflict: 'id' });
+    const { error } = await sb.from('configuracion').upsert(updated, { onConflict: 'id' });
+    if (error) throw new Error(error.message);
     setConfig(updated);
   }, []);
 

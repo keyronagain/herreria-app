@@ -18,8 +18,8 @@ export function useProyectos() {
     sb.from('proyectos')
       .select('*')
       .order('creadoEn', { ascending: false })
-      .then(({ data }) => {
-        setProyectos((data ?? []) as Proyecto[]);
+      .then(({ data, error }) => {
+        if (!error) setProyectos((data ?? []) as Proyecto[]);
         setCargando(false);
       });
 
@@ -45,21 +45,24 @@ export function useProyectos() {
 
   const crear = useCallback(async (input: ProyectoInput) => {
     const sb = getSupabase();
-    if (!sb) return;
+    if (!sb) throw new Error('Supabase no configurado');
     const now = Date.now();
-    await sb.from('proyectos').insert({ ...input, id: uid(), creadoEn: now, actualizadoEn: now });
+    const { error } = await sb.from('proyectos').insert({ ...input, id: uid(), creadoEn: now, actualizadoEn: now });
+    if (error) throw new Error(error.message);
   }, []);
 
   const actualizar = useCallback(async (id: string, changes: Partial<Proyecto>) => {
     const sb = getSupabase();
-    if (!sb) return;
-    await sb.from('proyectos').update({ ...changes, actualizadoEn: Date.now() }).eq('id', id);
+    if (!sb) throw new Error('Supabase no configurado');
+    const { error } = await sb.from('proyectos').update({ ...changes, actualizadoEn: Date.now() }).eq('id', id);
+    if (error) throw new Error(error.message);
   }, []);
 
   const eliminar = useCallback(async (id: string) => {
     const sb = getSupabase();
-    if (!sb) return;
-    await sb.from('proyectos').delete().eq('id', id);
+    if (!sb) throw new Error('Supabase no configurado');
+    const { error } = await sb.from('proyectos').delete().eq('id', id);
+    if (error) throw new Error(error.message);
   }, []);
 
   return { proyectos, cargando, crear, actualizar, eliminar };
