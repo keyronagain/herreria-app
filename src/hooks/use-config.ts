@@ -14,18 +14,23 @@ export function useConfig() {
     if (!sb) return;
 
     async function cargar() {
-      const { data } = await sb!
-        .from('configuracion')
-        .select('*')
-        .eq('id', 'taller')
-        .maybeSingle();
-      if (data) {
-        setConfig(data as ConfiguracionTaller);
-      } else {
-        const seeded = await seedConfigIfEmpty(sb!);
-        if (seeded) setConfig(seeded);
+      try {
+        const { data } = await sb!
+          .from('configuracion')
+          .select('*')
+          .eq('id', 'taller')
+          .maybeSingle();
+        if (data) {
+          setConfig(data as ConfiguracionTaller);
+        } else {
+          const seeded = await seedConfigIfEmpty(sb!);
+          if (seeded) setConfig(seeded);
+        }
+      } catch {
+        // red o seed fallaron; continuar sin config
+      } finally {
+        setCargando(false);
       }
-      setCargando(false);
     }
 
     void cargar();

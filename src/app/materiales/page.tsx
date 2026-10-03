@@ -5,6 +5,7 @@ import { MaterialList } from '@/components/materiales/MaterialList';
 import { MaterialForm } from '@/components/materiales/MaterialForm';
 import { useMateriales, type MaterialInput } from '@/hooks/use-materiales';
 import { useUIStore } from '@/stores/ui-store';
+import { mensajeSupabase } from '@/lib/utils/error';
 import type { Material } from '@/types';
 
 export default function MaterialesPage() {
@@ -25,18 +26,27 @@ export default function MaterialesPage() {
 
   async function eliminarMaterial(m: Material) {
     if (window.confirm(`¿Eliminar "${m.nombre}"?`)) {
-      await eliminar(m.id);
-      mostrarToast('Material eliminado.', 'success');
+      try {
+        await eliminar(m.id);
+        mostrarToast('Material eliminado.', 'success');
+      } catch (err) {
+        mostrarToast(mensajeSupabase(err), 'error');
+      }
     }
   }
 
   async function handleGuardar(input: MaterialInput, id?: string) {
-    if (id) {
-      await actualizar(id, input);
-      mostrarToast('Material actualizado correctamente.', 'success');
-    } else {
-      await crear(input);
-      mostrarToast('Material creado.', 'success');
+    try {
+      if (id) {
+        await actualizar(id, input);
+        mostrarToast('Material actualizado correctamente.', 'success');
+      } else {
+        await crear(input);
+        mostrarToast('Material creado.', 'success');
+      }
+    } catch (err) {
+      mostrarToast(mensajeSupabase(err), 'error');
+      throw err; // re-throw para que MaterialForm no cierre el modal
     }
   }
 

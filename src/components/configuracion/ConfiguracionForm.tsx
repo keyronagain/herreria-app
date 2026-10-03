@@ -9,6 +9,7 @@ import { Select } from '@/components/ui/Select';
 import { InsumosList } from './InsumosList';
 import { parseNumero } from '@/lib/utils/format';
 import { redimensionarImagen } from '@/lib/utils/imagen';
+import { mensajeSupabase } from '@/lib/utils/error';
 import { useUIStore } from '@/stores/ui-store';
 import type { ConfiguracionTaller, ModoManoObra } from '@/types';
 
@@ -50,6 +51,8 @@ export function ConfiguracionForm({ config, formId, onGuardar }: Props) {
         })),
       });
       setSucio(false);
+    } catch (err) {
+      mostrarToast(mensajeSupabase(err), 'error');
     } finally {
       setGuardando(false);
     }

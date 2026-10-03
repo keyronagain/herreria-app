@@ -6,6 +6,7 @@ import { ConfiguracionForm } from '@/components/configuracion/ConfiguracionForm'
 import { SyncPanel } from '@/components/configuracion/SyncPanel';
 import { Button } from '@/components/ui/Button';
 import { useUIStore } from '@/stores/ui-store';
+import { mensajeSupabase } from '@/lib/utils/error';
 import type { ConfiguracionTaller } from '@/types';
 
 const FORM_ID = 'configuracion-form';
@@ -23,8 +24,13 @@ export default function ConfiguracionPage() {
   }
 
   async function handleGuardar(c: ConfiguracionTaller) {
-    await guardar(c);
-    mostrarToast('Configuración guardada correctamente.', 'success');
+    try {
+      await guardar(c);
+      mostrarToast('Configuración guardada correctamente.', 'success');
+    } catch (err) {
+      mostrarToast(mensajeSupabase(err), 'error');
+      throw err; // re-throw para que ConfiguracionForm no marque sucio=false
+    }
   }
 
   return (

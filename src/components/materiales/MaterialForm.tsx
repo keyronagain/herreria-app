@@ -7,6 +7,8 @@ import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
 import { TIPOS_PERFIL } from '@/constants';
 import { parseNumero } from '@/lib/utils/format';
+import { mensajeSupabase } from '@/lib/utils/error';
+import { useUIStore } from '@/stores/ui-store';
 import type { MaterialInput } from '@/hooks/use-materiales';
 import type {
   Material,
@@ -85,6 +87,7 @@ function valoresDe(material: Material | null): FormValues {
 export function MaterialForm({ material, onCerrar, onGuardar }: Props) {
   const [values, setValues] = useState<FormValues>(() => valoresDe(material));
   const [guardando, setGuardando] = useState(false);
+  const mostrarToast = useUIStore((s) => s.mostrarToast);
 
   function setCampo<K extends keyof FormValues>(campo: K, valor: FormValues[K]) {
     setValues((v) => ({ ...v, [campo]: valor }));
@@ -132,6 +135,8 @@ export function MaterialForm({ material, onCerrar, onGuardar }: Props) {
         material?.id,
       );
       onCerrar();
+    } catch (err) {
+      mostrarToast(mensajeSupabase(err), 'error');
     } finally {
       setGuardando(false);
     }

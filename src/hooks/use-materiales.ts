@@ -17,15 +17,20 @@ export function useMateriales() {
     if (!sb) return;
 
     async function cargar() {
-      const { data } = await sb!.from('materiales').select('*').order('creadoEn', { ascending: true });
-      const rows = (data ?? []) as Material[];
-      if (rows.length === 0) {
-        const seeded = await seedMateriales(sb!);
-        setMateriales(seeded);
-      } else {
-        setMateriales(rows);
+      try {
+        const { data } = await sb!.from('materiales').select('*').order('creadoEn', { ascending: true });
+        const rows = (data ?? []) as Material[];
+        if (rows.length === 0) {
+          const seeded = await seedMateriales(sb!);
+          setMateriales(seeded);
+        } else {
+          setMateriales(rows);
+        }
+      } catch {
+        // seed o red fallaron; continuar con lista vacía
+      } finally {
+        setCargando(false);
       }
-      setCargando(false);
     }
 
     void cargar();
