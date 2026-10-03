@@ -6,11 +6,12 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 
 interface Props {
+  titulo?: string;
   onCerrar: () => void;
   onGuardar: (nombre: string, cliente: string) => Promise<void>;
 }
 
-export function GuardarProyecto({ onCerrar, onGuardar }: Props) {
+export function GuardarProyecto({ titulo = 'Guardar proyecto', onCerrar, onGuardar }: Props) {
   const [nombre, setNombre] = useState('');
   const [cliente, setCliente] = useState('');
   const [guardando, setGuardando] = useState(false);
@@ -30,7 +31,7 @@ export function GuardarProyecto({ onCerrar, onGuardar }: Props) {
   }
 
   return (
-    <Modal abierto onCerrar={onCerrar} titulo="Guardar proyecto">
+    <Modal abierto onCerrar={onCerrar} titulo={titulo}>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="mb-1 block text-sm font-medium text-slate-300">

@@ -1,15 +1,9 @@
-import { db } from '@/lib/db/db';
+import type { SupabaseClient } from '@supabase/supabase-js';
 import { uid } from '@/lib/utils/id';
 import { CONFIG_ID, CONFIG_DEFAULT } from '@/constants';
-import { encolar } from '@/lib/sync/outbox';
-import type {
-  ConfiguracionTaller,
-  Insumo,
-  Material,
-  TipoPerfil,
-} from '@/types';
+import type { ConfiguracionTaller, Insumo, Material, TipoPerfil } from '@/types';
 
-const LARGO_BARRA_CM = 600;
+export const LARGO_BARRA_CM = 600;
 
 interface SeedMaterial {
   nombre: string;
@@ -19,7 +13,7 @@ interface SeedMaterial {
   categoria?: string;
 }
 
-const CATALOGO: SeedMaterial[] = [
+export const CATALOGO: SeedMaterial[] = [
   { nombre: 'PTR 1x1 cal.18', tipo: 'PTR', dims: { ancho: 2.54, alto: 2.54, espesor: 0.12 }, precioBarra: 6500, categoria: 'PTR' },
   { nombre: 'PTR 2x1 cal.18', tipo: 'PTR', dims: { ancho: 5.08, alto: 2.54, espesor: 0.12 }, precioBarra: 9800, categoria: 'PTR' },
   { nombre: 'PTR 2x1 cal.14', tipo: 'PTR', dims: { ancho: 5.08, alto: 2.54, espesor: 0.18 }, precioBarra: 14500, categoria: 'PTR' },
@@ -48,9 +42,7 @@ const INSUMOS_DEFAULT: Omit<Insumo, 'id'>[] = [
   { nombre: 'Thinner (galón)', costoUnitario: 9500, unidad: 'galón', modoConsumo: 'metro_lineal', factor: 0.005 },
 ];
 
-export async function seedMaterialesIfEmpty(): Promise<void> {
-  const count = await db.materiales.count();
-  if (count > 0) return;
+export async function seedMateriales(sb: SupabaseClient): Promise<Material[]> {
   const now = Date.now();
   const materiales: Material[] = CATALOGO.map((m) => ({
     id: uid(),
@@ -66,13 +58,13 @@ export async function seedMaterialesIfEmpty(): Promise<void> {
     creadoEn: now,
     actualizadoEn: now,
   }));
-  await db.materiales.bulkAdd(materiales);
-  await Promise.all(materiales.map((m) => encolar('materiales', m.id)));
+  await sb.from('materiales').insert(materiales);
+  return materiales;
 }
 
-export async function seedConfigIfEmpty(): Promise<void> {
-  const existing = await db.configuracion.get(CONFIG_ID);
-  if (existing) return;
+export async function seedConfigIfEmpty(sb: SupabaseClient): Promise<ConfiguracionTaller | null> {
+  const { data } = await sb.from('configuracion').select('id').eq('id', CONFIG_ID).maybeSingle();
+  if (data) return null;
   const now = Date.now();
   const config: ConfiguracionTaller = {
     ...CONFIG_DEFAULT,
@@ -81,11 +73,6 @@ export async function seedConfigIfEmpty(): Promise<void> {
     creadoEn: now,
     actualizadoEn: now,
   };
-  await db.configuracion.put(config);
-  await encolar('configuracion', CONFIG_ID);
-}
-
-export async function seedInitialData(): Promise<void> {
-  await seedConfigIfEmpty();
-  await seedMaterialesIfEmpty();
+  await sb.from('configuracion').insert(config);
+  return config;
 }

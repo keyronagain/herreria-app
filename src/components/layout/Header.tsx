@@ -2,12 +2,11 @@
 
 import Link from 'next/link';
 import { Hammer } from 'lucide-react';
-import { NetworkIndicator } from './NetworkIndicator';
 
 export function Header() {
   return (
     <header className="sticky top-0 z-40 border-b border-slate-700 bg-slate-900/95 backdrop-blur">
-      <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4">
+      <div className="mx-auto flex h-14 max-w-5xl items-center px-4">
         <Link
           href="/"
           className="flex items-center gap-2 font-semibold text-slate-100"
@@ -17,7 +16,6 @@ export function Header() {
           </span>
           Forja OS
         </Link>
-        <NetworkIndicator />
       </div>
     </header>
   );

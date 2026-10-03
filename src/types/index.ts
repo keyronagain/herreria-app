@@ -167,15 +167,3 @@ export interface ConfiguracionTaller {
   actualizadoEn: number;
 }
 
-export type SyncEntidad =
-  | 'materiales'
-  | 'proyectos'
-  | 'cotizaciones'
-  | 'configuracion';
-
-export interface SyncOp {
-  clave: string;
-  entidad: SyncEntidad;
-  entidadId: string;
-  creadoEn: number;
-}

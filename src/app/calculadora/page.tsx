@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { Scissors, Save } from 'lucide-react';
+import { FileText, Save, Scissors } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Select } from '@/components/ui/Select';
@@ -13,35 +13,67 @@ import { GuardarProyecto } from '@/components/calculadora/GuardarProyecto';
 import { optimizarCortes } from '@/lib/cutting/optimizar';
 import { useMateriales } from '@/hooks/use-materiales';
 import { useProyectos } from '@/hooks/use-proyectos';
+import { useCotizaciones } from '@/hooks/use-cotizaciones';
 import { useConfig } from '@/hooks/use-config';
 import { useUIStore } from '@/stores/ui-store';
+import { uid } from '@/lib/utils/id';
 import { formatCRC, formatMedida } from '@/lib/utils/format';
-import type { PiezaRequerida, ResultadoOptimizacion } from '@/types';
+import type { ConceptoCosto, PiezaRequerida, ResultadoOptimizacion } from '@/types';
 
 export default function CalculadoraPage() {
   const { materiales, cargando: cargandoMateriales } = useMateriales();
   const { crear: crearProyecto } = useProyectos();
+  const { crear: crearCotizacion, siguienteNumero } = useCotizaciones();
   const { config, cargando: cargandoConfig } = useConfig();
   const mostrarToast = useUIStore((s) => s.mostrarToast);
 
   const [materialId, setMaterialId] = useState('');
   const [piezas, setPiezas] = useState<PiezaRequerida[]>([]);
   const [piezaEditando, setPiezaEditando] = useState<PiezaRequerida | null>(null);
-  const [resultado, setResultado] = useState<ResultadoOptimizacion | null>(null);
-  const [guardarAbierto, setGuardarAbierto] = useState(false);
+  const [resultados, setResultados] = useState<Record<string, ResultadoOptimizacion>>({});
+  const [modoGuardar, setModoGuardar] = useState<'proyecto' | 'cotizacion' | null>(null);
 
   const material = useMemo(
     () => materiales.find((m) => m.id === materialId) ?? null,
     [materiales, materialId],
   );
 
+  const piezasDelMaterial = useMemo(
+    () => piezas.filter((p) => p.materialId === materialId),
+    [piezas, materialId],
+  );
+
+  const resultadoActual = materialId ? (resultados[materialId] ?? null) : null;
+
+  const materialesConPiezas = useMemo(() => {
+    const ids = [...new Set(piezas.map((p) => p.materialId))];
+    return ids
+      .map((id) => ({
+        mat: materiales.find((m) => m.id === id)!,
+        conteo: piezas.filter((p) => p.materialId === id).length,
+        resultado: resultados[id] ?? null,
+      }))
+      .filter((x) => x.mat);
+  }, [piezas, materiales, resultados]);
+
+  const hayResultados = Object.keys(resultados).length > 0;
+
+  const costoTotalMaterial = useMemo(
+    () =>
+      materialesConPiezas.reduce(
+        (s, { mat, resultado }) =>
+          resultado ? s + resultado.totalBarras * mat.precioBarra : s,
+        0,
+      ),
+    [materialesConPiezas],
+  );
+
   const listo = !cargandoMateriales && !cargandoConfig;
 
   function seleccionarMaterial(id: string) {
     setMaterialId(id);
-    setPiezas([]);
     setPiezaEditando(null);
-    setResultado(null);
+    // Los piezas y resultados de otros materiales se conservan
   }
 
   function guardarPieza(pieza: PiezaRequerida) {
@@ -51,34 +83,89 @@ export default function CalculadoraPage() {
         : [...p, pieza],
     );
     setPiezaEditando(null);
-    setResultado(null);
+    setResultados((r) => {
+      const n = { ...r };
+      delete n[pieza.materialId];
+      return n;
+    });
   }
 
   function editarPieza(id: string) {
-    setPiezaEditando(piezas.find((p) => p.id === id) ?? null);
+    const pieza = piezas.find((p) => p.id === id);
+    if (!pieza) return;
+    setPiezaEditando(pieza);
+    setMaterialId(pieza.materialId);
   }
 
   function eliminarPieza(id: string) {
+    const pieza = piezas.find((p) => p.id === id);
     setPiezas((p) => p.filter((x) => x.id !== id));
     setPiezaEditando((e) => (e?.id === id ? null : e));
-    setResultado(null);
+    if (pieza) {
+      setResultados((r) => {
+        const n = { ...r };
+        delete n[pieza.materialId];
+        return n;
+      });
+    }
   }
 
   function optimizar() {
-    if (!material) return;
-    setResultado(optimizarCortes(piezas, material.largoBarra, material.id));
+    if (!material || piezasDelMaterial.length === 0) return;
+    const res = optimizarCortes(piezasDelMaterial, material.largoBarra, material.id);
+    setResultados((r) => ({ ...r, [materialId]: res }));
     mostrarToast('Cortes calculados.', 'success');
   }
 
   async function guardarProyecto(nombre: string, cliente: string) {
-    await crearProyecto({
-      nombre,
-      cliente,
-      descripcion: material ? `Material: ${material.nombre}` : undefined,
-      piezas,
+    await crearProyecto({ nombre, cliente, piezas, estado: 'borrador' });
+    setModoGuardar(null);
+    mostrarToast('Proyecto guardado.', 'success');
+  }
+
+  async function agregarACotizacion(nombre: string, cliente: string) {
+    await crearProyecto({ nombre, cliente, piezas, estado: 'cotizado' });
+
+    const conceptos: ConceptoCosto[] = materialesConPiezas
+      .filter(({ resultado }) => resultado !== null)
+      .map(({ mat, resultado }) => ({
+        id: uid(),
+        descripcion: `${mat.nombre} — ${resultado!.totalBarras} ${resultado!.totalBarras === 1 ? 'barra' : 'barras'}`,
+        tipo: 'material' as const,
+        cantidad: resultado!.totalBarras,
+        unidad: 'barra',
+        costoUnitario: mat.precioBarra,
+        subtotal: resultado!.totalBarras * mat.precioBarra,
+      }));
+
+    const costoMaterial = conceptos.reduce((s, c) => s + c.subtotal, 0);
+    const pct = config?.pctGananciaDefault ?? 30;
+    const ganancia = Math.round((costoMaterial * pct) / 100);
+    const total = costoMaterial + ganancia;
+
+    await crearCotizacion({
+      numero: siguienteNumero(),
+      cliente: { nombre: cliente },
+      fecha: Date.now(),
+      vigenciaDias: 30,
+      conceptos,
+      patrones: Object.values(resultados),
+      costoMaterial,
+      costoInsumos: 0,
+      costoManoObra: 0,
+      subtotal: costoMaterial,
+      pctGanancia: pct,
+      ganancia,
+      total,
+      aplicarIva: false,
+      ivaPct: config?.ivaPct ?? 13,
+      totalConIva: total,
+      modoManoObra: config?.modoManoObraDefault ?? 'fijo',
       estado: 'borrador',
     });
-    mostrarToast('Proyecto guardado.', 'success');
+
+    setModoGuardar(null);
+    mostrarToast('Cotización creada con los materiales calculados.', 'success');
   }
 
   if (!listo) {
@@ -92,22 +179,16 @@ export default function CalculadoraPage() {
   return (
     <div className="mx-auto max-w-5xl space-y-6 px-4 py-6">
       <div>
-        <h1 className="text-2xl font-bold text-slate-100">
-          Optimización de cortes
-        </h1>
+        <h1 className="text-2xl font-bold text-slate-100">Optimización de cortes</h1>
         <p className="mt-1 text-sm text-slate-400">
-          Minimiza el desperdicio en barras de 6 m.
+          Minimiza el desperdicio. Agrega varios materiales sin perder los cálculos anteriores.
         </p>
       </div>
 
+      {/* Selector de material */}
       <Card>
-        <label className="mb-1 block text-sm font-medium text-slate-300">
-          Material
-        </label>
-        <Select
-          value={materialId}
-          onChange={(e) => seleccionarMaterial(e.target.value)}
-        >
+        <label className="mb-1 block text-sm font-medium text-slate-300">Material activo</label>
+        <Select value={materialId} onChange={(e) => seleccionarMaterial(e.target.value)}>
           <option value="">Selecciona un material…</option>
           {materiales.map((m) => (
             <option key={m.id} value={m.id}>
@@ -117,16 +198,16 @@ export default function CalculadoraPage() {
         </Select>
         {material && (
           <p className="mt-2 text-sm text-slate-400">
-            Barra de {formatMedida(material.largoBarra)} ·{' '}
-            {formatCRC(material.precioBarra)}/barra
+            Barra de {formatMedida(material.largoBarra)} · {formatCRC(material.precioBarra)}/barra
           </p>
         )}
       </Card>
 
+      {/* Trabajo del material activo */}
       {material ? (
         <>
           <PiezaForm
-            key={piezaEditando?.id ?? 'nueva'}
+            key={piezaEditando?.id ?? `nueva-${materialId}`}
             materialId={material.id}
             largoBarra={material.largoBarra}
             kerfDefault={config?.kerfDefault ?? 0.3}
@@ -136,29 +217,20 @@ export default function CalculadoraPage() {
           />
 
           <ListaPiezas
-            piezas={piezas}
+            piezas={piezasDelMaterial}
             onEliminar={eliminarPieza}
             onEditar={editarPieza}
           />
 
           <div className="flex flex-wrap gap-2">
-            <Button onClick={optimizar} disabled={piezas.length === 0}>
+            <Button onClick={optimizar} disabled={piezasDelMaterial.length === 0}>
               <Scissors className="h-4 w-4" />
-              Optimizar
+              Calcular cortes
             </Button>
-            {resultado && (
-              <Button
-                variant="secondary"
-                onClick={() => setGuardarAbierto(true)}
-              >
-                <Save className="h-4 w-4" />
-                Guardar proyecto
-              </Button>
-            )}
           </div>
 
-          {resultado && (
-            <VistaBarras resultado={resultado} costoBarra={material.precioBarra} />
+          {resultadoActual && (
+            <VistaBarras resultado={resultadoActual} costoBarra={material.precioBarra} />
           )}
         </>
       ) : (
@@ -169,10 +241,65 @@ export default function CalculadoraPage() {
         />
       )}
 
-      {guardarAbierto && (
+      {/* Resumen multimaterial + acciones */}
+      {materialesConPiezas.length > 0 && (
+        <Card className="space-y-3">
+          <h2 className="font-semibold text-slate-100">Materiales del proyecto</h2>
+
+          <ul className="space-y-2">
+            {materialesConPiezas.map(({ mat, conteo, resultado }) => (
+              <li
+                key={mat.id}
+                className="flex items-center justify-between gap-3 rounded-xl border border-slate-700 px-3 py-2"
+              >
+                <div className="min-w-0">
+                  <p className="break-words text-sm font-medium text-slate-200">{mat.nombre}</p>
+                  <p className="text-xs text-slate-500">{conteo} pieza(s)</p>
+                </div>
+                {resultado ? (
+                  <div className="shrink-0 text-right">
+                    <p className="text-sm font-semibold text-emerald-400">
+                      {resultado.totalBarras} {resultado.totalBarras === 1 ? 'barra' : 'barras'}
+                    </p>
+                    <p className="text-xs text-slate-400">
+                      {formatCRC(resultado.totalBarras * mat.precioBarra)}
+                    </p>
+                  </div>
+                ) : (
+                  <span className="shrink-0 rounded-full bg-amber-900/40 px-2 py-0.5 text-xs text-amber-400">
+                    Sin calcular
+                  </span>
+                )}
+              </li>
+            ))}
+          </ul>
+
+          {hayResultados && (
+            <p className="border-t border-slate-700 pt-2 text-right text-sm font-semibold text-slate-100">
+              Total material: {formatCRC(costoTotalMaterial)}
+            </p>
+          )}
+
+          <div className="flex flex-wrap gap-2 pt-1">
+            <Button variant="secondary" onClick={() => setModoGuardar('proyecto')}>
+              <Save className="h-4 w-4" />
+              Guardar proyecto
+            </Button>
+            {hayResultados && (
+              <Button onClick={() => setModoGuardar('cotizacion')}>
+                <FileText className="h-4 w-4" />
+                Agregar a Cotización
+              </Button>
+            )}
+          </div>
+        </Card>
+      )}
+
+      {modoGuardar && (
         <GuardarProyecto
-          onCerrar={() => setGuardarAbierto(false)}
-          onGuardar={guardarProyecto}
+          titulo={modoGuardar === 'cotizacion' ? 'Agregar a Cotización' : 'Guardar proyecto'}
+          onCerrar={() => setModoGuardar(null)}
+          onGuardar={modoGuardar === 'cotizacion' ? agregarACotizacion : guardarProyecto}
         />
       )}
     </div>

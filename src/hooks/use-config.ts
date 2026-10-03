@@ -1,17 +1,57 @@
 'use client';
 
-import { useCallback } from 'react';
-import { useLiveQuery } from 'dexie-react-hooks';
+import { useCallback, useEffect, useState } from 'react';
+import { getSupabase } from '@/lib/supabase/client';
+import { seedConfigIfEmpty } from '@/data/seed';
 import type { ConfiguracionTaller } from '@/types';
-import { configRepository } from '@/lib/db/repositories';
 
 export function useConfig() {
-  const data = useLiveQuery(() => configRepository.get(), []);
-  const config = data ?? null;
-  const cargando = data === undefined;
+  const [config, setConfig] = useState<ConfiguracionTaller | null>(null);
+  const [cargando, setCargando] = useState(() => Boolean(getSupabase()));
+
+  useEffect(() => {
+    const sb = getSupabase();
+    if (!sb) return;
+
+    async function cargar() {
+      const { data } = await sb!
+        .from('configuracion')
+        .select('*')
+        .eq('id', 'taller')
+        .maybeSingle();
+      if (data) {
+        setConfig(data as ConfiguracionTaller);
+      } else {
+        const seeded = await seedConfigIfEmpty(sb!);
+        if (seeded) setConfig(seeded);
+      }
+      setCargando(false);
+    }
+
+    void cargar();
+
+    const channel = sb
+      .channel('configuracion-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'configuracion' }, (payload) => {
+        if (payload.eventType === 'DELETE') {
+          setConfig(null);
+        } else {
+          setConfig(payload.new as ConfiguracionTaller);
+        }
+      })
+      .subscribe();
+
+    return () => {
+      void sb.removeChannel(channel);
+    };
+  }, []);
 
   const guardar = useCallback(async (c: ConfiguracionTaller) => {
-    await configRepository.save({ ...c, actualizadoEn: Date.now() });
+    const sb = getSupabase();
+    if (!sb) return;
+    const updated = { ...c, actualizadoEn: Date.now() };
+    await sb.from('configuracion').upsert(updated, { onConflict: 'id' });
+    setConfig(updated);
   }, []);
 
   return { config, cargando, guardar };

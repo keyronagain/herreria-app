@@ -10,17 +10,18 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 # Forja OS — Guía para agentes
 
-PWA offline-first para un taller de herrería: catálogo de materiales, optimización de cortes 1D y cotizaciones.
+PWA para un taller de herrería: catálogo de materiales, optimización de cortes 1D y cotizaciones.
 
 ## Stack
 - **Next.js 16** (App Router, Turbopack por defecto), **React 19**, **TypeScript** estricto.
 - **Tailwind CSS v4** (config CSS-first vía `@import "tailwindcss"` en `src/app/globals.css`, tema con `@theme inline`).
-- **Lucide Icons**, **Dexie** (IndexedDB), **Zustand**, **clsx** + **tailwind-merge**.
+- **Lucide Icons**, **Zustand**, **clsx** + **tailwind-merge**.
 - **jsPDF** + **jspdf-autotable** (import **dinámico** para code-splitting): PDF de cotización. Nota: las fuentes estándar de jsPDF (WinAnsi) no incluyen `₡`; usar `CRC` en los PDFs.
-- **Supabase** (`@supabase/supabase-js`): backend opcional para sync multi-dispositivo. Offline-first: Dexie es la fuente de verdad; `lib/sync/` (outbox `syncQueue` + push/pull LWW) replica en segundo plano. El esquema está en `supabase/migrations/`.
-- **PWA**: `src/app/manifest.ts` + Service Worker propio en `public/sw.js`.
+- **Supabase** (`@supabase/supabase-js`): fuente de verdad única. Lectura y escritura directa desde los hooks. Realtime via `postgres_changes`. El esquema está en `supabase/migrations/`.
+  - Tablas tipadas: `materiales`, `proyectos`, `cotizaciones`, `configuracion` (columnas camelCase entre comillas para coincidir 1:1 con los tipos TypeScript).
+  - Sin IndexedDB, sin Dexie, sin outbox, sin sync-engine.
+- **PWA**: `src/app/manifest.ts` + `public/sw.js` (solo purga caches viejos, sin estrategia de caché).
   - **NO usar `@ducanh2912/next-pwa`**: es webpack-only e incompatible con Turbopack.
-  - **Actualización**: el SW usa `skipWaiting` + `clients.claim`; `AppShell` registra con `updateViaCache: 'none'` y revalida en `focus`/`visibilitychange`. Al desplegar cambios en assets cacheados, **incrementar la constante `CACHE`** en `public/sw.js` para purgar caches viejos.
 
 ## Comandos
 - `npm run dev` — servidor de desarrollo.
@@ -30,24 +31,25 @@ PWA offline-first para un taller de herrería: catálogo de materiales, optimiza
 
 ## Convenciones
 - Alias de import: `@/*` → `src/*`.
-- Todo componente/hook que toque IndexedDB/Dexie, hooks o estado de UI debe llevar `'use client'`.
+- Todo componente/hook que use Supabase, hooks o estado de UI debe llevar `'use client'`.
 - Sin comentarios innecesarios; solo donde aclaren lógica no obvia.
 - Naming: componentes `PascalCase`, hooks `useX`, archivos `kebab-case`.
 - **Dominio**: moneda CRC (₡, sin decimales); dimensiones en **cm** internamente; precios por **barra de 6 m**; IVA 13% opcional por cotización (default apagado).
-- **Persistencia SOLO** vía repositorios en `src/lib/db/repositories/` (patrón Repositorio, listo para sync futuro: UUID, timestamps `creadoEn`/`actualizadoEn`, `syncId` opcional).
+- **Persistencia**: todos los hooks (`useMateriales`, `useProyectos`, `useCotizaciones`, `useConfig`) llaman a Supabase directamente — nunca a repositorios locales.
+- **Seed automático**: los hooks detectan tabla vacía al primer login e insertan datos por defecto desde `src/data/seed.ts`.
 
 ## Estructura (`src/`)
 - `app/` — rutas App Router; `manifest.ts` (PWA); `page.tsx` (dashboard).
 - `components/ui/` — primitivos; `components/layout/` — AppShell, Header, BottomNav.
 - `components/materiales/`, `components/calculadora/`, `components/configuracion/`, `components/cotizaciones/` — por dominio.
-- `lib/db/` — Dexie (`db.ts`), `base-repository.ts`, repositorios por entidad.
 - `lib/cutting/` — optimización de cortes (FFD). `lib/pricing/` — motor de cotización.
+- `lib/supabase/client.ts` — cliente Supabase singleton (`getSupabase()`).
 - `lib/utils/` — `cn`, `id` (uuid), `format` (CRC/medidas, `parseNumero`).
-- `types/` — interfaces de dominio. `constants/` — defaults. `data/seed.ts` — catálogo inicial.
-- `hooks/` — `useMateriales`, `useProyectos`, `useCotizaciones`, `useConfig` (usan `dexie-react-hooks`). `stores/` — Zustand.
+- `types/` — interfaces de dominio. `constants/` — defaults. `data/seed.ts` — catálogo inicial para Supabase.
+- `hooks/` — `useMateriales`, `useProyectos`, `useCotizaciones`, `useConfig`, `useSync` (auth). `stores/` — Zustand.
 
 ## Reglas de calidad
-- **React 19**: no usar `setState` sincrónico dentro de `useEffect` (`react-hooks/set-state-in-effect`). Preferir suscripciones (`useLiveQuery`) o `useState` initializer con remontaje vía `key`.
+- **React 19**: no usar `setState` sincrónico dentro de `useEffect` (`react-hooks/set-state-in-effect`). Usar `useState` initializer lazy: `useState(() => Boolean(getSupabase()))`.
 - **Mobile-first (toda la app)**: targets táctiles ≥44px (botones de icono `h-11 w-11`), layouts apilados/full-width en móvil, títulos con `break-words` (nunca `truncate`), grids responsivos (`grid-cols-2 sm:grid-cols-N`), un solo badge discreto por tarjeta, acciones primarias (orange) prominentes, tablas con `overflow-x-auto`, y sin `window.location.href` que reemplace la pantalla de la PWA.
 - **Documentación**: mantener `README.md` (roadmap de fases) y `AGENTS.md` sincronizados tras cada fase/feature.
 

@@ -11,12 +11,11 @@ import { useCotizaciones } from '@/hooks/use-cotizaciones';
 import { useProyectos } from '@/hooks/use-proyectos';
 import { useMateriales } from '@/hooks/use-materiales';
 import { useConfig } from '@/hooks/use-config';
-import { cotizacionRepository } from '@/lib/db/repositories';
 import { useUIStore } from '@/stores/ui-store';
 import type { Cotizacion } from '@/types';
 
 export default function CotizacionesPage() {
-  const { cotizaciones, cargando, crear, eliminar } = useCotizaciones();
+  const { cotizaciones, cargando, crear, eliminar, siguienteNumero } = useCotizaciones();
   const { proyectos } = useProyectos();
   const { materiales } = useMateriales();
   const { config } = useConfig();
@@ -31,7 +30,7 @@ export default function CotizacionesPage() {
   }
 
   async function guardarCotizacion(datos: DatosCotizacion) {
-    const numero = await cotizacionRepository.siguienteNumero();
+    const numero = siguienteNumero();
     await crear({ ...datos, numero });
     mostrarToast(`Cotización ${numero} guardada.`, 'success');
   }

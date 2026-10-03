@@ -5,17 +5,18 @@ import { ProyectoList } from '@/components/proyectos/ProyectoList';
 import { ProyectoDetalle } from '@/components/proyectos/ProyectoDetalle';
 import { useProyectos } from '@/hooks/use-proyectos';
 import { useMateriales } from '@/hooks/use-materiales';
-import { cotizacionRepository } from '@/lib/db/repositories';
+import { useCotizaciones } from '@/hooks/use-cotizaciones';
 import type { Proyecto } from '@/types';
 
 export default function ProyectosPage() {
   const { proyectos, cargando, eliminar } = useProyectos();
   const { materiales } = useMateriales();
+  const { desvincularProyecto } = useCotizaciones();
   const [proyectoVer, setProyectoVer] = useState<Proyecto | null>(null);
 
   async function eliminarProyecto(p: Proyecto) {
     if (!window.confirm(`¿Eliminar el proyecto "${p.nombre}"?`)) return;
-    await cotizacionRepository.desvincularProyecto(p.id);
+    await desvincularProyecto(p.id);
     await eliminar(p.id);
     if (proyectoVer?.id === p.id) setProyectoVer(null);
   }
