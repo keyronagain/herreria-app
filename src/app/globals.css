@@ -1,30 +1,19 @@
 @import "tailwindcss";
 
+:root {
+  --background: #0f172a;
+  --foreground: #e2e8f0;
+}
+
 @theme inline {
-  /* Forge OS — Design Tokens */
-  --color-forge-red:       #E31B23;
-  --color-forge-charcoal:  #2D2D2D;
-  --color-forge-surface:   #383838;
-  --color-forge-elevated:  #454545;
-  --color-forge-edge:      #565656;
-  --color-forge-platinum:  #F4F4F4;
-  --color-forge-muted:     #ABABAB;
-  --color-forge-ghost:     #6A6A6A;
-
-  /* Semantic aliases */
-  --color-background: #2D2D2D;
-  --color-foreground: #F4F4F4;
-
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
 body {
-  background: #2D2D2D;
-  color: #F4F4F4;
+  background: var(--background);
+  color: var(--foreground);
   font-family: var(--font-geist-sans), system-ui, sans-serif;
-}
-
-* {
-  -webkit-tap-highlight-color: transparent;
 }

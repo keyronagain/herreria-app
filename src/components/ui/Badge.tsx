@@ -4,11 +4,11 @@ import { cn } from '@/lib/utils/cn';
 type Variant = 'default' | 'success' | 'warning' | 'danger' | 'info';
 
 const variants: Record<Variant, string> = {
-  default: 'bg-forge-elevated text-forge-muted',
-  success: 'bg-emerald-900/40 text-emerald-300',
-  warning: 'bg-amber-900/40 text-amber-300',
-  danger:  'bg-red-900/40 text-forge-red',
-  info:    'bg-sky-900/40 text-sky-300',
+  default: 'bg-slate-700 text-slate-200',
+  success: 'bg-emerald-900/50 text-emerald-300',
+  warning: 'bg-orange-900/50 text-orange-300',
+  danger: 'bg-red-900/50 text-red-300',
+  info: 'bg-sky-900/50 text-sky-300',
 };
 
 export interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
@@ -23,7 +23,7 @@ export function Badge({
   return (
     <span
       className={cn(
-        'inline-flex items-center rounded px-2 py-0.5 text-xs font-medium',
+        'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium',
         variants[variant],
         className,
       )}

@@ -15,9 +15,9 @@ const VARIANTES: Record<
     icono: 'text-emerald-400',
   },
   error: {
-    borde: 'border-forge-red/40',
+    borde: 'border-red-500/40',
     Icono: AlertCircle,
-    icono: 'text-forge-red',
+    icono: 'text-red-400',
   },
 };
 
@@ -38,13 +38,13 @@ export function Toast() {
   return (
     <div className="pointer-events-none fixed inset-x-0 bottom-24 z-[60] flex justify-center px-4">
       <div
-        className={`pointer-events-auto flex max-w-md items-center gap-2 rounded-md border bg-forge-surface px-4 py-3 text-sm text-forge-platinum shadow-lg ${borde}`}
+        className={`pointer-events-auto flex max-w-md items-center gap-2 rounded-xl border bg-slate-800 px-4 py-3 text-sm text-slate-100 shadow-lg ${borde}`}
       >
         <Icono className={`h-5 w-5 shrink-0 ${icono}`} />
         <span className="flex-1">{toast.mensaje}</span>
         <button
           onClick={limpiarToast}
-          className="shrink-0 rounded p-1 text-forge-ghost hover:text-forge-platinum"
+          className="shrink-0 rounded-lg p-1 text-slate-400 hover:text-slate-200"
           aria-label="Cerrar notificación"
         >
           <X className="h-4 w-4" />

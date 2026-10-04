@@ -29,7 +29,7 @@ export function ProyectoList({
   onEliminar,
 }: Props) {
   if (cargando) {
-    return <p className="py-16 text-center text-sm text-forge-muted">Cargando…</p>;
+    return <p className="py-16 text-center text-sm text-slate-400">Cargando…</p>;
   }
 
   if (proyectos.length === 0) {
@@ -47,11 +47,11 @@ export function ProyectoList({
       {proyectos.map((p) => (
         <li
           key={p.id}
-          className="flex items-center gap-3 rounded-lg border border-forge-edge bg-forge-surface p-4 transition-colors hover:bg-forge-elevated"
+          className="flex items-center gap-3 rounded-2xl border border-slate-700 bg-slate-800 p-4 shadow-sm"
         >
           <div className="min-w-0 flex-1">
             <div className="flex items-start justify-between gap-2">
-              <span className="break-words font-medium text-forge-platinum">
+              <span className="break-words font-medium text-slate-100">
                 {p.nombre}
               </span>
               <Badge
@@ -61,7 +61,7 @@ export function ProyectoList({
                 {ESTADOS[p.estado]?.label ?? p.estado}
               </Badge>
             </div>
-            <p className="mt-1 text-sm text-forge-muted">
+            <p className="mt-1 text-sm text-slate-400">
               {p.cliente ? `${p.cliente} · ` : ''}
               {p.piezas.length} pieza{p.piezas.length !== 1 ? 's' : ''} ·{' '}
               {new Date(p.creadoEn).toLocaleDateString('es-CR')}
@@ -69,14 +69,14 @@ export function ProyectoList({
           </div>
           <button
             onClick={() => onVer(p)}
-            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md text-forge-ghost hover:bg-forge-edge hover:text-forge-platinum"
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-slate-400 hover:bg-slate-700"
             aria-label="Ver proyecto"
           >
             <Eye className="h-5 w-5" />
           </button>
           <button
             onClick={() => onEliminar(p)}
-            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md text-forge-ghost hover:bg-forge-red/10 hover:text-forge-red"
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-slate-400 hover:bg-red-900/30 hover:text-red-400"
             aria-label="Eliminar proyecto"
           >
             <Trash2 className="h-5 w-5" />
