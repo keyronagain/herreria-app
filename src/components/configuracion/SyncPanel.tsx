@@ -37,7 +37,7 @@ export function SyncPanel() {
   if (comprobando) {
     return (
       <Card>
-        <p className="text-sm text-slate-400">Comprobando sesión…</p>
+        <p className="text-sm text-forge-muted">Comprobando sesión…</p>
       </Card>
     );
   }
@@ -46,14 +46,14 @@ export function SyncPanel() {
     return (
       <Card className="space-y-3">
         <div className="flex items-center justify-between">
-          <h3 className="font-semibold text-slate-100">Cuenta</h3>
+          <h3 className="font-semibold text-forge-platinum">Cuenta</h3>
           <Cloud className="h-5 w-5 text-emerald-400" />
         </div>
-        <p className="text-sm text-slate-400">
+        <p className="text-sm text-forge-muted">
           Conectado como{' '}
-          <span className="text-slate-200">{sesion.user.email}</span>
+          <span className="text-forge-platinum">{sesion.user.email}</span>
         </p>
-        <p className="text-sm text-slate-500">
+        <p className="text-sm text-forge-ghost">
           Los datos se guardan y leen en tiempo real desde la nube.
         </p>
         <Button variant="ghost" onClick={() => void cerrarSesion()}>
@@ -66,10 +66,10 @@ export function SyncPanel() {
   return (
     <Card className="space-y-3">
       <div className="flex items-center justify-between">
-        <h3 className="font-semibold text-slate-100">Cuenta</h3>
-        <CloudOff className="h-5 w-5 text-slate-400" />
+        <h3 className="font-semibold text-forge-platinum">Cuenta</h3>
+        <CloudOff className="h-5 w-5 text-forge-muted" />
       </div>
-      <p className="text-sm text-slate-400">
+      <p className="text-sm text-forge-muted">
         Inicia sesión para acceder a tus materiales, proyectos y cotizaciones.
       </p>
       <div className="space-y-3">
@@ -85,8 +85,8 @@ export function SyncPanel() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        {error && <p className="text-sm text-red-400">{error}</p>}
-        {mensaje && <p className="text-sm text-slate-400">{mensaje}</p>}
+        {error && <p className="text-sm text-forge-red">{error}</p>}
+        {mensaje && <p className="text-sm text-forge-muted">{mensaje}</p>}
         <div className="flex flex-wrap gap-2">
           <Button onClick={() => void autenticar('login')}>
             <LogIn className="h-4 w-4" /> Entrar

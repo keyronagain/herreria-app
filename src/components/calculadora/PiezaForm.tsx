@@ -75,11 +75,11 @@ export function PiezaForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="rounded-2xl border border-slate-700 bg-slate-800 p-4 shadow-sm"
+      className="rounded-lg border border-forge-edge bg-forge-surface p-4"
     >
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         <div className="col-span-2 sm:col-span-1">
-          <label className="mb-1 block text-sm font-medium text-slate-300">
+          <label className="mb-1 block text-sm font-medium text-forge-muted">
             Descripción
           </label>
           <Input
@@ -89,7 +89,7 @@ export function PiezaForm({
           />
         </div>
         <div>
-          <label className="mb-1 block text-sm font-medium text-slate-300">
+          <label className="mb-1 block text-sm font-medium text-forge-muted">
             Largo (cm)
           </label>
           <Input
@@ -102,7 +102,7 @@ export function PiezaForm({
           />
         </div>
         <div>
-          <label className="mb-1 block text-sm font-medium text-slate-300">
+          <label className="mb-1 block text-sm font-medium text-forge-muted">
             Cantidad
           </label>
           <Input
@@ -114,7 +114,7 @@ export function PiezaForm({
           />
         </div>
         <div>
-          <label className="mb-1 block text-sm font-medium text-slate-300">
+          <label className="mb-1 block text-sm font-medium text-forge-muted">
             Kerf (cm)
           </label>
           <Input
@@ -128,7 +128,7 @@ export function PiezaForm({
       </div>
 
       <div className="mt-3 flex items-center justify-between gap-3">
-        <p className="text-sm text-red-400">{error}</p>
+        <p className="text-sm text-forge-red">{error}</p>
         <div className="flex gap-2">
           {editando && onCancelarEdicion && (
             <Button type="button" variant="ghost" onClick={onCancelarEdicion}>

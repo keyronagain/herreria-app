@@ -94,8 +94,8 @@ export function ConfiguracionForm({ config, formId, onGuardar }: Props) {
         className="space-y-6"
       >
         <Card>
-          <h2 className="mb-3 font-semibold text-slate-100">Taller</h2>
-          <label className="mb-1 block text-sm font-medium text-slate-300">
+          <h2 className="mb-3 font-semibold text-forge-platinum">Taller</h2>
+          <label className="mb-1 block text-sm font-medium text-forge-muted">
             Nombre del taller
           </label>
           <Input
@@ -104,7 +104,7 @@ export function ConfiguracionForm({ config, formId, onGuardar }: Props) {
           />
 
           <div className="mt-4">
-            <label className="mb-1 block text-sm font-medium text-slate-300">
+            <label className="mb-1 block text-sm font-medium text-forge-muted">
               Logo
             </label>
             {local.logoBase64 ? (
@@ -113,7 +113,7 @@ export function ConfiguracionForm({ config, formId, onGuardar }: Props) {
                 <img
                   src={local.logoBase64}
                   alt="Logo del taller"
-                  className="h-16 w-16 rounded-lg border border-slate-700 bg-slate-700 object-contain"
+                  className="h-16 w-16 rounded-md border border-forge-edge bg-forge-elevated object-contain"
                 />
                 <div className="flex flex-col gap-2">
                   <Button
@@ -148,12 +148,12 @@ export function ConfiguracionForm({ config, formId, onGuardar }: Props) {
         </Card>
 
         <Card className="space-y-4">
-          <h2 className="font-semibold text-slate-100">
+          <h2 className="font-semibold text-forge-platinum">
             Mano de obra e impuestos
           </h2>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="mb-1 block text-sm font-medium text-slate-300">
+              <label className="mb-1 block text-sm font-medium text-forge-muted">
                 Costo por hora (₡)
               </label>
               <Input
@@ -167,7 +167,7 @@ export function ConfiguracionForm({ config, formId, onGuardar }: Props) {
               />
             </div>
             <div>
-              <label className="mb-1 block text-sm font-medium text-slate-300">
+              <label className="mb-1 block text-sm font-medium text-forge-muted">
                 Modo por defecto
               </label>
               <Select
@@ -185,7 +185,7 @@ export function ConfiguracionForm({ config, formId, onGuardar }: Props) {
               </Select>
             </div>
             <div>
-              <label className="mb-1 block text-sm font-medium text-slate-300">
+              <label className="mb-1 block text-sm font-medium text-forge-muted">
                 Ganancia por defecto (%)
               </label>
               <Input
@@ -199,7 +199,7 @@ export function ConfiguracionForm({ config, formId, onGuardar }: Props) {
               />
             </div>
             <div>
-              <label className="mb-1 block text-sm font-medium text-slate-300">
+              <label className="mb-1 block text-sm font-medium text-forge-muted">
                 IVA (%)
               </label>
               <Input
@@ -216,10 +216,10 @@ export function ConfiguracionForm({ config, formId, onGuardar }: Props) {
         </Card>
 
         <Card className="space-y-4">
-          <h2 className="font-semibold text-slate-100">Corte</h2>
+          <h2 className="font-semibold text-forge-platinum">Corte</h2>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="mb-1 block text-sm font-medium text-slate-300">
+              <label className="mb-1 block text-sm font-medium text-forge-muted">
                 Kerf por defecto (cm)
               </label>
               <Input
@@ -233,7 +233,7 @@ export function ConfiguracionForm({ config, formId, onGuardar }: Props) {
               />
             </div>
             <div>
-              <label className="mb-1 block text-sm font-medium text-slate-300">
+              <label className="mb-1 block text-sm font-medium text-forge-muted">
                 Largo de barra (cm)
               </label>
               <Input
@@ -262,7 +262,7 @@ export function ConfiguracionForm({ config, formId, onGuardar }: Props) {
 
       {sucio && (
         <div className="fixed inset-x-0 bottom-20 z-40 flex justify-center px-4">
-          <div className="flex w-full max-w-lg gap-2 rounded-2xl border border-slate-700 bg-slate-800/95 p-2 shadow-lg backdrop-blur">
+          <div className="flex w-full max-w-lg gap-2 rounded-lg border border-forge-edge bg-forge-charcoal p-2 shadow-lg">
             <Button
               type="button"
               variant="ghost"

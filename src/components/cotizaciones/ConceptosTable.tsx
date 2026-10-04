@@ -47,7 +47,7 @@ export function ConceptosTable({ conceptos, onChange }: Props) {
 
   if (conceptos.length === 0) {
     return (
-      <div className="rounded-xl border border-dashed border-slate-600 p-6 text-center text-sm text-slate-400">
+      <div className="rounded-md border border-dashed border-forge-edge/60 p-6 text-center text-sm text-forge-muted">
         Sin conceptos. Genera desde un proyecto o agrega manualmente.
       </div>
     );
@@ -56,7 +56,7 @@ export function ConceptosTable({ conceptos, onChange }: Props) {
   return (
     <div className="space-y-2">
       {conceptos.map((c) => (
-        <div key={c.id} className="rounded-xl border border-slate-700 p-3">
+        <div key={c.id} className="rounded-md border border-forge-edge bg-forge-surface p-3">
           <div className="flex gap-2">
             <Input
               value={c.descripcion}
@@ -66,7 +66,7 @@ export function ConceptosTable({ conceptos, onChange }: Props) {
             <button
               type="button"
               onClick={() => eliminar(c.id)}
-              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-slate-400 hover:bg-red-900/30 hover:text-red-400"
+              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md text-forge-ghost hover:bg-forge-red/10 hover:text-forge-red"
               aria-label="Eliminar concepto"
             >
               <Trash2 className="h-5 w-5" />
@@ -74,7 +74,7 @@ export function ConceptosTable({ conceptos, onChange }: Props) {
           </div>
           <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-4">
             <div>
-              <label className="mb-0.5 block text-xs text-slate-400">
+              <label className="mb-0.5 block text-xs text-forge-ghost">
                 Cantidad
               </label>
               <Input
@@ -88,7 +88,7 @@ export function ConceptosTable({ conceptos, onChange }: Props) {
               />
             </div>
             <div>
-              <label className="mb-0.5 block text-xs text-slate-400">
+              <label className="mb-0.5 block text-xs text-forge-ghost">
                 Unidad
               </label>
               <Select
@@ -107,7 +107,7 @@ export function ConceptosTable({ conceptos, onChange }: Props) {
               </Select>
             </div>
             <div>
-              <label className="mb-0.5 block text-xs text-slate-400">
+              <label className="mb-0.5 block text-xs text-forge-ghost">
                 Costo unit.
               </label>
               <Input
@@ -123,10 +123,10 @@ export function ConceptosTable({ conceptos, onChange }: Props) {
               />
             </div>
             <div>
-              <label className="mb-0.5 block text-xs text-slate-400">
+              <label className="mb-0.5 block text-xs text-forge-ghost">
                 Subtotal
               </label>
-              <div className="flex h-11 items-center rounded-xl bg-slate-700 px-3 text-sm font-medium text-slate-300">
+              <div className="flex h-11 items-center rounded-md bg-forge-elevated px-3 text-sm font-medium text-forge-platinum">
                 {formatCRC(c.subtotal)}
               </div>
             </div>

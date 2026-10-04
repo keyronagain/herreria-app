@@ -18,7 +18,7 @@ export default function ConfiguracionPage() {
   if (cargando || !config) {
     return (
       <div className="mx-auto max-w-5xl px-4 py-6">
-        <p className="py-16 text-center text-sm text-slate-400">Cargando…</p>
+        <p className="py-16 text-center text-sm text-forge-muted">Cargando…</p>
       </div>
     );
   }
@@ -36,12 +36,12 @@ export default function ConfiguracionPage() {
   return (
     <div className="mx-auto max-w-5xl px-4 py-6">
       <div className="flex items-center justify-between gap-3">
-        <h1 className="text-2xl font-bold text-slate-100">Configuración</h1>
+        <h1 className="text-2xl font-bold text-forge-platinum">Configuración</h1>
         <Button form={FORM_ID} type="submit">
           <Save className="h-4 w-4" /> Guardar
         </Button>
       </div>
-      <p className="mt-1 text-sm text-slate-400">
+      <p className="mt-1 text-sm text-forge-muted">
         Insumos, mano de obra, IVA y datos del taller.
       </p>
 
