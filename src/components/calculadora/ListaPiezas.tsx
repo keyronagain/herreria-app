@@ -27,27 +27,27 @@ export function ListaPiezas({ piezas, onEliminar, onEditar }: Props) {
       {piezas.map((p) => (
         <li
           key={p.id}
-          className="flex items-center gap-3 rounded-lg border border-forge-edge bg-forge-surface p-3 transition-colors hover:bg-forge-elevated"
+          className="flex items-center gap-3 rounded-2xl border border-slate-700 bg-slate-800 p-3"
         >
           <div className="min-w-0 flex-1">
-            <p className="break-words font-medium text-forge-platinum">
+            <p className="break-words font-medium text-slate-100">
               {p.descripcion}
             </p>
-            <p className="text-sm text-forge-muted">
+            <p className="text-sm text-slate-400">
               {formatMedida(p.largo)} × {p.cantidad}
               {p.kerf > 0 && ` · kerf ${p.kerf} cm`}
             </p>
           </div>
           <button
             onClick={() => onEditar(p.id)}
-            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md text-forge-ghost hover:bg-forge-edge hover:text-forge-platinum"
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-slate-400 hover:bg-slate-700"
             aria-label="Editar pieza"
           >
             <Pencil className="h-5 w-5" />
           </button>
           <button
             onClick={() => onEliminar(p.id)}
-            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md text-forge-ghost hover:bg-forge-red/10 hover:text-forge-red"
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-slate-400 hover:bg-red-900/30 hover:text-red-400"
             aria-label="Eliminar pieza"
           >
             <Trash2 className="h-5 w-5" />

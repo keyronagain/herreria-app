@@ -150,7 +150,7 @@ export function MaterialForm({ material, onCerrar, onGuardar }: Props) {
     >
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="mb-1 block text-sm font-medium text-forge-muted">
+          <label className="mb-1 block text-sm font-medium text-slate-300">
             Nombre
           </label>
           <Input
@@ -163,7 +163,7 @@ export function MaterialForm({ material, onCerrar, onGuardar }: Props) {
 
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="mb-1 block text-sm font-medium text-forge-muted">
+            <label className="mb-1 block text-sm font-medium text-slate-300">
               Tipo
             </label>
             <Select
@@ -178,7 +178,7 @@ export function MaterialForm({ material, onCerrar, onGuardar }: Props) {
             </Select>
           </div>
           <div>
-            <label className="mb-1 block text-sm font-medium text-forge-muted">
+            <label className="mb-1 block text-sm font-medium text-slate-300">
               Unidad de venta
             </label>
             <Select
@@ -195,7 +195,7 @@ export function MaterialForm({ material, onCerrar, onGuardar }: Props) {
 
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="mb-1 block text-sm font-medium text-forge-muted">
+            <label className="mb-1 block text-sm font-medium text-slate-300">
               Precio por barra (₡)
             </label>
             <Input
@@ -208,7 +208,7 @@ export function MaterialForm({ material, onCerrar, onGuardar }: Props) {
             />
           </div>
           <div>
-            <label className="mb-1 block text-sm font-medium text-forge-muted">
+            <label className="mb-1 block text-sm font-medium text-slate-300">
               Largo de barra (cm)
             </label>
             <Input
@@ -221,14 +221,14 @@ export function MaterialForm({ material, onCerrar, onGuardar }: Props) {
           </div>
         </div>
 
-        <fieldset className="rounded-lg border border-forge-edge p-3">
-          <legend className="px-1 text-xs font-medium text-forge-ghost">
+        <fieldset className="rounded-xl border border-slate-700 p-3">
+          <legend className="px-1 text-xs font-medium text-slate-400">
             Dimensiones (opcional, cm)
           </legend>
           <div className="grid grid-cols-2 gap-3">
             {TIPOS_CON_ANCHO.includes(values.tipo) && (
               <div>
-                <label className="mb-1 block text-sm font-medium text-forge-muted">
+                <label className="mb-1 block text-sm font-medium text-slate-300">
                   Ancho (cm)
                 </label>
                 <Input
@@ -243,7 +243,7 @@ export function MaterialForm({ material, onCerrar, onGuardar }: Props) {
             )}
             {TIPOS_CON_ALTO.includes(values.tipo) && (
               <div>
-                <label className="mb-1 block text-sm font-medium text-forge-muted">
+                <label className="mb-1 block text-sm font-medium text-slate-300">
                   Alto (cm)
                 </label>
                 <Input
@@ -258,7 +258,7 @@ export function MaterialForm({ material, onCerrar, onGuardar }: Props) {
             )}
             {TIPOS_CON_DIAMETRO.includes(values.tipo) && (
               <div>
-                <label className="mb-1 block text-sm font-medium text-forge-muted">
+                <label className="mb-1 block text-sm font-medium text-slate-300">
                   Diámetro (cm)
                 </label>
                 <Input
@@ -273,7 +273,7 @@ export function MaterialForm({ material, onCerrar, onGuardar }: Props) {
             )}
             {TIPOS_CON_ESPESOR.includes(values.tipo) && (
               <div>
-                <label className="mb-1 block text-sm font-medium text-forge-muted">
+                <label className="mb-1 block text-sm font-medium text-slate-300">
                   Espesor (cm)
                 </label>
                 <Input
@@ -290,7 +290,7 @@ export function MaterialForm({ material, onCerrar, onGuardar }: Props) {
         </fieldset>
 
         <div>
-          <label className="mb-1 block text-sm font-medium text-forge-muted">
+          <label className="mb-1 block text-sm font-medium text-slate-300">
             Proveedor
           </label>
           <Input

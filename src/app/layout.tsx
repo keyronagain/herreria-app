@@ -37,7 +37,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       lang="es"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full bg-forge-charcoal text-forge-platinum">
+      <body className="min-h-full bg-slate-900 text-slate-100">
         <AppShell>{children}</AppShell>
       </body>
     </html>

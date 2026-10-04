@@ -179,7 +179,7 @@ export default function CalculadoraPage() {
   if (!listo) {
     return (
       <div className="mx-auto max-w-5xl px-4 py-6">
-        <p className="py-16 text-center text-sm text-forge-muted">Cargando…</p>
+        <p className="py-16 text-center text-sm text-slate-400">Cargando…</p>
       </div>
     );
   }
@@ -187,15 +187,15 @@ export default function CalculadoraPage() {
   return (
     <div className="mx-auto max-w-5xl space-y-6 px-4 py-6">
       <div>
-        <h1 className="text-2xl font-bold text-forge-platinum">Optimización de cortes</h1>
-        <p className="mt-1 text-sm text-forge-muted">
+        <h1 className="text-2xl font-bold text-slate-100">Optimización de cortes</h1>
+        <p className="mt-1 text-sm text-slate-400">
           Minimiza el desperdicio. Agrega varios materiales sin perder los cálculos anteriores.
         </p>
       </div>
 
       {/* Selector de material */}
       <Card>
-        <label className="mb-1 block text-sm font-medium text-forge-muted">Material activo</label>
+        <label className="mb-1 block text-sm font-medium text-slate-300">Material activo</label>
         <Select value={materialId} onChange={(e) => seleccionarMaterial(e.target.value)}>
           <option value="">Selecciona un material…</option>
           {materiales.map((m) => (
@@ -205,7 +205,7 @@ export default function CalculadoraPage() {
           ))}
         </Select>
         {material && (
-          <p className="mt-2 text-sm text-forge-muted">
+          <p className="mt-2 text-sm text-slate-400">
             Barra de {formatMedida(material.largoBarra)} · {formatCRC(material.precioBarra)}/barra
           </p>
         )}
@@ -252,29 +252,29 @@ export default function CalculadoraPage() {
       {/* Resumen multimaterial + acciones */}
       {materialesConPiezas.length > 0 && (
         <Card className="space-y-3">
-          <h2 className="font-semibold text-forge-platinum">Materiales del proyecto</h2>
+          <h2 className="font-semibold text-slate-100">Materiales del proyecto</h2>
 
           <ul className="space-y-2">
             {materialesConPiezas.map(({ mat, conteo, resultado }) => (
               <li
                 key={mat.id}
-                className="flex items-center justify-between gap-3 rounded-lg border border-forge-edge px-3 py-2"
+                className="flex items-center justify-between gap-3 rounded-xl border border-slate-700 px-3 py-2"
               >
                 <div className="min-w-0">
-                  <p className="break-words text-sm font-medium text-forge-platinum">{mat.nombre}</p>
-                  <p className="text-xs text-forge-ghost">{conteo} pieza(s)</p>
+                  <p className="break-words text-sm font-medium text-slate-200">{mat.nombre}</p>
+                  <p className="text-xs text-slate-500">{conteo} pieza(s)</p>
                 </div>
                 {resultado ? (
                   <div className="shrink-0 text-right">
                     <p className="text-sm font-semibold text-emerald-400">
                       {resultado.totalBarras} {resultado.totalBarras === 1 ? 'barra' : 'barras'}
                     </p>
-                    <p className="text-xs text-forge-muted">
+                    <p className="text-xs text-slate-400">
                       {formatCRC(resultado.totalBarras * mat.precioBarra)}
                     </p>
                   </div>
                 ) : (
-                  <span className="shrink-0 rounded bg-amber-900/40 px-2 py-0.5 text-xs text-amber-400">
+                  <span className="shrink-0 rounded-full bg-amber-900/40 px-2 py-0.5 text-xs text-amber-400">
                     Sin calcular
                   </span>
                 )}
@@ -283,7 +283,7 @@ export default function CalculadoraPage() {
           </ul>
 
           {hayResultados && (
-            <p className="border-t border-forge-edge pt-2 text-right text-sm font-semibold text-forge-platinum">
+            <p className="border-t border-slate-700 pt-2 text-right text-sm font-semibold text-slate-100">
               Total material: {formatCRC(costoTotalMaterial)}
             </p>
           )}

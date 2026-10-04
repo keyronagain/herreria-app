@@ -47,21 +47,21 @@ export function InsumosList({ insumos, onChange }: Props) {
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <h2 className="font-semibold text-forge-platinum">Insumos</h2>
+        <h2 className="font-semibold text-slate-100">Insumos</h2>
         <Button type="button" variant="secondary" onClick={agregar}>
           <Plus className="h-4 w-4" /> Insumo
         </Button>
       </div>
 
       {insumos.length === 0 ? (
-        <p className="py-6 text-center text-sm text-forge-muted">
+        <p className="py-6 text-center text-sm text-slate-400">
           Sin insumos configurados.
         </p>
       ) : (
         insumos.map((i) => (
           <div
             key={i.id}
-            className="space-y-2 rounded-md border border-forge-edge bg-forge-surface p-3"
+            className="space-y-2 rounded-xl border border-slate-700 p-3"
           >
             <div className="flex gap-2">
               <Input
@@ -72,7 +72,7 @@ export function InsumosList({ insumos, onChange }: Props) {
               <button
                 type="button"
                 onClick={() => eliminar(i.id)}
-                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md text-forge-ghost hover:bg-forge-red/10 hover:text-forge-red"
+                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-slate-400 hover:bg-red-900/30 hover:text-red-400"
                 aria-label="Eliminar insumo"
               >
                 <Trash2 className="h-5 w-5" />

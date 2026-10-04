@@ -79,7 +79,7 @@ export function CotizacionDetalle({
       className="sm:max-w-2xl"
     >
       <div className="space-y-4">
-        <div className="text-sm text-forge-muted">
+        <div className="text-sm text-slate-400">
           <p>Cliente: {cotizacion.cliente.nombre}</p>
           {cotizacion.cliente.telefono && (
             <p>Teléfono: {cotizacion.cliente.telefono}</p>
@@ -109,31 +109,31 @@ export function CotizacionDetalle({
           </TBody>
         </Table>
 
-        <div className="space-y-1 rounded-lg border border-forge-edge bg-forge-surface p-4 text-sm">
-          <div className="flex justify-between text-forge-muted">
+        <div className="space-y-1 rounded-2xl border border-slate-700 bg-slate-800 p-4 text-sm">
+          <div className="flex justify-between text-slate-400">
             <span>Subtotal</span>
             <span>{formatCRC(cotizacion.subtotal)}</span>
           </div>
-          <div className="flex justify-between text-forge-muted">
+          <div className="flex justify-between text-slate-400">
             <span>Ganancia ({cotizacion.pctGanancia}%)</span>
             <span>{formatCRC(cotizacion.ganancia)}</span>
           </div>
           {cotizacion.aplicarIva && (
-            <div className="flex justify-between text-forge-muted">
+            <div className="flex justify-between text-slate-400">
               <span>IVA ({cotizacion.ivaPct}%)</span>
               <span>
                 {formatCRC(cotizacion.totalConIva - cotizacion.total)}
               </span>
             </div>
           )}
-          <div className="flex justify-between border-t border-forge-edge pt-2 font-bold text-forge-platinum">
+          <div className="flex justify-between border-t border-slate-700 pt-2 font-bold text-slate-100">
             <span>Total</span>
             <span>{formatCRC(cotizacion.totalConIva)}</span>
           </div>
         </div>
 
         {cotizacion.notas && (
-          <p className="text-sm text-forge-muted">Notas: {cotizacion.notas}</p>
+          <p className="text-sm text-slate-400">Notas: {cotizacion.notas}</p>
         )}
 
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">

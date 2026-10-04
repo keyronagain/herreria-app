@@ -47,6 +47,11 @@ export function CotizacionList({
           icono={<FileText className="h-10 w-10" />}
           titulo="Sin cotizaciones"
           descripcion="Crea tu primera cotización desde un proyecto o manualmente."
+          accion={
+            <Button onClick={onCrear}>
+              <Plus className="h-4 w-4" /> Nueva cotización
+            </Button>
+          }
         />
       ) : (
         <ul className="space-y-2">

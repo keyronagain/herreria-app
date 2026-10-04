@@ -21,11 +21,11 @@ export function ProyectoDetalle({ proyecto, materiales, onCerrar }: Props) {
     <Modal abierto onCerrar={onCerrar} titulo={proyecto.nombre}>
       <div className="space-y-4">
         {proyecto.cliente && (
-          <p className="text-sm text-forge-muted">Cliente: {proyecto.cliente}</p>
+          <p className="text-sm text-slate-400">Cliente: {proyecto.cliente}</p>
         )}
 
         {proyecto.piezas.length === 0 ? (
-          <p className="py-6 text-center text-sm text-forge-muted">
+          <p className="py-6 text-center text-sm text-slate-400">
             Este proyecto no tiene piezas.
           </p>
         ) : (

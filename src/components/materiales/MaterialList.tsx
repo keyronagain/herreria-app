@@ -121,7 +121,7 @@ export function MaterialList({
                   </span>
                   <Badge className="shrink-0">{etiquetaTipo(m.tipo)}</Badge>
                 </div>
-                <p className="mt-1 text-sm text-forge-muted">
+                <p className="mt-1 text-sm text-slate-400">
                   <span className="text-forge-muted">{formatCRC(m.precioBarra)} / barra{' '}</span>
                   <span className="text-forge-ghost">{formatMedida(m.largoBarra)} · {formatCRC(m.precioUnitario)} /m</span>
                 </p>
