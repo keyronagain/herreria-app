@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { getSupabase } from '@/lib/supabase/client';
 import { uid } from '@/lib/utils/id';
+import { upsertPorId, quitarPorId } from '@/lib/utils/coleccion';
 import type { Cotizacion } from '@/types';
 
 export type CotizacionInput = Omit<Cotizacion, 'id' | 'creadoEn' | 'actualizadoEn'>;
@@ -24,18 +25,12 @@ export function useCotizaciones() {
       });
 
     const channel = sb
-      .channel('cotizaciones-changes')
+      .channel(`cotizaciones-changes-${uid()}`)
       .on('postgres_changes', { event: '*', schema: 'public', table: 'cotizaciones' }, (payload) => {
-        if (payload.eventType === 'INSERT') {
-          setCotizaciones((prev) => [payload.new as Cotizacion, ...prev]);
-        } else if (payload.eventType === 'UPDATE') {
-          setCotizaciones((prev) =>
-            prev.map((c) =>
-              c.id === (payload.new as Cotizacion).id ? (payload.new as Cotizacion) : c,
-            ),
-          );
-        } else if (payload.eventType === 'DELETE') {
-          setCotizaciones((prev) => prev.filter((c) => c.id !== (payload.old as { id: string }).id));
+        if (payload.eventType === 'DELETE') {
+          setCotizaciones((prev) => quitarPorId(prev, (payload.old as { id: string }).id));
+        } else {
+          setCotizaciones((prev) => upsertPorId(prev, payload.new as Cotizacion, 'inicio'));
         }
       })
       .subscribe();
@@ -57,15 +52,26 @@ export function useCotizaciones() {
     const sb = getSupabase();
     if (!sb) throw new Error('Supabase no configurado');
     const now = Date.now();
-    const { error } = await sb.from('cotizaciones').insert({ ...input, id: uid(), creadoEn: now, actualizadoEn: now });
+    const { data, error } = await sb
+      .from('cotizaciones')
+      .insert({ ...input, id: uid(), creadoEn: now, actualizadoEn: now })
+      .select()
+      .single();
     if (error) throw new Error(error.message);
+    setCotizaciones((prev) => upsertPorId(prev, data as Cotizacion, 'inicio'));
   }, []);
 
   const actualizar = useCallback(async (id: string, changes: Partial<Cotizacion>) => {
     const sb = getSupabase();
     if (!sb) throw new Error('Supabase no configurado');
-    const { error } = await sb.from('cotizaciones').update({ ...changes, actualizadoEn: Date.now() }).eq('id', id);
+    const { data, error } = await sb
+      .from('cotizaciones')
+      .update({ ...changes, actualizadoEn: Date.now() })
+      .eq('id', id)
+      .select()
+      .single();
     if (error) throw new Error(error.message);
+    setCotizaciones((prev) => upsertPorId(prev, data as Cotizacion, 'inicio'));
   }, []);
 
   const eliminar = useCallback(async (id: string) => {
@@ -73,21 +79,22 @@ export function useCotizaciones() {
     if (!sb) throw new Error('Supabase no configurado');
     const { error } = await sb.from('cotizaciones').delete().eq('id', id);
     if (error) throw new Error(error.message);
+    setCotizaciones((prev) => quitarPorId(prev, id));
   }, []);
 
   const desvincularProyecto = useCallback(async (proyectoId: string): Promise<void> => {
     const sb = getSupabase();
     if (!sb) return;
-    const relacionadas = cotizaciones.filter((c) => c.proyectoId === proyectoId);
-    await Promise.all(
-      relacionadas.map((c) =>
-        sb
-          .from('cotizaciones')
-          .update({ proyectoId: null, actualizadoEn: Date.now() })
-          .eq('id', c.id),
-      ),
+    const now = Date.now();
+    const { error } = await sb
+      .from('cotizaciones')
+      .update({ proyectoId: null, actualizadoEn: now })
+      .eq('proyectoId', proyectoId);
+    if (error) throw new Error(error.message);
+    setCotizaciones((prev) =>
+      prev.map((c) => (c.proyectoId === proyectoId ? { ...c, proyectoId: undefined, actualizadoEn: now } : c)),
     );
-  }, [cotizaciones]);
+  }, []);
 
   return { cotizaciones, cargando, siguienteNumero, crear, actualizar, eliminar, desvincularProyecto };
 }

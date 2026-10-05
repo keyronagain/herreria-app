@@ -9,7 +9,7 @@ import { mensajeSupabase } from '@/lib/utils/error';
 import type { Material } from '@/types';
 
 export default function MaterialesPage() {
-  const { materiales, cargando, crear, actualizar, eliminar, restablecerCatalogo } = useMateriales();
+  const { materiales, cargando, crear, actualizar, eliminar } = useMateriales();
   const mostrarToast = useUIStore((s) => s.mostrarToast);
   const [modalAbierto, setModalAbierto] = useState(false);
   const [materialEditar, setMaterialEditar] = useState<Material | null>(null);
@@ -32,16 +32,6 @@ export default function MaterialesPage() {
       } catch (err) {
         mostrarToast(mensajeSupabase(err), 'error');
       }
-    }
-  }
-
-  async function handleRestablecer() {
-    if (!window.confirm('¿Reemplazar TODOS los materiales con el catálogo del proveedor? Esta acción no se puede deshacer.')) return;
-    try {
-      await restablecerCatalogo();
-      mostrarToast('Catálogo restablecido con 26 materiales.', 'success');
-    } catch (err) {
-      mostrarToast(mensajeSupabase(err), 'error');
     }
   }
 
@@ -74,7 +64,6 @@ export default function MaterialesPage() {
           onCrear={abrirCrear}
           onEditar={abrirEditar}
           onEliminar={eliminarMaterial}
-          onRestablecer={handleRestablecer}
         />
       </div>
 
