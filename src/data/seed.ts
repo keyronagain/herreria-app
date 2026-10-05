@@ -47,6 +47,12 @@ export const CATALOGO: SeedMaterial[] = [
   { nombre: 'TUBO NEGRO ESTRUC. 72X72X1.80MM', tipo: 'TUBO_CUADRADO', dims: { ancho: 7.2, alto: 7.2, espesor: 0.18 }, precioBarra: 15850, categoria: 'Estructural Negro' },
   { nombre: 'TUBO NEGRO ESTRUC. 92X92X1.80MM', tipo: 'TUBO_CUADRADO', dims: { ancho: 9.2, alto: 9.2, espesor: 0.18 }, precioBarra: 20700, categoria: 'Estructural Negro' },
   { nombre: 'TUBO NEGRO ESTRUC. 100X100X1.80MM', tipo: 'TUBO_CUADRADO', dims: { ancho: 10.0, alto: 10.0, espesor: 0.18 }, precioBarra: 22150, categoria: 'Estructural Negro' },
+  // Estructural Negro cal. 3.17 mm
+  { nombre: 'TUBO NEGRO ESTRUC. CUAD. 200X200X3.17MMX6.00MTS', tipo: 'TUBO_CUADRADO', dims: { ancho: 20.0, alto: 20.0, espesor: 0.317 }, precioBarra: 60566.37, categoria: 'Estructural Negro' },
+  // Platinas 50 mm
+  { nombre: 'PLATINA 50X3MMX6MTS', tipo: 'PLATINA', dims: { ancho: 5.0, espesor: 0.3 }, precioBarra: 4163.72, categoria: 'Platina' },
+  { nombre: 'PLATINA 50X5MMX6MTS', tipo: 'PLATINA', dims: { ancho: 5.0, espesor: 0.5 }, precioBarra: 6659.29, categoria: 'Platina' },
+  { nombre: 'PLATINA 50X6MMX6MTS', tipo: 'PLATINA', dims: { ancho: 5.0, espesor: 0.6 }, precioBarra: 8876.11, categoria: 'Platina' },
 ];
 
 const INSUMOS_DEFAULT: Omit<Insumo, 'id'>[] = [
