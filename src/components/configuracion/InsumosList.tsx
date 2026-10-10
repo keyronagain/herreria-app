@@ -3,9 +3,9 @@
 import { Plus, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
+import { NumberInput } from '@/components/ui/NumberInput';
 import { Select } from '@/components/ui/Select';
 import { uid } from '@/lib/utils/id';
-import { parseNumero } from '@/lib/utils/format';
 import { UNIDADES } from '@/constants';
 import type { Insumo, ModoConsumo } from '@/types';
 
@@ -79,15 +79,12 @@ export function InsumosList({ insumos, onChange }: Props) {
               </button>
             </div>
             <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-              <Input
-                type="number"
+              <NumberInput
                 min="0"
                 step="1"
                 value={i.costoUnitario}
                 placeholder="Costo (₡)"
-                onChange={(e) =>
-                  actualizar(i.id, { costoUnitario: parseNumero(e.target.value) })
-                }
+                onValueChange={(n) => actualizar(i.id, { costoUnitario: n })}
               />
               <Select
                 value={i.unidad}
@@ -117,15 +114,12 @@ export function InsumosList({ insumos, onChange }: Props) {
                   </option>
                 ))}
               </Select>
-              <Input
-                type="number"
+              <NumberInput
                 min="0"
                 step="any"
                 value={i.factor}
                 placeholder="Factor"
-                onChange={(e) =>
-                  actualizar(i.id, { factor: parseNumero(e.target.value) })
-                }
+                onValueChange={(n) => actualizar(i.id, { factor: n })}
               />
             </div>
           </div>

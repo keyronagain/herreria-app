@@ -5,9 +5,9 @@ import { Save, ImagePlus } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
+import { NumberInput } from '@/components/ui/NumberInput';
 import { Select } from '@/components/ui/Select';
 import { InsumosList } from './InsumosList';
-import { parseNumero } from '@/lib/utils/format';
 import { redimensionarImagen } from '@/lib/utils/imagen';
 import { mensajeSupabase } from '@/lib/utils/error';
 import { useUIStore } from '@/stores/ui-store';
@@ -44,6 +44,7 @@ export function ConfiguracionForm({ config, formId, onGuardar }: Props) {
       await onGuardar({
         ...local,
         nombreTaller: local.nombreTaller.trim(),
+        largoBarraDefault: local.largoBarraDefault || 600,
         insumos: local.insumos.map((i) => ({
           ...i,
           nombre: i.nombre.trim(),
@@ -156,14 +157,11 @@ export function ConfiguracionForm({ config, formId, onGuardar }: Props) {
               <label className="mb-1 block text-sm font-medium text-slate-300">
                 Costo por hora (₡)
               </label>
-              <Input
-                type="number"
+              <NumberInput
                 min="0"
                 step="1"
                 value={local.costoManoObraHora}
-                onChange={(e) =>
-                  setCampo('costoManoObraHora', parseNumero(e.target.value))
-                }
+                onValueChange={(n) => setCampo('costoManoObraHora', n)}
               />
             </div>
             <div>
@@ -188,28 +186,22 @@ export function ConfiguracionForm({ config, formId, onGuardar }: Props) {
               <label className="mb-1 block text-sm font-medium text-slate-300">
                 Ganancia por defecto (%)
               </label>
-              <Input
-                type="number"
+              <NumberInput
                 min="0"
                 step="1"
                 value={local.pctGananciaDefault}
-                onChange={(e) =>
-                  setCampo('pctGananciaDefault', parseNumero(e.target.value))
-                }
+                onValueChange={(n) => setCampo('pctGananciaDefault', n)}
               />
             </div>
             <div>
               <label className="mb-1 block text-sm font-medium text-slate-300">
                 IVA (%)
               </label>
-              <Input
-                type="number"
+              <NumberInput
                 min="0"
                 step="1"
                 value={local.ivaPct}
-                onChange={(e) =>
-                  setCampo('ivaPct', parseNumero(e.target.value))
-                }
+                onValueChange={(n) => setCampo('ivaPct', n)}
               />
             </div>
           </div>
@@ -222,31 +214,22 @@ export function ConfiguracionForm({ config, formId, onGuardar }: Props) {
               <label className="mb-1 block text-sm font-medium text-slate-300">
                 Kerf por defecto (cm)
               </label>
-              <Input
-                type="number"
+              <NumberInput
                 min="0"
                 step="any"
                 value={local.kerfDefault}
-                onChange={(e) =>
-                  setCampo('kerfDefault', parseNumero(e.target.value))
-                }
+                onValueChange={(n) => setCampo('kerfDefault', n)}
               />
             </div>
             <div>
               <label className="mb-1 block text-sm font-medium text-slate-300">
                 Largo de barra (cm)
               </label>
-              <Input
-                type="number"
+              <NumberInput
                 min="1"
                 step="1"
                 value={local.largoBarraDefault}
-                onChange={(e) =>
-                  setCampo(
-                    'largoBarraDefault',
-                    parseNumero(e.target.value) || 600,
-                  )
-                }
+                onValueChange={(n) => setCampo('largoBarraDefault', n)}
               />
             </div>
           </div>
@@ -275,9 +258,9 @@ export function ConfiguracionForm({ config, formId, onGuardar }: Props) {
               type="submit"
               form={formId}
               className="flex-1"
-              disabled={guardando}
+              loading={guardando}
             >
-              <Save className="h-4 w-4" />
+              {!guardando && <Save className="h-4 w-4" />}
               {guardando ? 'Guardando…' : 'Guardar cambios'}
             </Button>
           </div>

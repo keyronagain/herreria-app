@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Select } from '@/components/ui/Select';
 import { EmptyState } from '@/components/ui/EmptyState';
+import { FormSkeleton } from '@/components/ui/Skeleton';
 import { PiezaForm } from '@/components/calculadora/PiezaForm';
 import { ListaPiezas } from '@/components/calculadora/ListaPiezas';
 import { VistaBarras } from '@/components/calculadora/VistaBarras';
@@ -179,7 +180,7 @@ export default function CalculadoraPage() {
   if (!listo) {
     return (
       <div className="mx-auto max-w-5xl px-4 py-6">
-        <p className="py-16 text-center text-sm text-slate-400">Cargando…</p>
+        <FormSkeleton bloques={2} />
       </div>
     );
   }

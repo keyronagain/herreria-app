@@ -304,7 +304,7 @@ export function MaterialForm({ material, onCerrar, onGuardar }: Props) {
           <Button type="button" variant="ghost" onClick={onCerrar}>
             Cancelar
           </Button>
-          <Button type="submit" disabled={guardando}>
+          <Button type="submit" loading={guardando}>
             {guardando ? 'Guardando…' : 'Guardar'}
           </Button>
         </div>

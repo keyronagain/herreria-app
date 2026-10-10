@@ -3,8 +3,9 @@
 import { Plus, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
+import { NumberInput } from '@/components/ui/NumberInput';
 import { Select } from '@/components/ui/Select';
-import { parseNumero, formatCRC } from '@/lib/utils/format';
+import { formatCRC } from '@/lib/utils/format';
 import { uid } from '@/lib/utils/id';
 import { UNIDADES } from '@/constants';
 import type { ConceptoCosto } from '@/types';
@@ -77,14 +78,11 @@ export function ConceptosTable({ conceptos, onChange }: Props) {
               <label className="mb-0.5 block text-xs text-slate-400">
                 Cantidad
               </label>
-              <Input
-                type="number"
+              <NumberInput
                 min="0"
                 step="any"
                 value={c.cantidad}
-                onChange={(e) =>
-                  actualizar(c.id, { cantidad: parseNumero(e.target.value) })
-                }
+                onValueChange={(n) => actualizar(c.id, { cantidad: n })}
               />
             </div>
             <div>
@@ -110,16 +108,11 @@ export function ConceptosTable({ conceptos, onChange }: Props) {
               <label className="mb-0.5 block text-xs text-slate-400">
                 Costo unit.
               </label>
-              <Input
-                type="number"
+              <NumberInput
                 min="0"
                 step="1"
                 value={c.costoUnitario}
-                onChange={(e) =>
-                  actualizar(c.id, {
-                    costoUnitario: parseNumero(e.target.value),
-                  })
-                }
+                onValueChange={(n) => actualizar(c.id, { costoUnitario: n })}
               />
             </div>
             <div>

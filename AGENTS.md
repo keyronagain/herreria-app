@@ -51,6 +51,7 @@ PWA para un taller de herrería: catálogo de materiales, optimización de corte
 ## Reglas de calidad
 - **React 19**: no usar `setState` sincrónico dentro de `useEffect` (`react-hooks/set-state-in-effect`). Usar `useState` initializer lazy: `useState(() => Boolean(getSupabase()))`.
 - **Mobile-first (toda la app)**: targets táctiles ≥44px (botones de icono `h-11 w-11`), layouts apilados/full-width en móvil, títulos con `break-words` (nunca `truncate`), grids responsivos (`grid-cols-2 sm:grid-cols-N`), un solo badge discreto por tarjeta, acciones primarias (orange) prominentes, tablas con `overflow-x-auto`, y sin `window.location.href` que reemplace la pantalla de la PWA.
+- **UI/UX**: inputs numéricos con valor `number` usan `NumberInput` (permite vaciar el campo, sin ceros a la izquierda, selecciona al enfocar); los `Input type="number"` con estado string también seleccionan al enfocar. Acciones asíncronas usan `<Button loading={…}>` (spinner + deshabilitado); las cargas de datos usan `Skeleton`/`ListaSkeleton`/`FormSkeleton` en vez de texto "Cargando…"; las tarjetas clicables usan `INTERACTIVE_CARD` o `<Card interactive>`. Mantener la paleta `slate-*` + `orange-500`.
 - **Documentación**: mantener `README.md` (roadmap de fases) y `AGENTS.md` sincronizados tras cada fase/feature.
 
 ## Verificación (criterio de cierre)

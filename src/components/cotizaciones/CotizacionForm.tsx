@@ -6,9 +6,10 @@ import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
+import { NumberInput } from '@/components/ui/NumberInput';
 import { Select } from '@/components/ui/Select';
 import { ConceptosTable } from './ConceptosTable';
-import { parseNumero, formatCRC } from '@/lib/utils/format';
+import { formatCRC } from '@/lib/utils/format';
 import { ahoraMs } from '@/lib/utils/id';
 import {
   generarConceptos,
@@ -239,12 +240,11 @@ export function CotizacionForm({
                 <label className="mb-1 block text-sm font-medium text-slate-300">
                   Monto (₡)
                 </label>
-                <Input
-                  type="number"
+                <NumberInput
                   min="0"
                   step="1"
                   value={manoObraFijo}
-                  onChange={(e) => setManoObraFijo(parseNumero(e.target.value))}
+                  onValueChange={setManoObraFijo}
                 />
               </div>
             )}
@@ -253,14 +253,11 @@ export function CotizacionForm({
                 <label className="mb-1 block text-sm font-medium text-slate-300">
                   Horas
                 </label>
-                <Input
-                  type="number"
+                <NumberInput
                   min="0"
                   step="0.5"
                   value={horasManoObra}
-                  onChange={(e) =>
-                    setHorasManoObra(parseNumero(e.target.value))
-                  }
+                  onValueChange={setHorasManoObra}
                 />
               </div>
             )}
@@ -269,12 +266,11 @@ export function CotizacionForm({
                 <label className="mb-1 block text-sm font-medium text-slate-300">
                   % sobre materiales
                 </label>
-                <Input
-                  type="number"
+                <NumberInput
                   min="0"
                   step="1"
                   value={pctManoObra}
-                  onChange={(e) => setPctManoObra(parseNumero(e.target.value))}
+                  onValueChange={setPctManoObra}
                 />
               </div>
             )}
@@ -290,26 +286,22 @@ export function CotizacionForm({
               <label className="mb-1 block text-sm font-medium text-slate-300">
                 Ganancia (%)
               </label>
-              <Input
-                type="number"
+              <NumberInput
                 min="0"
                 step="1"
                 value={pctGanancia}
-                onChange={(e) => setPctGanancia(parseNumero(e.target.value))}
+                onValueChange={setPctGanancia}
               />
             </div>
             <div>
               <label className="mb-1 block text-sm font-medium text-slate-300">
                 Vigencia (días)
               </label>
-              <Input
-                type="number"
+              <NumberInput
                 min="0"
                 step="1"
                 value={vigenciaDias}
-                onChange={(e) =>
-                  setVigenciaDias(Math.round(parseNumero(e.target.value)))
-                }
+                onValueChange={(n) => setVigenciaDias(Math.round(n))}
               />
             </div>
             <label className="flex items-center gap-2 self-end pb-3 text-sm font-medium text-slate-300">
@@ -372,8 +364,8 @@ export function CotizacionForm({
           <Button type="button" variant="ghost" onClick={onCerrar}>
             Cancelar
           </Button>
-          <Button type="submit" disabled={guardando}>
-            <Save className="h-4 w-4" />
+          <Button type="submit" loading={guardando}>
+            {!guardando && <Save className="h-4 w-4" />}
             {guardando ? 'Guardando…' : 'Guardar cotización'}
           </Button>
         </div>

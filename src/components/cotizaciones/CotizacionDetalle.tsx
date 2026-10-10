@@ -35,7 +35,7 @@ export function CotizacionDetalle({
   proyectos,
   onCerrar,
 }: Props) {
-  const [ocupado, setOcupado] = useState(false);
+  const [ocupado, setOcupado] = useState<'compartir' | 'taller' | null>(null);
   const mostrarToast = useUIStore((s) => s.mostrarToast);
 
   function enviarWhatsApp() {
@@ -45,17 +45,17 @@ export function CotizacionDetalle({
   }
 
   async function compartirDocumento() {
-    setOcupado(true);
+    setOcupado('compartir');
     try {
       const proyecto = proyectos.find((p) => p.id === cotizacion.proyectoId);
       await compartirPdf(cotizacion, config, proyecto?.nombre);
     } finally {
-      setOcupado(false);
+      setOcupado(null);
     }
   }
 
   async function pdfTaller() {
-    setOcupado(true);
+    setOcupado('taller');
     try {
       const proyecto =
         proyectos.find((p) => p.id === cotizacion.proyectoId) ?? null;
@@ -67,7 +67,7 @@ export function CotizacionDetalle({
       );
       doc.save(`cotizacion-${cotizacion.numero}-taller.pdf`);
     } finally {
-      setOcupado(false);
+      setOcupado(null);
     }
   }
 
@@ -143,12 +143,18 @@ export function CotizacionDetalle({
           <Button
             variant="secondary"
             onClick={compartirDocumento}
-            disabled={ocupado}
+            loading={ocupado === 'compartir'}
+            disabled={ocupado !== null}
           >
-            <Share2 className="h-4 w-4" /> Compartir PDF
+            {ocupado !== 'compartir' && <Share2 className="h-4 w-4" />} Compartir PDF
           </Button>
-          <Button variant="secondary" onClick={pdfTaller} disabled={ocupado}>
-            <ClipboardList className="h-4 w-4" /> PDF Taller
+          <Button
+            variant="secondary"
+            onClick={pdfTaller}
+            loading={ocupado === 'taller'}
+            disabled={ocupado !== null}
+          >
+            {ocupado !== 'taller' && <ClipboardList className="h-4 w-4" />} PDF Taller
           </Button>
         </div>
       </div>

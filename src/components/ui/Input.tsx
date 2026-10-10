@@ -3,6 +3,7 @@ import { cn } from '@/lib/utils/cn';
 
 export function Input({
   className,
+  onFocus,
   ...props
 }: InputHTMLAttributes<HTMLInputElement>) {
   return (
@@ -11,6 +12,10 @@ export function Input({
         'h-11 w-full rounded-xl border border-slate-700 bg-slate-800 px-3 text-sm text-slate-100 placeholder:text-slate-500 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-orange-500',
         className,
       )}
+      onFocus={(e) => {
+        if (props.type === 'number') e.target.select();
+        onFocus?.(e);
+      }}
       {...props}
     />
   );

@@ -61,7 +61,7 @@ export default function DashboardPage() {
       <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
         {secciones.map(({ href, titulo, desc, icon: Icon }) => (
           <Link key={href} href={href}>
-            <Card className="flex items-center gap-4 transition hover:border-orange-500 hover:shadow">
+            <Card interactive className="flex items-center gap-4">
               <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-slate-700 text-slate-300">
                 <Icon className="h-5 w-5" />
               </span>

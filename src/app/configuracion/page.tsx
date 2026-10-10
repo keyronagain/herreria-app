@@ -5,6 +5,7 @@ import { useConfig } from '@/hooks/use-config';
 import { ConfiguracionForm } from '@/components/configuracion/ConfiguracionForm';
 import { SyncPanel } from '@/components/configuracion/SyncPanel';
 import { Button } from '@/components/ui/Button';
+import { FormSkeleton } from '@/components/ui/Skeleton';
 import { useUIStore } from '@/stores/ui-store';
 import { mensajeSupabase } from '@/lib/utils/error';
 import type { ConfiguracionTaller } from '@/types';
@@ -18,7 +19,7 @@ export default function ConfiguracionPage() {
   if (cargando || !config) {
     return (
       <div className="mx-auto max-w-5xl px-4 py-6">
-        <p className="py-16 text-center text-sm text-slate-400">Cargando…</p>
+        <FormSkeleton bloques={4} />
       </div>
     );
   }

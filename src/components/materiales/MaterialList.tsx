@@ -7,6 +7,9 @@ import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
 import { Badge } from '@/components/ui/Badge';
 import { EmptyState } from '@/components/ui/EmptyState';
+import { INTERACTIVE_CARD } from '@/components/ui/Card';
+import { ListaSkeleton } from '@/components/ui/Skeleton';
+import { cn } from '@/lib/utils/cn';
 import { TIPOS_PERFIL } from '@/constants';
 import { formatCRC, formatMedida } from '@/lib/utils/format';
 import type { Material } from '@/types';
@@ -88,7 +91,7 @@ export function MaterialList({
       </div>
 
       {cargando ? (
-        <p className="py-16 text-center text-sm text-slate-400">Cargando…</p>
+        <ListaSkeleton />
       ) : filtrados.length === 0 ? (
         <EmptyState
           icono={<Layers className="h-10 w-10" />}
@@ -106,7 +109,10 @@ export function MaterialList({
           {filtrados.map((m) => (
             <li
               key={m.id}
-              className="flex items-center gap-2 rounded-2xl border border-slate-700 bg-slate-800 p-3 shadow-sm"
+              className={cn(
+                'flex items-center gap-2 rounded-2xl border border-slate-700 bg-slate-800 p-3 shadow-sm',
+                INTERACTIVE_CARD,
+              )}
             >
               <div className="min-w-0 flex-1">
                 <div className="flex items-start justify-between gap-2">
@@ -123,14 +129,14 @@ export function MaterialList({
               </div>
               <button
                 onClick={() => onEditar(m)}
-                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-slate-400 hover:bg-slate-700"
+                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-slate-400 transition hover:bg-slate-700 active:scale-95"
                 aria-label="Editar"
               >
                 <Pencil className="h-5 w-5" />
               </button>
               <button
                 onClick={() => onEliminar(m)}
-                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-slate-400 hover:bg-red-900/30 hover:text-red-400"
+                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-slate-400 transition hover:bg-red-900/30 hover:text-red-400 active:scale-95"
                 aria-label="Eliminar"
               >
                 <Trash2 className="h-5 w-5" />
