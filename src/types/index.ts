@@ -61,6 +61,8 @@ export interface CortePatron {
   piezaId: string;
   largo: number;
   descripcion: string;
+  tramo?: number;
+  tramosTotal?: number;
 }
 
 export interface PatronBarra {
@@ -78,6 +80,7 @@ export interface ResultadoOptimizacion {
   patrones: PatronBarra[];
   sobranteTotal: number;
   utilizacionPct: number;
+  empates?: number;
 }
 
 export type TipoConcepto =

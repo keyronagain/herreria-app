@@ -1,17 +1,20 @@
 'use client';
 
 import { Trash2, Ruler, Pencil } from 'lucide-react';
+import { Badge } from '@/components/ui/Badge';
 import { EmptyState } from '@/components/ui/EmptyState';
+import { requiereEmpate } from '@/lib/cutting/optimizar';
 import { formatMedida } from '@/lib/utils/format';
 import type { PiezaRequerida } from '@/types';
 
 interface Props {
   piezas: PiezaRequerida[];
+  largoBarra: number;
   onEliminar: (id: string) => void;
   onEditar: (id: string) => void;
 }
 
-export function ListaPiezas({ piezas, onEliminar, onEditar }: Props) {
+export function ListaPiezas({ piezas, largoBarra, onEliminar, onEditar }: Props) {
   if (piezas.length === 0) {
     return (
       <EmptyState
@@ -37,6 +40,11 @@ export function ListaPiezas({ piezas, onEliminar, onEditar }: Props) {
               {formatMedida(p.largo)} × {p.cantidad}
               {p.kerf > 0 && ` · kerf ${p.kerf} cm`}
             </p>
+            {requiereEmpate(p.largo, largoBarra) && (
+              <Badge variant="warning" className="mt-1 whitespace-normal">
+                (Requiere empate de soldadura)
+              </Badge>
+            )}
           </div>
           <button
             onClick={() => onEditar(p.id)}

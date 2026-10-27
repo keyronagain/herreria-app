@@ -5,7 +5,8 @@ import { Plus } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { uid } from '@/lib/utils/id';
-import { parseNumero } from '@/lib/utils/format';
+import { parseNumero, formatMedida } from '@/lib/utils/format';
+import { dividirEnTramos } from '@/lib/cutting/optimizar';
 import type { PiezaRequerida } from '@/types';
 
 interface Props {
@@ -41,6 +42,8 @@ export function PiezaForm({
 
   const editando = Boolean(piezaInicial);
 
+  const tramos = dividirEnTramos(parseNumero(largo), largoBarra).length;
+
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
     const l = parseNumero(largo);
@@ -51,8 +54,8 @@ export function PiezaForm({
       setError('Ingresa un largo válido.');
       return;
     }
-    if (l + k > largoBarra) {
-      setError('La pieza excede el largo de la barra.');
+    if (k >= largoBarra) {
+      setError('El kerf debe ser menor que el largo de la barra.');
       return;
     }
 
@@ -126,6 +129,13 @@ export function PiezaForm({
           />
         </div>
       </div>
+
+      {tramos > 1 && (
+        <p className="mt-3 break-words text-sm text-orange-400">
+          Esta pieza supera la barra de {formatMedida(largoBarra)}: se dividirá
+          en {tramos} tramos (Requiere empate de soldadura).
+        </p>
+      )}
 
       <div className="mt-3 flex items-center justify-between gap-3">
         <p className="text-sm text-red-400">{error}</p>

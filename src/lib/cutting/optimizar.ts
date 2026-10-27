@@ -11,19 +11,55 @@ export interface PiezaCorte {
   kerf: number;
 }
 
+interface CorteIndividual {
+  id: string;
+  descripcion: string;
+  largo: number;
+  tramo?: number;
+  tramosTotal?: number;
+}
+
+export function requiereEmpate(largo: number, largoBarra: number): boolean {
+  return largoBarra > 0 && largo > largoBarra;
+}
+
+export function dividirEnTramos(largo: number, largoBarra: number): number[] {
+  if (!requiereEmpate(largo, largoBarra)) return [largo];
+
+  const tramos: number[] = [];
+  let resto = largo;
+  while (resto > largoBarra) {
+    tramos.push(largoBarra);
+    resto = redondear(resto - largoBarra);
+  }
+  tramos.push(resto);
+  return tramos;
+}
+
 export function optimizarCortes(
   piezas: readonly PiezaCorte[],
   largoBarra: number,
   materialId: string,
 ): ResultadoOptimizacion {
-  const individuales: { id: string; descripcion: string; largo: number }[] = [];
+  const individuales: CorteIndividual[] = [];
+  let totalPiezas = 0;
+  let empates = 0;
 
   for (const p of piezas) {
+    const tramos = dividirEnTramos(p.largo, largoBarra);
     for (let i = 0; i < p.cantidad; i++) {
-      individuales.push({
-        id: p.id,
-        descripcion: p.descripcion,
-        largo: redondear(p.largo + p.kerf),
+      totalPiezas++;
+      empates += tramos.length - 1;
+      tramos.forEach((tramo, t) => {
+        const dividida = tramos.length > 1;
+        individuales.push({
+          id: p.id,
+          descripcion: dividida
+            ? `${p.descripcion} (tramo ${t + 1}/${tramos.length})`
+            : p.descripcion,
+          largo: Math.min(redondear(tramo + p.kerf), largoBarra),
+          ...(dividida && { tramo: t + 1, tramosTotal: tramos.length }),
+        });
       });
     }
   }
@@ -47,6 +83,7 @@ export function optimizarCortes(
       piezaId: corte.id,
       largo: corte.largo,
       descripcion: corte.descripcion,
+      ...(corte.tramo && { tramo: corte.tramo, tramosTotal: corte.tramosTotal }),
     });
     barra.sobrante = redondear(barra.sobrante - corte.largo);
   }
@@ -67,11 +104,12 @@ export function optimizarCortes(
 
   return {
     materialId,
-    totalPiezas: individuales.length,
+    totalPiezas,
     totalBarras: patrones.length,
     patrones,
     sobranteTotal: redondear(sobranteTotal),
     utilizacionPct,
+    ...(empates > 0 && { empates }),
   };
 }
 

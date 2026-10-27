@@ -34,7 +34,7 @@ PWA para un taller de herrería: catálogo de materiales, optimización de corte
 - Todo componente/hook que use Supabase, hooks o estado de UI debe llevar `'use client'`.
 - Sin comentarios innecesarios; solo donde aclaren lógica no obvia.
 - Naming: componentes `PascalCase`, hooks `useX`, archivos `kebab-case`.
-- **Dominio**: moneda CRC (₡, sin decimales); dimensiones en **cm** internamente; precios por **barra de 6 m**; IVA 13% opcional por cotización (default apagado).
+- **Dominio**: moneda CRC (₡, sin decimales); dimensiones en **cm** internamente; precios por **barra de 6 m**; IVA 13% opcional por cotización (default apagado). Piezas con largo > barra se dividen en tramos de hasta una barra (`dividirEnTramos` en `lib/cutting/optimizar.ts`), con empate a tope sin traslape; un tramo ocupa `min(tramo + kerf, largoBarra)`.
 - **Persistencia**: todos los hooks (`useMateriales`, `useProyectos`, `useCotizaciones`, `useConfig`) llaman a Supabase directamente — nunca a repositorios locales.
 - **Seed automático**: los hooks detectan tabla vacía al primer login e insertan datos por defecto desde `src/data/seed.ts`.
 

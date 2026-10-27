@@ -227,6 +227,7 @@ export default function CalculadoraPage() {
 
           <ListaPiezas
             piezas={piezasDelMaterial}
+            largoBarra={material.largoBarra}
             onEliminar={eliminarPieza}
             onEditar={editarPieza}
           />

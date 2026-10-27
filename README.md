@@ -6,6 +6,7 @@ PWA (Progressive Web App) para la gestión de un taller de herrería, optimizada
 
 1. **Catálogo de materiales** — perfiles PTR, tubos, ángulos, platinas, soleras y varillas, con sus costos.
 2. **Optimización de cortes 1D** (Cutting Stock Problem) en barras de 6 m, minimizando desperdicio y considerando el kerf.
+   - Las piezas más largas que la barra (ej. 620 cm en barras de 600 cm) se dividen automáticamente en tramos (600 + 20), se asignan a barras reales y se marcan como "Requiere empate de soldadura".
 3. **Multimaterial por proyecto** — un mismo proyecto puede tener planos de corte de varios materiales; al agregarlos a la cotización se consolidan las barras de todos.
 4. **Cotizaciones automáticas** — costo de material optimizado + insumos/pintura + mano de obra + % de ganancia + IVA.
 5. **Exportación PDF** profesional (vista cliente y taller) con el logo del taller, y compartición por WhatsApp.

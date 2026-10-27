@@ -42,6 +42,16 @@ export function VistaBarras({ resultado, costoBarra }: Props) {
         )}
       </div>
 
+      {resultado.empates ? (
+        <p className="break-words rounded-xl border border-orange-500/40 bg-orange-900/20 px-3 py-2 text-sm text-orange-300">
+          {resultado.empates}{' '}
+          {resultado.empates === 1
+            ? 'empate de soldadura necesario'
+            : 'empates de soldadura necesarios'}
+          . Las piezas marcadas como tramo se unen soldando.
+        </p>
+      ) : null}
+
       <div className="space-y-3">
         {resultado.patrones.map((b, i) => (
           <div
